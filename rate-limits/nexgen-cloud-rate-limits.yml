@@ -1,0 +1,55 @@
+generated: '2026-08-26'
+method: searched
+source: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+docs: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+limit_count: 1
+note: >-
+  Hyperstack publishes exactly one documented ceiling and it is scoped to the SOURCE IP,
+  not to the API key or the account. The docs are explicit that the limit applies across
+  all endpoints from a single source IP, which means every agent, CI runner and human
+  behind one NAT egress shares one budget. No RateLimit-* or X-RateLimit-* response
+  headers are documented, so a client has no runtime signal - it can only observe the
+  429 after it has already been throttled. Retry-After is not documented either.
+rate_limits:
+- scope: per-source-ip
+  applies_to: all endpoints
+  window: 1 minute
+  limit: 500
+  unit: requests
+  burst: null
+  exhaustion_status: 429
+  exhaustion_behaviour: >-
+    Every subsequent request from that IP returns 429 Too Many Requests for the remainder
+    of the one-minute window.
+  source: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+response_headers:
+  documented: false
+  ratelimit_headers: []
+  retry_after: false
+  note: >-
+    The rate-limit reference documents no response headers at all. Verified against the
+    OpenAPI as well: no 429 response in openapi/nexgen-cloud-hyperstack-openapi.json
+    declares a RateLimit-*, X-RateLimit-* or Retry-After header. This is the single
+    largest agent-readiness gap in an otherwise strong API - an autonomous client cannot
+    pace itself, only recover.
+backoff_guidance:
+  documented: true
+  policy: exponential
+  first_retry_wait_seconds: 1
+  strategy: Double the wait on each subsequent retry; stop after 5 attempts and surface the failure.
+  source: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+escalation:
+  available: true
+  channel: support@hyperstack.cloud
+  requirement: Use case, endpoints affected, and request volume.
+interactions:
+- topic: pagination
+  note: >-
+    The docs warn that request rate scales with page count when walking large result
+    sets, and advise increasing page size rather than request rate above a few hundred
+    items. See conventions/nexgen-cloud-conventions.yml.
+ai_studio:
+  documented: false
+  note: >-
+    The AI Studio API (console.hyperstack.cloud/ai/api/v1) publishes no separate rate
+    limits. Whether the 500/min per-IP ceiling applies to it is not stated.

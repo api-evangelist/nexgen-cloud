@@ -1,0 +1,474 @@
+generated: '2026-08-26'
+method: derived
+source: 'mcp/nexgen-cloud-mcp.yml (tool lists: probed tools/list for hyperstack-docs, published tools
+  reference for hyperstack-api) bound against openapi/nexgen-cloud-hyperstack-openapi.json'
+note: The Hyperstack API MCP Server is self-hosted and api-key gated, so its live inputSchemas could not
+  be introspected anonymously. Tools are bound to REST operations by name and semantics against the provider's
+  own tools reference; confidence is recorded per row and is never 'high' where the provider does not
+  make the binding explicit. Each bound tool inherits its backing operation's parameters and requestBody
+  as its real input schema.
+surfaces:
+  openapi:
+  - file: openapi/nexgen-cloud-hyperstack-openapi.json
+    title: Hyperstack API
+    operations: 209
+    gated: false
+  - file: openapi/nexgen-cloud-ai-studio-openapi.json
+    title: AI Studio API
+    operations: 33
+    gated: false
+    note: No MCP tool maps to AI Studio; neither published MCP server exposes inference, conversations,
+      knowledge bases or image generation.
+  graphql: null
+  mcp:
+  - name: hyperstack-docs
+    url: https://docs.hyperstack.cloud/mcp
+    gated: false
+    schemas: probed
+  - name: hyperstack-api
+    url: null
+    install: ghcr.io/nexgencloud/hyperstack-mcp-server:latest
+    gated: true
+    schemas: not introspected (api-key required)
+coverage:
+  mcp_tools_total: 43
+  mcp_tools_bound_to_rest: 38
+  mcp_only: 5
+  rest_operations_total: 209
+  rest_operations_bound: 40
+  rest_only: 169
+  rest_coverage_pct: 19.1
+  note: Only 40 of 209 Hyperstack REST operations (19.1%) are reachable through the API MCP server. Snapshots,
+    images, templates, marketplace deployments, provisioning profiles, keypairs, object-storage buckets
+    and access keys, VNC URLs, RBAC roles, invites, permissions, policies, API keys, organization management,
+    contracts, pricebook, vouchers and the entire AI Studio API have no MCP tool.
+crosswalk:
+- tool: get_billing_status
+  category: billing
+  rest:
+  - Get_usage
+  binding: direct
+  confidence: low
+  note: No REST operation is named 'billing status'. Mapped by semantics to the usage summary; the provider
+    does not publish the binding.
+- tool: get_billing_usage
+  category: billing
+  rest:
+  - Get_usage
+  binding: direct
+  confidence: high
+- tool: get_previous_day_cost
+  category: billing
+  rest:
+  - Get_last_day_cost
+  binding: direct
+  confidence: high
+- tool: get_credit_balance
+  category: billing
+  rest:
+  - Get_user_credit
+  binding: direct
+  confidence: high
+- tool: get_payment_history
+  category: billing
+  rest:
+  - List_payment_details
+  - Get_User_Billing_History
+  binding: composite
+  confidence: medium
+  note: Payment history spans the payment-details list and the account billing history; which one the
+    server calls is not published.
+- tool: create_cluster
+  category: cluster
+  rest:
+  - Create_Cluster
+  binding: direct
+  confidence: high
+- tool: list_clusters
+  category: cluster
+  rest:
+  - List_Clusters
+  binding: direct
+  confidence: high
+- tool: get_cluster
+  category: cluster
+  rest:
+  - Getting_Cluster_Detail
+  binding: direct
+  confidence: high
+- tool: delete_cluster
+  category: cluster
+  rest:
+  - Delete_cluster
+  binding: direct
+  confidence: high
+  note: Tool requires explicit confirmation per the provider's tools reference.
+- tool: get_cluster_events
+  category: cluster
+  rest:
+  - List_cluster_events
+  binding: direct
+  confidence: high
+- tool: list_cluster_versions
+  category: cluster
+  rest:
+  - Get_Cluster_Versions
+  binding: direct
+  confidence: high
+- tool: create_vm
+  category: vm
+  rest:
+  - Create_Vms
+  binding: direct
+  confidence: high
+- tool: list_vms
+  category: vm
+  rest:
+  - List_Vms
+  binding: direct
+  confidence: high
+- tool: get_vm
+  category: vm
+  rest:
+  - Get_VM
+  binding: direct
+  confidence: high
+- tool: start_vm
+  category: vm
+  rest:
+  - Start_VM
+  binding: direct
+  confidence: high
+- tool: stop_vm
+  category: vm
+  rest:
+  - Stop_VM
+  binding: direct
+  confidence: high
+- tool: delete_vm
+  category: vm
+  rest:
+  - Delete_VM
+  binding: direct
+  confidence: high
+  note: Irreversible. No REST undelete operation exists.
+- tool: hard_reboot_vm
+  category: vm
+  rest:
+  - Hard_reboot_VM
+  binding: direct
+  confidence: high
+- tool: hibernate_vm
+  category: vm
+  rest:
+  - Hibernate_VM
+  binding: direct
+  confidence: high
+- tool: restore_vm
+  category: vm
+  rest:
+  - Restore_VM_from_hibernation
+  binding: direct
+  confidence: high
+- tool: attach_volume_to_vm
+  category: vm
+  rest:
+  - Attach_volumes_to_VM
+  binding: direct
+  confidence: high
+- tool: detach_volume_from_vm
+  category: vm
+  rest:
+  - Detach_volumes_from_VM
+  binding: direct
+  confidence: high
+- tool: attach_floating_ip_to_vm
+  category: vm
+  rest:
+  - Attach_public_IP_to_VM
+  binding: direct
+  confidence: high
+- tool: detach_floating_ip_from_vm
+  category: vm
+  rest:
+  - Detach_public_IP_from_VM
+  binding: direct
+  confidence: high
+- tool: add_firewall_rule
+  category: vm
+  rest:
+  - Create_firewall_rule_for_VM
+  - Add_rule_to_firewall
+  binding: composite
+  confidence: medium
+  note: 'Two REST surfaces add a rule: one scoped to a VM, one to a firewall object. The tool description
+    says ''add a firewall rule to control network traffic'' without naming which.'
+- tool: remove_firewall_rule
+  category: vm
+  rest:
+  - Delete_firewall_rule_for_VM
+  - Delete_rule_from_firewall
+  binding: composite
+  confidence: medium
+  note: Same ambiguity as add_firewall_rule.
+- tool: get_vm_events
+  category: vm
+  rest:
+  - List_VM_events
+  binding: direct
+  confidence: high
+- tool: create_volume
+  category: volume
+  rest:
+  - Create_volume
+  binding: direct
+  confidence: high
+- tool: list_volumes
+  category: volume
+  rest:
+  - List_volumes
+  binding: direct
+  confidence: high
+- tool: get_volume
+  category: volume
+  rest:
+  - Get_Volume
+  binding: direct
+  confidence: high
+- tool: update_volume
+  category: volume
+  rest:
+  - Update_volume
+  binding: direct
+  confidence: high
+- tool: delete_volume
+  category: volume
+  rest:
+  - Delete_volume
+  binding: direct
+  confidence: high
+  note: Irreversible.
+- tool: list_volume_types
+  category: volume
+  rest:
+  - List_volume_types
+  binding: direct
+  confidence: high
+- tool: update_volume_attachment
+  category: volume
+  rest:
+  - Update_volume_attachment
+  binding: direct
+  confidence: high
+- tool: list_flavors
+  category: infrastructure
+  rest:
+  - List_Flavors
+  binding: direct
+  confidence: high
+- tool: list_environments
+  category: infrastructure
+  rest:
+  - List_environments
+  binding: direct
+  confidence: high
+- tool: get_environment
+  category: infrastructure
+  rest:
+  - Get_environment
+  binding: direct
+  confidence: high
+- tool: check_stocks
+  category: infrastructure
+  rest:
+  - Get_GPU_stock
+  binding: direct
+  confidence: high
+mcp_only:
+- tool: search_docs
+  server: hyperstack-docs
+  reason: Documentation full-text search. No REST endpoint exposes the docs corpus.
+- tool: get_page
+  server: hyperstack-docs
+  reason: Returns a documentation page as Markdown. Docs-site surface, not an API operation.
+- tool: list_sections
+  server: hyperstack-docs
+  reason: Documentation table of contents. No REST equivalent.
+- tool: lookup_error
+  server: hyperstack-docs
+  reason: Resolves an HTTP status / error_reason / message to cause and fix from the error reference.
+    Knowledge lookup, not an API call.
+- tool: get_flavor_info
+  server: hyperstack-docs
+  reason: GPU flavor specifications sourced from the hardware docs. Related to but distinct from List_Flavors,
+    which returns live per-region flavor availability rather than documented specs.
+rest_only:
+- Accept_Invite
+- Add_VM_Label
+- Add_a_new_consent_for_a_User
+- Add_user_billing_info
+- Assign_RBAC_Role_to_User
+- Attach_callback_to_VM
+- Attach_callback_to_volume
+- Attach_firewall_to_Vms
+- Attach_firewalls_to_VM
+- Buckets_billing_history_hourly_chart
+- Calculate_resource_billing_rate
+- Change_Organization_for_Token
+- Check_VM_name_availability
+- Check_if_Org_is_Excluded_from_Floating_IP_Detachment
+- Create_Node
+- Create_Node_Group
+- Create_RBAC_Role
+- Create_Snapshot_for_VM
+- Create_custom_image
+- Create_environment
+- Create_firewall
+- Create_profile
+- Create_template
+- Delete_API_Key
+- Delete_Cluster_Node
+- Delete_Cluster_Nodes
+- Delete_Deployment
+- Delete_Invite
+- Delete_Node_Group
+- Delete_RBAC_Role
+- Delete_VM_callback
+- Delete_environment
+- Delete_existing_firewall
+- Delete_image
+- Delete_key_pair
+- Delete_profile
+- Delete_snapshot
+- Delete_template
+- Delete_volume_callback
+- Disable_MFA
+- Fetch_Image_name_availability
+- Fetch_cluster_name_availability
+- Fetch_environment_name_availability
+- Fetch_snapshot_name_availability
+- Fetch_volume_name_availability
+- Generate_API_Key
+- Get_API_Key
+- Get_All_Consents_for_a_User
+- Get_Authenticated_User
+- Get_Bucket_billing_history
+- Get_Cluster_Master_Flavors
+- Get_Cluster_Nodes
+- Get_Cluster_billing_history
+- Get_Dashboard
+- Get_Image
+- Get_Node_Group
+- Get_Snapshot_billing_history
+- Get_User_MFA_Status
+- Get_User_Organizations
+- Get_User_billing_info
+- Get_VM_Billing_Details
+- Get_VM_Billing_Graph
+- Get_VM_Billing_History
+- Get_VM_Logs
+- Get_VM_billing_events
+- Get_VM_metrics
+- Get_VM_sub-resource_costs
+- Get_VM_sub-resource_graph
+- Get_VNC_URL
+- Get_Volume_Billing_Details
+- Get_Volume_Billing_History
+- Get_Volume_Billing_History_Graph
+- Get_alive
+- Get_all_consent_templates
+- Get_cluster_billing_history_graph
+- Get_consent_audit_events
+- Get_consent_template_by_type
+- Get_contract_GPU_allocation_graph
+- Get_contract_Vms
+- Get_data_synthesis_billing_history
+- Get_data_synthesis_billing_history_graph
+- Get_data_synthesis_history_for_resource
+- Get_deployment
+- Get_environment_VM_quota
+- Get_fine-tuning_billing_history
+- Get_fine-tuning_billing_history_graph
+- Get_firewall
+- Get_image_generation_billing_history
+- Get_image_generation_billing_history_graph
+- Get_model_evaluation_billing_history
+- Get_model_evaluation_billing_history_graph
+- Get_notification_threshold
+- Get_payment_receipt
+- Get_pricebook
+- Get_profile
+- Get_resource_fine-tuning_billing_history
+- Get_resource_image_generation_billing_history
+- Get_resource_model_evaluation_billing_history
+- Get_serverless_inference_billing_history_graph
+- Get_serverless_inferences_billing_history
+- Get_snapshot
+- Get_snapshot_billing_history_graph
+- Get_template
+- Get_volume_billing_events
+- Import_key_pair
+- Initiate_Payment
+- Invite_User_to_Organization
+- List_Bucket_Billing_History
+- List_Clusters_billing_history
+- List_Default_Flavors_and_Images
+- List_Deployments
+- List_Gpus
+- List_Images
+- List_Invites
+- List_My_User_Permissions
+- List_Node_Groups
+- List_Org_notification_thresholds
+- List_Permissions
+- List_Policies
+- List_RBAC_Roles
+- List_Regions
+- List_Snapshot_Events
+- List_User_Permissions
+- List_billing_contract_history
+- List_customer_contracts
+- List_email_preferences
+- List_existing_firewalls
+- List_firewall_rule_protocols
+- List_key_pairs
+- List_profiles
+- List_serverless_inference_billing_history
+- List_snapshot_billing_history
+- List_snapshots
+- List_supported_billing_countries
+- List_supported_key_pair_types
+- List_templates
+- Reconcile_cluster
+- Redeem_a_voucher
+- Remove_Organization_Member
+- Remove_RBAC_Role_From_User
+- Request_VM_Console
+- Request_VM_Logs
+- Resize_VM
+- Restore_snapshot
+- Retrieve_Organization_Information
+- Retrieve_RBAC_Role_Details
+- Retrieve_contract
+- Start_Deployment
+- Toggle_all_email_preferences
+- Update_API_Key
+- Update_Node_Group
+- Update_Organization_Information
+- Update_RBAC_Role
+- Update_VM_callback
+- Update_a_consent_action_by_type
+- Update_email_preference
+- Update_environment
+- Update_key_pair_name
+- Update_template
+- Update_user_billing_info
+- Update_volume_callback
+- createAccessKeyEndpoint
+- deleteAccessKeyEndpoint
+- deleteBucketEndpoint
+- healthzEndpoint
+- listAccessKeysEndpoint
+- listBucketsEndpoint
+- listRegionsEndpoint
+- retrieveBucketEndpoint

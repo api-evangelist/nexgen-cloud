@@ -64,5 +64,33 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-NexGen Cloud is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.hiive.com/securities/nexgen-cloud-stock
+NexGen Cloud Limited is a UK-headquartered AI cloud and GPU infrastructure provider. Its
+on-demand platform, **Hyperstack**, sells NVIDIA GPU and CPU virtual machines, managed
+Kubernetes clusters, block storage volumes, S3-compatible object storage and high-speed
+networking across three regions (CANADA-1, NORWAY-1, US-1), billed per minute. A second
+product, **Hyperstack AI Studio**, provides an OpenAI-compatible inference API over a
+catalog of third-party hosted text and image models. The company also sells **Secure
+Private Cloud**, a single-tenant sovereign supercluster offering.
+
+## APIs profiled here
+
+| API | Base URL | Operations | Contract |
+|---|---|---|---|
+| Hyperstack API | `https://infrahub-api.nexgencloud.com/v1` | 209 | [OpenAPI 3.0.1](openapi/nexgen-cloud-hyperstack-openapi.json) |
+| Hyperstack AI Studio API | `https://console.hyperstack.cloud/ai/api/v1` | 33 | [OpenAPI 3.1.0](openapi/nexgen-cloud-ai-studio-openapi.json) |
+
+Both specifications are published by the provider and discoverable without prior knowledge:
+`docs.hyperstack.cloud` serves an [RFC 9727 `/.well-known/api-catalog`](well-known/nexgen-cloud-api-catalog.json)
+and an RFC 8288 `Link` header carrying `service-desc`, `service-doc`, `llms-txt`,
+`mcp-server` and `api-catalog` relations.
+
+## Links
+
+- Documentation — https://docs.hyperstack.cloud/docs/intro
+- API reference — https://docs.hyperstack.cloud/docs/api-reference/
+- Pricing — https://www.hyperstack.cloud/gpu-pricing
+- Status — https://status.hyperstack.cloud/
+- Release notes — https://docs.hyperstack.cloud/docs/release-notes
+- GitHub — https://github.com/NexGenCloud
+- Docs MCP server (anonymous, read-only) — https://docs.hyperstack.cloud/mcp
+- Company — https://www.nexgencloud.com/

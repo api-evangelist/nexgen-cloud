@@ -1,0 +1,139 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://docs.hyperstack.cloud/docs/api-reference/errors (error reference, transcribed)
+  enriched with a derivation over 4xx/5xx responses in
+  openapi/nexgen-cloud-hyperstack-openapi.json and openapi/nexgen-cloud-ai-studio-openapi.json
+docs: https://docs.hyperstack.cloud/docs/api-reference/errors
+format: vendor-envelope
+rfc9457: false
+note: >-
+  Hyperstack does NOT use RFC 9457 problem+json. Every error is application/json carrying
+  a fixed vendor envelope, and there are three variants of it across the estate, which an
+  agent has to branch on. The Hyperstack Core envelope is {status:false, message,
+  error_reason}; object storage uses the same field names under its own schema
+  (object_storage__ErrorResponse); AI Studio uses a DIFFERENT shape entirely
+  ({code, message, status}) where status is a string, not a boolean. The docs also warn
+  that a small number of responses omit error_reason - notably the legacy 5xx shape
+  {"message": "Internal Server Error"} and some pre-validation 400s - and instruct callers
+  to treat the missing key as bad_request.
+envelopes:
+- name: Hyperstack Core
+  schema: ErrorResponseModel
+  applies_to: /core/*, /billing/*, /pricebook/*
+  media_type: application/json
+  fields:
+  - {name: status, type: boolean, value_on_error: false, description: Whether the request succeeded.}
+  - {name: message, type: string, description: Human-readable description of what went wrong.}
+  - {name: error_reason, type: string, description: Machine-readable error category. May be absent.}
+  example: |
+    {
+      "status": false,
+      "message": "Insufficient balance to create the resource",
+      "error_reason": "bad_request"
+    }
+- name: Object Storage
+  schema: object_storage__ErrorResponse
+  applies_to: /object-storage/*
+  media_type: application/json
+  fields: [status, message, error_reason]
+  note: Same field names as Hyperstack Core under a separately-declared schema.
+- name: AI Studio
+  schema: ErrorSchema
+  applies_to: https://console.hyperstack.cloud/ai/api/v1
+  media_type: application/json
+  fields:
+  - {name: code, type: integer, description: HTTP status code associated with the error.}
+  - {name: message, type: string, description: Human-readable description of the error.}
+  - {name: status, type: string, description: Indicator string - NOT the boolean used by Hyperstack Core.}
+  note: >-
+    Divergent from the Core envelope. Client code that reads `status` as a boolean will
+    misinterpret every AI Studio error.
+problem_type_count: 10
+problem_types:
+- code: '400'
+  error_reason: bad_request
+  title: Bad request
+  when: Request body or parameters failed validation.
+  remediation: Check the request against the endpoint spec.
+  spec_occurrences: 196
+- code: '401'
+  error_reason: unauthorized
+  title: Unauthorized
+  when: API key missing, malformed, or revoked.
+  remediation: >-
+    Generate a new API key at https://console.hyperstack.cloud/api-keys and pass it as the
+    api_key header.
+  spec_occurrences: 195
+- code: '402'
+  error_reason: null
+  title: Payment required
+  when: Declared on one operation in the Hyperstack spec.
+  remediation: Not documented in the error reference; check account credit balance.
+  spec_occurrences: 1
+  note: Present in the contract but absent from the published error table.
+- code: '403'
+  error_reason: forbidden
+  title: Forbidden
+  when: >-
+    Key lacks permission for the operation, or the resource belongs to a different
+    environment.
+  remediation: Check the key's scope. Some operations require elevated permissions.
+  spec_occurrences: 59
+- code: '404'
+  error_reason: not_found
+  title: Not found
+  when: >-
+    Resource does not exist or is not visible to this key. IDs are REGION-SCOPED - an ID
+    from CANADA-1 is not visible to a key scoped to NORWAY-1.
+  remediation: Verify the ID with the corresponding List endpoint.
+  spec_occurrences: 153
+- code: '405'
+  error_reason: not_allowed
+  title: Method not allowed
+  when: HTTP method not supported on this path.
+  remediation: Check the spec for the correct method.
+  spec_occurrences: 16
+- code: '406'
+  error_reason: null
+  title: Not acceptable
+  when: A query parameter value is not acceptable.
+  remediation: Check the parameter's allowed values in the spec.
+  spec_occurrences: 4
+  note: The docs record no error_reason for this status.
+- code: '409'
+  error_reason: already_exist
+  title: Conflict
+  when: A resource with the same identifying attribute already exists.
+  remediation: Use a unique name, or delete the existing resource first.
+  spec_occurrences: 23
+  note: >-
+    Several resources expose a name-availability probe so this can be avoided before the
+    write - Check_VM_name_availability, Fetch_cluster_name_availability,
+    Fetch_volume_name_availability, Fetch_environment_name_availability,
+    Fetch_snapshot_name_availability.
+- code: '422'
+  error_reason: null
+  title: Unprocessable entity
+  when: Schema validation failure. Dominant error status on the AI Studio API.
+  remediation: Correct the request body against the endpoint schema.
+  spec_occurrences: 30
+  note: 9 occurrences in the Hyperstack spec, 21 in AI Studio. Not in the published error table.
+- code: '500'
+  error_reason: server_error
+  title: Internal server error
+  when: Hyperstack-side issue.
+  remediation: >-
+    Retry with backoff. If it persists, contact support@hyperstack.cloud. Note the legacy
+    shape {"message": "Internal Server Error"} carries no error_reason.
+  spec_occurrences: 200
+error_lookup_tool:
+  available: true
+  transport: mcp
+  server: https://docs.hyperstack.cloud/mcp
+  tool: lookup_error
+  note: >-
+    Unusually, the provider ships a machine callable error resolver. The anonymous Docs
+    MCP Server exposes lookup_error, which takes an HTTP status code, an error_reason
+    string or a raw error message and returns the cause and the fix. An agent can resolve
+    an error at runtime without a human reading the reference page.

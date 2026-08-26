@@ -1,0 +1,45 @@
+generated: '2026-08-26'
+method: generated
+source: >-
+  Generated from openapi/nexgen-cloud-hyperstack-openapi.json,
+  openapi/nexgen-cloud-ai-studio-openapi.json and the artifacts derived alongside them in
+  this repository. Every operationId referenced in every skill was verified to exist in a
+  published spec before the skill was written.
+note: >-
+  NexGen Cloud publishes no Agent Skills, AGENTS.md or skills manifest of its own - probed
+  docs.hyperstack.cloud/AGENTS.md, /agents.md, /skills and the GitHub org, all 404. These
+  are API Evangelist generations grounded in the provider's real contracts, not provider
+  artifacts.
+skill_count: 5
+skills:
+- name: nexgen-cloud-deploy-gpu-vm
+  file: nexgen-cloud-deploy-gpu-vm.md
+  api: Hyperstack API
+  summary: End-to-end GPU VM provisioning, from region and stock check through to ACTIVE.
+  operations: 13
+- name: nexgen-cloud-control-gpu-spend
+  file: nexgen-cloud-control-gpu-spend.md
+  api: Hyperstack API
+  summary: >-
+    Price before provisioning, read usage and credit, and choose correctly between stop,
+    hibernate and delete - which do NOT cost the same.
+  operations: 13
+- name: nexgen-cloud-provision-kubernetes-cluster
+  file: nexgen-cloud-provision-kubernetes-cluster.md
+  api: Hyperstack API
+  summary: Managed Kubernetes cluster and node-group provisioning, with the non-obvious constraints.
+  operations: 18
+- name: nexgen-cloud-ai-studio-inference
+  file: nexgen-cloud-ai-studio-inference.md
+  api: Hyperstack AI Studio API
+  summary: >-
+    OpenAI-compatible chat completions, image generation and knowledge-base grounding, plus
+    the different base URL, the different error envelope and the August 2026 withdrawal.
+  operations: 17
+- name: nexgen-cloud-discover-hyperstack-machine-readable
+  file: nexgen-cloud-discover-hyperstack-machine-readable.md
+  api: cross-cutting
+  summary: >-
+    Resolve every machine-readable surface from one HEAD request via the RFC 8288 Link
+    header and the RFC 9727 api-catalog.
+  operations: 0

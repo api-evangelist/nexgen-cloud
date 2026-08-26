@@ -1,0 +1,228 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://docs.hyperstack.cloud/docs/api-reference/introduction,
+  https://docs.hyperstack.cloud/docs/api-reference/authentication,
+  https://docs.hyperstack.cloud/docs/api-reference/pagination,
+  https://docs.hyperstack.cloud/docs/api-reference/errors,
+  https://docs.hyperstack.cloud/docs/api-reference/rate-limits,
+  https://docs.hyperstack.cloud/docs/virtual-machines/hibernation,
+  https://docs.hyperstack.cloud/docs/virtual-machines/snapshots,
+  https://docs.hyperstack.cloud/docs/billing/states-and-billing
+  - cross-derived against openapi/nexgen-cloud-hyperstack-openapi.json
+auth:
+  style: api-key-header
+  header: api_key
+  prefix: none
+  format: opaque
+  scope: >-
+    Personal to the user account; one key works across every environment and region in
+    the organization. There is no per-key scoping.
+  expiry: none - keys do not expire automatically
+  rotation: >-
+    Manual and non-atomic. Generating a new key does NOT revoke the old one; the old key
+    keeps working until explicitly deleted, so rotation is generate -> update clients ->
+    delete old.
+  oauth: false
+  docs: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  detail: authentication/nexgen-cloud-authentication.yml
+idempotency:
+  supported: false
+  header: null
+  scope: null
+  retention: null
+  evidence: >-
+    No Idempotency-Key (or any idempoten*) header, parameter or extension appears anywhere
+    in either published OpenAPI document, and the API reference has no idempotency section.
+  note: >-
+    Real consequence, not a paperwork gap: Create_Vms, Create_Cluster, Create_volume and
+    Initiate_Payment have no safe-retry key. A client that times out mid-write and retries
+    can provision - and be billed for - a second GPU virtual machine. The partial
+    mitigation the provider does offer is name uniqueness: several resources return 409
+    already_exist on a duplicate name, and expose a name-availability probe
+    (Check_VM_name_availability, Fetch_cluster_name_availability,
+    Fetch_volume_name_availability, Fetch_environment_name_availability,
+    Fetch_snapshot_name_availability). That is a collision check, not idempotency - it
+    does not make a retry return the original result.
+pagination:
+  style: page-number
+  page_param: page
+  page_starts_at: 1
+  page_size_params:
+  - {name: pageSize, applies_to: 'Core resource endpoints (/core/virtual-machines, /core/volumes, /core/environments, ...)'}
+  - {name: per_page, applies_to: Billing and Pricebook endpoints, and /core/images}
+  - {name: page_size, applies_to: Object Storage endpoints (/object-storage/*)}
+  response_shapes:
+  - name: Shape 1
+    applies_to: virtual machines, volumes, clusters, snapshots, marketplace deployments, most Core lists
+    fields: [status, message, page, page_size, count, '<collection>']
+    note: Pagination metadata precedes the data array.
+  - name: Shape 2
+    applies_to: environments, keypairs, firewalls, a handful of other Core endpoints
+    fields: [status, message, '<collection>', page, page_size, count]
+    note: >-
+      Same fields as Shape 1 but metadata FOLLOWS the data array, and page/page_size come
+      back null when omitted. Read fields by name, never by position.
+  - name: Shape 3
+    applies_to: all /object-storage/* endpoints
+    fields: ['<collection>', 'meta.count', 'meta.current_page', 'meta.total_pages']
+    note: No {status, message} envelope; different metadata field names.
+  termination: >-
+    Increment page until the returned array is shorter than the page size or empty. For
+    Shape 3, stop when meta.current_page >= meta.total_pages.
+  stability: >-
+    Explicitly NOT stable across concurrent writes. The docs state a list paginates over
+    live state at each request, so inserts/deletes between pages can duplicate or skip an
+    item; fetch all pages first if a stable view is required.
+  docs: https://docs.hyperstack.cloud/docs/api-reference/pagination
+  note: >-
+    Three page-size parameter names and three envelope shapes on one API is the largest
+    ergonomic tax here - a generic client cannot page Hyperstack without a per-endpoint-group
+    lookup table.
+field_expansion:
+  supported: false
+sparse_fields:
+  supported: false
+metadata:
+  supported: partial
+  note: VMs carry a label (Add_VM_Label, PUT /core/virtual-machines/{vm_id}/label). No general key/value metadata bag.
+request_tracing:
+  request_id_header: false
+  note: >-
+    No X-Request-Id / traceparent correlation header is documented or declared. The
+    `request_id` that appears in the spec is unrelated - it is the handle returned by
+    Request_VM_Logs and consumed by Get_VM_Logs for asynchronous console-log retrieval.
+versioning:
+  style: uri-path
+  current: v1
+  base_url: https://infrahub-api.nexgencloud.com/v1
+  ai_studio_base_url: https://console.hyperstack.cloud/ai/api/v1
+  note: >-
+    Single major version since launch. The SDK/spec line is versioned independently
+    (1.54.x) and is not reflected in the URI.
+  detail: lifecycle/nexgen-cloud-lifecycle.yml
+error_envelope:
+  format: vendor-envelope
+  rfc9457: false
+  shape: '{status: boolean, message: string, error_reason: string}'
+  variants: 3
+  detail: errors/nexgen-cloud-problem-types.yml
+rate_limit_signaling:
+  response_headers: none documented
+  exhaustion_status: 429
+  retry_after: not documented
+  detail: rate-limits/nexgen-cloud-rate-limits.yml
+async_operations:
+  supported: true
+  pattern: 202 Accepted + poll
+  note: >-
+    Long-running work is accepted and polled rather than awaited. Request_VM_Logs returns
+    202 with a request_id retrieved later via Get_VM_Logs; VM/cluster/volume creation
+    returns immediately with a resource in a transitional state (CREATING, HIBERNATING,
+    RESTORING) that the caller polls to ACTIVE.
+dry_run_mode:
+  supported: false
+  note: >-
+    No dry-run or validate-only parameter exists on any write operation. The closest
+    rehearsal surfaces are the name-availability probes and
+    Calculate_resource_billing_rate, which returns the hourly rate for a resource before
+    it is provisioned - a cost rehearsal, not a request rehearsal.
+reversibility:
+  applicable: true
+  grade: documented
+  summary: >-
+    Every state change on a Hyperstack VM has a documented inverse operation, and NONE of
+    them carry a stated time window - which is why this grades `documented` and not
+    `verified`. Destruction is the sharp edge: Delete_VM, Delete_volume, Delete_cluster
+    and Delete_snapshot are all documented as permanent, with no undelete operation, no
+    soft-delete state and no retention period anywhere in the docs or the contract. An
+    agent that deletes a Hyperstack resource cannot get it back. The recoverable path is
+    to snapshot first (Create_Snapshot_for_VM) and restore later (Restore_snapshot), but
+    the provider states no retention guarantee on snapshots either.
+  surfaces:
+  - write: Hibernate_VM
+    action: Hibernate a virtual machine
+    reversal: Restore_VM_from_hibernation
+    reversal_kind: restore
+    window: not stated
+    window_source: null
+    docs: https://docs.hyperstack.cloud/docs/virtual-machines/hibernation
+    note: >-
+      State is preserved on persistent storage indefinitely while the root disk continues
+      to be billed, so there is no expiry - but the provider never says so, and by default
+      the attached public IP is RELEASED and a different one assigned on restore unless
+      retain_ip=true was passed. The reversal is not identity-preserving.
+  - write: Stop_VM
+    action: Stop a running virtual machine
+    reversal: Start_VM
+    reversal_kind: restart
+    window: not stated
+    docs: https://docs.hyperstack.cloud/docs/billing/states-and-billing
+    note: SHUTOFF continues to bill all resources - reversible, but not a cost saving.
+  - write: Create_Snapshot_for_VM
+    action: Snapshot a virtual machine
+    reversal: Restore_snapshot
+    reversal_kind: restore
+    window: not stated
+    docs: https://docs.hyperstack.cloud/docs/virtual-machines/snapshots
+    note: >-
+      Snapshots are capped at 100 GB, one at a time per VM, and unsupported for VMs in a
+      Kubernetes cluster or deployed from a bootable volume. No stated retention period.
+  - write: Attach_volumes_to_VM
+    action: Attach block storage volumes
+    reversal: Detach_volumes_from_VM
+    reversal_kind: detach
+    window: not stated
+  - write: Attach_public_IP_to_VM
+    action: Attach a floating public IP
+    reversal: Detach_public_IP_from_VM
+    reversal_kind: detach
+    window: not stated
+  - write: Attach_firewalls_to_VM
+    action: Attach firewall rule sets to a VM
+    reversal: Delete_firewall_rule_for_VM
+    reversal_kind: remove
+    window: not stated
+  - write: Create_firewall_rule_for_VM
+    action: Add a firewall rule to a VM
+    reversal: Delete_firewall_rule_for_VM
+    reversal_kind: remove
+    window: not stated
+  - write: Add_rule_to_firewall
+    action: Add a rule to a firewall object
+    reversal: Delete_rule_from_firewall
+    reversal_kind: remove
+    window: not stated
+  - write: Create_Node_Group
+    action: Add a Kubernetes node group
+    reversal: Delete_Node_Group
+    reversal_kind: delete
+    window: not stated
+  irreversible:
+  - operation: Delete_VM
+    note: '"Permanently deletes a virtual machine." No undelete, no retention window.'
+  - operation: Delete_volume
+    note: Permanent. Back up to a Shared Storage Volume first.
+  - operation: Delete_cluster
+    note: Permanent. The API MCP tool delete_cluster requires explicit confirmation.
+  - operation: Delete_snapshot
+    note: Permanent.
+  - operation: Delete_environment
+    note: Permanent.
+  - operation: Delete_API_Key
+    note: >-
+      Permanent and immediate - this is the revocation path, and the only atomic step in
+      key rotation.
+  - operation: Initiate_Payment
+    note: >-
+      No refund, void or reverse operation exists in the contract. Payments are one-way
+      from the API's point of view.
+  ephemeral_data_warning: >-
+    The docs warn that ephemeral disk data is lost on hibernate AND on delete; it must be
+    copied to a Shared Storage Volume beforehand. There is no reversal for that loss.
+cross_references:
+  errors: errors/nexgen-cloud-problem-types.yml
+  lifecycle: lifecycle/nexgen-cloud-lifecycle.yml
+  authentication: authentication/nexgen-cloud-authentication.yml
+  rate_limits: rate-limits/nexgen-cloud-rate-limits.yml
+  webhooks: asyncapi/nexgen-cloud-webhooks.yml

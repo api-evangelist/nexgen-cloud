@@ -1,0 +1,260 @@
+# Hyperstack
+
+> Hyperstack is a cloud GPU platform by Nexgen Cloud, offering on-demand access to high-performance GPUs for AI, ML, and computational workloads. Deploy GPU/CPU virtual machines and Kubernetes clusters across three regions (CANADA-1, NORWAY-1, US-1), with block storage volumes, S3-compatible object storage, and high-speed networking. The platform provides SDKs for Python, Go, JavaScript, and Terraform, as well as an MCP server for AI tool integration. AI Studio is Hyperstack's inference platform: an OpenAI-compatible API over a catalog of text and image models, with playgrounds and knowledge bases.
+
+- The REST API base URL is `https://infrahub-api.nexgencloud.com/v1`
+- The web console is at `https://console.hyperstack.cloud`
+- Authentication uses API keys passed via the `api_key` header
+- The documentation MCP server is at `https://docs.hyperstack.cloud/mcp` (Streamable HTTP, read-only search over these pages, no authentication). Add it under the name `hyperstack-docs` with your client's own MCP configuration, or with `npx add-mcp https://docs.hyperstack.cloud/mcp --name hyperstack-docs`; per-client commands and install links: https://docs.hyperstack.cloud/docs/libraries/docs-mcp/
+
+## Getting Started
+
+- [Home](https://docs.hyperstack.cloud/docs/intro): Documentation landing page with links to all sections
+- [Getting Started](https://docs.hyperstack.cloud/docs/getting-started): Deploy your first VM and connect via SSH, full onboarding walkthrough
+
+## GPU Cloud
+
+### Hardware
+
+- [Hardware Index](https://docs.hyperstack.cloud/docs/hardware): GPU and CPU hardware index: flavors, availability, compatibility, and dedicated cluster requests
+- [Flavors](https://docs.hyperstack.cloud/docs/hardware/flavors): GPU and CPU configurations, specs, and regional availability
+- [Flavor Features and Restrictions](https://docs.hyperstack.cloud/docs/hardware/flavor-labels): Feature matrix for hibernation, snapshots, bootable volumes, hard reboot, and network optimization by flavor configuration
+- [Flavors for Parallel Workloads](https://docs.hyperstack.cloud/docs/hardware/parallel-workloads): Zero oversubscription, NUMA-aware scheduling, and CPU pinning for x4 and x8 GPU flavors
+- [GPU Compatibility](https://docs.hyperstack.cloud/docs/hardware/gpu-driver-compability): CUDA, driver, and OS compatibility reference
+- [GPU Stock Information](https://docs.hyperstack.cloud/docs/hardware/gpu-stock-information): Real-time GPU availability via API and UI
+- [Large Root Disk Flavors](https://docs.hyperstack.cloud/docs/hardware/large-root-disk-flavors): API-only flavors with larger persistent root disks
+- [Confidential Computing](https://docs.hyperstack.cloud/docs/hardware/confidential-computing): TEE-based security overview (under development)
+- [Request Dedicated GPU Cluster](https://docs.hyperstack.cloud/docs/hardware/gpu-cluster-request): Enterprise dedicated GPU cluster requests
+
+### Virtual Machines
+
+- [Virtual Machines Index](https://docs.hyperstack.cloud/docs/virtual-machines): Virtual machines documentation index: images, snapshots, hibernation, spot VMs, and lifecycle management
+- [Virtual Machines Overview](https://docs.hyperstack.cloud/docs/virtual-machines/virtual-machine-features): Complete guide to deploying, configuring, connecting to, and managing GPU and CPU virtual machines across their lifecycle
+- [Operating System Images](https://docs.hyperstack.cloud/docs/virtual-machines/images): Pre-installed OS images with CUDA and driver variants
+- [Custom Images](https://docs.hyperstack.cloud/docs/virtual-machines/custom-images): Create reusable images from VM snapshots
+- [Snapshots](https://docs.hyperstack.cloud/docs/virtual-machines/snapshots): VM snapshot creation for backup and versioning
+- [Hibernation](https://docs.hyperstack.cloud/docs/virtual-machines/hibernation): Pause VMs to reduce costs while retaining state
+- [Spot Virtual Machines](https://docs.hyperstack.cloud/docs/virtual-machines/spot): Low-cost interruptible VMs for non-critical workloads
+- [VM Status and State Management](https://docs.hyperstack.cloud/docs/virtual-machines/manage-vm-state): VM state transitions and cost implications
+- [Change VM Flavor](https://docs.hyperstack.cloud/docs/virtual-machines/change-vm-flavor): Change a VM's hardware configuration via snapshot and redeploy workflow
+- [Cloud-Init Configuration](https://docs.hyperstack.cloud/docs/virtual-machines/initialization-configuration): Automate VM setup at boot with cloud-config scripts
+- [Provisioning Profiles](https://docs.hyperstack.cloud/docs/virtual-machines/provisioning-profiles): Save and reuse VM deployment configurations
+- [Console Logs](https://docs.hyperstack.cloud/docs/virtual-machines/console-logs): Access VM boot and initialization logs for troubleshooting
+- [Performance Metrics](https://docs.hyperstack.cloud/docs/virtual-machines/vm-performance-metrics-and-events-history): Monitor CPU, memory, disk I/O, and network with event history
+
+### Kubernetes
+
+- [Kubernetes Index](https://docs.hyperstack.cloud/docs/kubernetes): On-demand Kubernetes cluster provisioning
+- [Kubernetes Getting Started](https://docs.hyperstack.cloud/docs/kubernetes/getting-started): Deploy and connect to your first Kubernetes cluster in the console
+- [Clusters via UI](https://docs.hyperstack.cloud/docs/kubernetes/kubernetes-ui): Deploy and manage clusters through the web console
+- [Clusters via API](https://docs.hyperstack.cloud/docs/kubernetes/kubernetes-guide): Create, connect to, scale, and delete Kubernetes clusters via the API
+- [Upgrade Kubernetes Version](https://docs.hyperstack.cloud/docs/kubernetes/upgrade-kubernetes-version): Migrate workloads to a newer Kubernetes version by deploying a fresh cluster (no in-place upgrades)
+- [CSI Driver](https://docs.hyperstack.cloud/docs/kubernetes/csi-driver): Persistent volume provisioning via Helm chart
+- [Ingress for K8s](https://docs.hyperstack.cloud/docs/kubernetes/ingress-k8s): Configure ingress with wildcard domains
+- [Firewall Rules for K8s](https://docs.hyperstack.cloud/docs/kubernetes/firewall-rules-k8s): Required firewall rules for cluster node communication
+
+### Storage
+
+- [Storage Index](https://docs.hyperstack.cloud/docs/storage): Storage documentation index: volumes, object storage, NVMe, ephemeral, and high-performance file storage
+- [Volumes Index](https://docs.hyperstack.cloud/docs/storage/volumes): Volumes documentation index: shared storage, bootable volumes, creation, mounting, and lifecycle
+- [Root Disk](https://docs.hyperstack.cloud/docs/storage/local-nvme): Local NVMe storage for OS and system files
+- [Ephemeral Storage](https://docs.hyperstack.cloud/docs/storage/ephemeral): Temporary runtime storage with data loss prevention strategies
+- [Shared Storage Volumes](https://docs.hyperstack.cloud/docs/storage/volumes/shared-storage-volumes): Network SSD block storage replicated across multiple servers for data durability
+- [Bootable Volumes](https://docs.hyperstack.cloud/docs/storage/volumes/bootable-volumes): Pre-configured volumes with OS images for VM deployment
+- [Creating a Volume](https://docs.hyperstack.cloud/docs/storage/volumes/creating-a-volume): Step-by-step volume creation
+- [Mounting a Volume](https://docs.hyperstack.cloud/docs/storage/volumes/mounting-volume): Mount and format volumes with filesystem setup
+- [Detaching a Volume](https://docs.hyperstack.cloud/docs/storage/volumes/detaching-a-volume): Detach volumes from VMs without deleting them, including hibernation and deletion guidance
+- [Volume States and Billing](https://docs.hyperstack.cloud/docs/storage/volumes/volume-states): Volume lifecycle states, available actions in each state, and billing implications
+- [Reserved Volumes](https://docs.hyperstack.cloud/docs/storage/volumes/reserved-volumes): Causes, prevention, and recovery for the RESERVED volume state
+- [Move Volume Between Environments](https://docs.hyperstack.cloud/docs/storage/volumes/update-a-volumes-environment): Reassign volumes across environments in the same region
+- [Object Storage](https://docs.hyperstack.cloud/docs/storage/object-storage): S3-compatible object storage for datasets, logs, and backups
+- [High-Performance File Storage](https://docs.hyperstack.cloud/docs/storage/high-performance-file): HPC file storage for intensive workloads (in development)
+
+### Networking
+
+- [Networking Index](https://docs.hyperstack.cloud/docs/network): Networking documentation index: SSH, firewalls, public IPs, bastion servers, and network types
+- [SSH Access](https://docs.hyperstack.cloud/docs/network/ssh): Create SSH keys and connect to VMs
+- [Connecting to Ubuntu VM](https://docs.hyperstack.cloud/docs/network/ubuntu-ssh): SSH guide for Ubuntu with firewall setup
+- [SSH for Multiple Users](https://docs.hyperstack.cloud/docs/network/ssh-multiple-users): Add multiple SSH public keys to a key pair for multi-user VM access
+- [Firewalls](https://docs.hyperstack.cloud/docs/network/firewalls): Ingress and egress firewall rules with protocol support
+- [Public IP Addresses](https://docs.hyperstack.cloud/docs/network/public-ip): Managing public vs private IPs, assignment, and billing
+- [Bastion Servers](https://docs.hyperstack.cloud/docs/network/bastion-servers): Secure bastion topology for accessing internal resources
+- [Network Types](https://docs.hyperstack.cloud/docs/network/network-types): Entry-level, standard, high-speed Ethernet with SR-IOV, and InfiniBand network types and which GPU models support each
+- [High-Speed Networking](https://docs.hyperstack.cloud/docs/network/high-speed-networking): 350 Gbps inter-VM bandwidth with SR-IOV
+
+### Concepts
+
+- [Resource Management Index](https://docs.hyperstack.cloud/docs/resource-management): Resource management documentation index: environments, regions, dashboard, callbacks, and organization
+- [Concepts Index](https://docs.hyperstack.cloud/docs/concepts): Platform fundamentals covering environments, regions, dashboard, and callbacks
+- [Dashboard](https://docs.hyperstack.cloud/docs/resource-management/dashboard): Resource overview with active VMs, volumes, and hourly costs
+- [Environments](https://docs.hyperstack.cloud/docs/resource-management/environments): Regional resource containers for organizing infrastructure
+- [Regions](https://docs.hyperstack.cloud/docs/resource-management/regions): CANADA-1, NORWAY-1, and US-1 data center locations and capabilities
+- [Callback URLs](https://docs.hyperstack.cloud/docs/resource-management/callbacks): Webhook notifications for VM and volume state changes
+- [API Keys](https://docs.hyperstack.cloud/docs/resource-management/api-keys): Create, rotate, and delete the user-scoped credentials that authenticate Hyperstack and AI Studio API requests
+
+## AI Studio
+
+- [AI Studio Index](https://docs.hyperstack.cloud/docs/ai-studio): AI Studio documentation index: inference on a catalog of text and image models through an OpenAI-compatible API, playgrounds, knowledge bases, integrations, and billing
+- [Getting Started with AI Studio](https://docs.hyperstack.cloud/docs/ai-studio/getting-started): Decision hub that routes you to the right quickstart based on what you want to do first
+- [Chat with a Model](https://docs.hyperstack.cloud/docs/ai-studio/getting-started/run-a-model): Quickstart for chatting with a hosted model in the Text Playground
+- [Generate Images](https://docs.hyperstack.cloud/docs/ai-studio/getting-started/generate-images): Quickstart for generating and editing images in the Image Playground
+- [Get Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started/api): Quickstart for the OpenAI-compatible API: create a key, make a request, and explore the reference
+- [Models](https://docs.hyperstack.cloud/docs/ai-studio/models/models-overview): The models available for inference, by modality (text-to-text, image-to-text, text-to-image, image-to-image), with pricing and how to manage them from the Model Catalog
+- [Inference & Playground](https://docs.hyperstack.cloud/docs/ai-studio/playground): Interactive environments for testing text and image model inference, with parameter tuning, side-by-side comparison, and API-ready requests
+- [Text Playground](https://docs.hyperstack.cloud/docs/ai-studio/playground/text-playground): Chat-style interface for testing text-to-text and image-to-text (vision) models, with image attachments, conversation history, system prompts, parameter tuning, and side-by-side comparison
+- [Image Playground](https://docs.hyperstack.cloud/docs/ai-studio/playground/image-playground): Workspace for generating images from text prompts and editing images with vision models, with side-by-side comparison and API-ready requests
+- [Knowledge Bases](https://docs.hyperstack.cloud/docs/ai-studio/knowledge-bases): Index your own text and Markdown files so the Text Playground answers from them and cites the passages used
+- [AI Studio Billing](https://docs.hyperstack.cloud/docs/ai-studio/billing): Token-based pricing for inference and per-patch pricing for image generation
+- [Integrations](https://docs.hyperstack.cloud/docs/ai-studio/integrations): Connect AI Studio to developer tools, editors, coding agents, and AI frameworks using the OpenAI-compatible API
+- [Claude Code](https://docs.hyperstack.cloud/docs/ai-studio/integrations/claude-code): Route Claude Code requests through a local proxy to any model in the AI Studio catalog
+- [n8n](https://docs.hyperstack.cloud/docs/ai-studio/integrations/n8n): Connect n8n workflow automation to AI Studio using the built-in OpenAI-compatible AI Agent node
+- [OpenCode](https://docs.hyperstack.cloud/docs/ai-studio/integrations/opencode): Use AI Studio models inside OpenCode from the command line or OpenCode Studio
+- [LobeChat](https://docs.hyperstack.cloud/docs/ai-studio/integrations/lobechat): Deploy a self-hosted LobeChat UI backed by AI Studio models
+- [LiteLLM](https://docs.hyperstack.cloud/docs/ai-studio/integrations/litellm): Route requests to AI Studio models using the LiteLLM SDK or proxy
+- [Zed Editor](https://docs.hyperstack.cloud/docs/ai-studio/integrations/zed-editor): Configure Zed Editor to use AI Studio as a custom AI provider for AI-assisted coding
+- [RooCode](https://docs.hyperstack.cloud/docs/ai-studio/integrations/roocode): Configure RooCode in VS Code to use AI Studio models via the OpenAI-compatible API
+- [Kilo Code](https://docs.hyperstack.cloud/docs/ai-studio/integrations/kilo-code): Connect Kilo Code in VS Code to AI Studio using the OpenAI-compatible API
+- [Cursor](https://docs.hyperstack.cloud/docs/ai-studio/integrations/cursor): Connect Cursor to AI Studio using the OpenAI-compatible API endpoint
+- [OpenWebUI](https://docs.hyperstack.cloud/docs/ai-studio/integrations/openwebui): Integrate OpenWebUI with AI Studio using the OpenAI-compatible API
+
+## Build
+
+### Tutorials
+
+- [Tutorials Index](https://docs.hyperstack.cloud/docs/tutorials): Step-by-step guides for GPU workloads and platform features
+- [Jupyter Notebook](https://docs.hyperstack.cloud/docs/tutorials/jupyter-notebook): Deploy and run Jupyter Notebooks on GPU virtual machines
+- [Docker Support](https://docs.hyperstack.cloud/docs/tutorials/docker-support): Run GPU-accelerated Docker containers on a virtual machine, with cloud-init automation
+- [Ollama](https://docs.hyperstack.cloud/docs/tutorials/ollama): Run open-source LLMs on a GPU virtual machine with an OpenAI-compatible API
+- [Open WebUI](https://docs.hyperstack.cloud/docs/tutorials/open-webui): Add a browser-based chat interface to an Ollama model on a GPU virtual machine
+- [vLLM](https://docs.hyperstack.cloud/docs/tutorials/vllm): Serve open-source LLMs behind an OpenAI-compatible API on a single GPU virtual machine
+- [Multi-GPU vLLM](https://docs.hyperstack.cloud/docs/tutorials/vllm-multi-gpu): Serve a large model across multiple GPUs on one virtual machine with vLLM tensor parallelism
+- [LLM on Kubernetes](https://docs.hyperstack.cloud/docs/tutorials/llm-on-k8s): Serve a large language model across a multi-node Kubernetes cluster with vLLM
+- [Fine-Tuning LLMs with Unsloth](https://docs.hyperstack.cloud/docs/tutorials/fine-tuning-unsloth): Fine-tune Qwen3-8B with QLoRA on a GPU virtual machine using Unsloth
+- [Ephemeral Drive Mounting](https://docs.hyperstack.cloud/docs/tutorials/ephemeral-drive-mount): Customize ephemeral drive mount points and filesystems via cloud-init
+
+### Hyperstack MCP Servers
+
+- [Hyperstack MCP Servers Overview](https://docs.hyperstack.cloud/docs/libraries/mcp): Choose between the two Hyperstack MCP servers, the read-only Docs MCP Server and the resource-managing API MCP Server
+
+### API MCP Server
+
+- [API MCP Server Index](https://docs.hyperstack.cloud/docs/libraries/mcp-server): Create and manage Hyperstack resources (VMs, clusters, volumes, billing) through natural language; requires a Hyperstack API key
+- [Installation](https://docs.hyperstack.cloud/docs/libraries/mcp-server/installation): Complete installation guide for the MCP server
+- [Configuration](https://docs.hyperstack.cloud/docs/libraries/mcp-server/configuration): Configure connection settings, authentication, and environment options
+- [Quickstart](https://docs.hyperstack.cloud/docs/libraries/mcp-server/mcp-server-guide): Fastest way to get started: end-to-end walkthrough connecting the MCP server to Open WebUI
+- [Tools Reference](https://docs.hyperstack.cloud/docs/libraries/mcp-server/mcp-tools-reference): Available MCP tools and API reference
+- [Claude Desktop Setup](https://docs.hyperstack.cloud/docs/libraries/mcp-server/claude-desktop-setup): Configure MCP with Claude Desktop
+- [Troubleshooting](https://docs.hyperstack.cloud/docs/libraries/mcp-server/troubleshooting): Common issues and solutions
+
+### Docs MCP Server
+
+- [Docs MCP Server Index](https://docs.hyperstack.cloud/docs/libraries/docs-mcp): Read-only MCP server that answers Hyperstack questions from the documentation and returns citation links; hosted at docs.hyperstack.cloud/mcp, no API key required
+- [Tools Reference](https://docs.hyperstack.cloud/docs/libraries/docs-mcp/tools-reference): The five read-only tools (search_docs, get_page, list_sections, lookup_error, get_flavor_info) with parameters and example prompts
+
+### Agent-Friendly Docs
+
+- [Agent-Friendly Documentation](https://docs.hyperstack.cloud/docs/libraries/agent-docs): Machine-readable access to these docs: the hosted Docs MCP Server, the Copy page button, pages as Markdown by .txt path or Accept header, the llms.txt page index, both OpenAPI specifications with the RFC 9727 catalog, and the RFC 8288 Link discovery header
+
+### SDKs and Libraries
+
+- [Libraries Index](https://docs.hyperstack.cloud/docs/libraries): SDKs and libraries documentation index: Terraform, Python, JavaScript, and Go
+- [Terraform Provider](https://docs.hyperstack.cloud/docs/libraries/terraform): Infrastructure-as-code with HashiCorp Terraform (alpha)
+- [Python SDK](https://docs.hyperstack.cloud/docs/libraries/python): Programmatic resource management (alpha)
+- [JavaScript SDK](https://docs.hyperstack.cloud/docs/libraries/javascript): JavaScript/TypeScript SDK (alpha)
+- [Go SDK](https://docs.hyperstack.cloud/docs/libraries/go): Go SDK for cloud applications (alpha)
+
+## Account Management
+
+- [Organization](https://docs.hyperstack.cloud/docs/resource-management/organization): Team member management, roles, and permissions
+- [Email Notification Preferences](https://docs.hyperstack.cloud/docs/resource-management/email-notifications): Choose which email notifications you receive, with required and optional categories and a master opt-out switch
+- [Two-Factor Authentication](https://docs.hyperstack.cloud/docs/tutorials/two-factor-authentication): Enable and manage 2FA on your Hyperstack account using an authenticator app
+
+### Billing
+
+- [Billing Index](https://docs.hyperstack.cloud/docs/billing): Billing documentation index: policies, pricing, contracts, VM billing states, snapshots, and vouchers
+- [Billing Policies](https://docs.hyperstack.cloud/docs/billing/billing-policies): Account types, billing cycles, payment methods, and usage tracking
+- [Resource Pricing](https://docs.hyperstack.cloud/docs/billing/pricebook): How GPUs, CPUs, RAM, storage, and public IPs are priced and billed, and where to find current rates
+- [Contracts](https://docs.hyperstack.cloud/docs/billing/contracts): Long-term GPU reservation with discounts and expiration policies
+- [VM States and Billing](https://docs.hyperstack.cloud/docs/billing/states-and-billing): Cost implications for ACTIVE, SHUTOFF, HIBERNATED, and DELETED states
+- [Snapshot Billing](https://docs.hyperstack.cloud/docs/billing/snapshots): Snapshot storage pricing based on Cloud-SSD rates
+- [Vouchers](https://docs.hyperstack.cloud/docs/billing/vouchers): Redeem credit vouchers to add balance to your account
+- [Contract Billing Behavior](https://docs.hyperstack.cloud/docs/billing/contract-billing-resource-behavior): Resource billing under contract terms
+
+## Help
+
+- [FAQ](https://docs.hyperstack.cloud/docs/faq): Answers to common questions about VMs, billing, GPUs, networking, and storage
+- [Shared Responsibility Model](https://docs.hyperstack.cloud/docs/resource-management/shared-responsibility-model): Security responsibilities split between the platform and the operator
+- [Support](https://docs.hyperstack.cloud/docs/support): Support ticket portal and service status page
+- [Security Advisory: Copy Fail (CVE-2026-31431)](https://docs.hyperstack.cloud/docs/support/cve-2026-31431): Linux kernel privilege-escalation flaw and Hyperstack VM mitigation steps
+
+## API Reference
+
+- [API Introduction](https://docs.hyperstack.cloud/docs/api-reference/introduction): REST API overview, base URL, request format, and conventions
+- [Quickstart](https://docs.hyperstack.cloud/docs/api-reference/quickstart): Deploy and connect to your first GPU VM using the API
+- [Authentication](https://docs.hyperstack.cloud/docs/api-reference/authentication): Generate, use, and rotate API keys
+- [Errors](https://docs.hyperstack.cloud/docs/api-reference/errors): HTTP status codes, response shape, and common error causes
+- [Pagination](https://docs.hyperstack.cloud/docs/api-reference/pagination): How to page through list endpoints
+- [Rate Limits](https://docs.hyperstack.cloud/docs/api-reference/rate-limits): Rate limits per endpoint and backoff guidance
+
+### API Endpoints
+
+- [Virtual Machine](https://docs.hyperstack.cloud/docs/api-reference/virtual-machine): Create, start, stop, hibernate, and delete VMs
+- [VNC URL](https://docs.hyperstack.cloud/docs/api-reference/vnc-url): Request a browser-accessible VNC console URL for a VM
+- [Flavor](https://docs.hyperstack.cloud/docs/api-reference/flavor): List GPU and CPU flavors available in each region
+- [GPU](https://docs.hyperstack.cloud/docs/api-reference/gpu): List GPU models and regional availability
+- [Stock](https://docs.hyperstack.cloud/docs/api-reference/stock): Real-time GPU stock per model and region
+- [Image](https://docs.hyperstack.cloud/docs/api-reference/image): List available OS images and manage custom images
+- [Snapshots](https://docs.hyperstack.cloud/docs/api-reference/snapshots): Create and manage VM snapshots
+- [Template](https://docs.hyperstack.cloud/docs/api-reference/template): Create and manage reusable Marketplace VM templates
+- [Deployment](https://docs.hyperstack.cloud/docs/api-reference/deployment): Execute a Marketplace template to provision infrastructure
+- [Profile](https://docs.hyperstack.cloud/docs/api-reference/profile): Save and manage reusable VM deployment configurations
+- [User Detail Choice](https://docs.hyperstack.cloud/docs/api-reference/user-detail-choice): Retrieve default flavor and image for new VM deployments
+- [Kubernetes Clusters](https://docs.hyperstack.cloud/docs/api-reference/clusters): Provision and manage Kubernetes clusters and node groups
+- [Volume](https://docs.hyperstack.cloud/docs/api-reference/volume): Create, attach, detach, and delete block storage volumes
+- [Volume Attachment](https://docs.hyperstack.cloud/docs/api-reference/volume-attachment): Attach and detach volumes on a VM
+- [Buckets](https://docs.hyperstack.cloud/docs/api-reference/buckets): Manage S3-compatible object storage buckets
+- [Access Keys](https://docs.hyperstack.cloud/docs/api-reference/access-keys): Manage object storage access key credentials
+- [Object Storage Regions](https://docs.hyperstack.cloud/docs/api-reference/regions): List regions where object storage buckets can be deployed
+- [Firewalls](https://docs.hyperstack.cloud/docs/api-reference/firewalls): Create firewall rule sets and attach them to VMs
+- [Floating IP](https://docs.hyperstack.cloud/docs/api-reference/floating-ip): Attach and detach public IP addresses on VMs
+- [Keypair](https://docs.hyperstack.cloud/docs/api-reference/keypair): Manage SSH key pairs for VM access
+- [Environment](https://docs.hyperstack.cloud/docs/api-reference/environment): Create and manage environments for grouping resources within a region
+- [Region](https://docs.hyperstack.cloud/docs/api-reference/region): List available regions and their supported capabilities
+- [Callbacks](https://docs.hyperstack.cloud/docs/api-reference/callbacks): Configure webhook callbacks for VM and volume state changes
+- [Dashboard](https://docs.hyperstack.cloud/docs/api-reference/dashboard): Retrieve an aggregated view of active resources and hourly costs
+- [Auth](https://docs.hyperstack.cloud/docs/api-reference/auth): Look up the authenticated user, switch active organization, and manage MFA
+- [API Key](https://docs.hyperstack.cloud/docs/api-reference/api-key): Create and delete API keys
+- [Organization](https://docs.hyperstack.cloud/docs/api-reference/organization): Retrieve and update organization metadata and manage members
+- [Invite](https://docs.hyperstack.cloud/docs/api-reference/invite): Send and manage organization invites
+- [RBAC Role](https://docs.hyperstack.cloud/docs/api-reference/rbac-role): Create and manage custom roles from policies and permissions
+- [Permission](https://docs.hyperstack.cloud/docs/api-reference/permission): List permissions available for building custom roles
+- [Policy](https://docs.hyperstack.cloud/docs/api-reference/policy): List policies available for building custom roles
+- [Assigning Member Role](https://docs.hyperstack.cloud/docs/api-reference/assigning-member-role): Assign or revoke a role on an organization member
+- [User Permission](https://docs.hyperstack.cloud/docs/api-reference/user-permission): List permissions granted to a specific user
+- [Consent](https://docs.hyperstack.cloud/docs/api-reference/user-consent): Review and manage consent decisions recorded on your account, such as auto top-up authorization
+- [Email Preferences](https://docs.hyperstack.cloud/docs/api-reference/email-preferences): Read and update which email notifications you receive, individually or all at once
+- [Billing](https://docs.hyperstack.cloud/docs/api-reference/billing): Retrieve usage records and billing history
+- [Pricebook](https://docs.hyperstack.cloud/docs/api-reference/pricebook): Query resource pricing by flavor and region
+- [Vouchers](https://docs.hyperstack.cloud/docs/api-reference/vouchers): Redeem credit vouchers
+- [Calculate](https://docs.hyperstack.cloud/docs/api-reference/calculate): Return the hourly billing rate for a specific resource
+- [Credit](https://docs.hyperstack.cloud/docs/api-reference/credit): Retrieve account credit balance and low-balance threshold
+- [Contract](https://docs.hyperstack.cloud/docs/api-reference/customer-contract): Look up long-term GPU reservation contracts and their terms
+- [Payment](https://docs.hyperstack.cloud/docs/api-reference/payment): Initiate payments and retrieve receipts
+- [Billing Information](https://docs.hyperstack.cloud/docs/api-reference/user): Set and update account billing details for invoicing
+- [Alive](https://docs.hyperstack.cloud/docs/api-reference/alive): Liveness check for the billing API
+- [Health](https://docs.hyperstack.cloud/docs/api-reference/health): Liveness check for the object storage API
+
+## AI Studio API Reference
+
+- [Base Models](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/base-models): List available base models, pricing, and details
+- [Inference](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference): OpenAI-compatible chat completions against any model in the catalog
+- [Conversations](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/conversations): Create conversations, send messages with image attachments, rename, and retrieve message history
+- [Knowledge Bases](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/knowledge-bases): Create knowledge bases, upload and index text and Markdown files, track indexing, and list knowledge bases available for grounding
+- [Models](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/models): List the models available to your account
+- [System Prompts](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/system-prompts): Create and manage reusable system prompt templates
+- [Image Generation](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/image-generation): Generate images from text or from a source image
+- [Overview](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/overview): Organization-level summary and resource usage metrics
+
+## Optional
+
+- [Release Notes](https://docs.hyperstack.cloud/docs/release-notes): Platform release history

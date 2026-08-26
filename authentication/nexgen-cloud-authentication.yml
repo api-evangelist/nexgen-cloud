@@ -1,0 +1,29 @@
+generated: '2026-08-26'
+method: derived
+source: openapi/nexgen-cloud-ai-studio-openapi.json, openapi/nexgen-cloud-hyperstack-openapi.json,
+  openapi/nexgen-cloud-infrahub-api-openapi.json
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: apiKey
+  type: apiKey
+  in: header
+  parameter: api_key
+  description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g.,
+    `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys).
+    The key is personal to your user account and works across every environment and region in
+    your organization.'
+  sources:
+  - openapi/nexgen-cloud-ai-studio-openapi.json
+  - openapi/nexgen-cloud-hyperstack-openapi.json
+  - openapi/nexgen-cloud-infrahub-api-openapi.json
+- name: accessToken
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: Bearer Token
+  sources:
+  - openapi/nexgen-cloud-infrahub-api-openapi.json

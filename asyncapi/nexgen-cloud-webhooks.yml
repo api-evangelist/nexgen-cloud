@@ -1,0 +1,116 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://docs.hyperstack.cloud/docs/resource-management/callbacks and
+  https://docs.hyperstack.cloud/docs/api-reference/callbacks, cross-derived against the
+  Callbacks tag in openapi/nexgen-cloud-hyperstack-openapi.json
+asyncapi_published: false
+asyncapi_note: >-
+  NexGen Cloud publishes NO AsyncAPI document. Probed /asyncapi.yaml, /asyncapi.json and
+  the GitHub org; nothing. What it does publish is a complete, named webhook event catalog
+  in prose plus six REST operations for managing subscriptions, so this artifact captures
+  the webhook surface faithfully rather than authoring an AsyncAPI on the provider's behalf.
+surface: webhooks
+name: Hyperstack Callback URLs
+docs: https://docs.hyperstack.cloud/docs/resource-management/callbacks
+subscription_model:
+  style: per-resource
+  note: >-
+    Unusual shape. There is no account-level webhook endpoint and no event-type
+    subscription list. A callback URL is attached to ONE virtual machine or ONE volume,
+    and that resource then posts its own events there. A fleet of 200 VMs means 200
+    attach calls, and a VM created without a callback needs a follow-up attach. A URL can
+    also be set inline at VM deployment time via the console.
+  transport: HTTP POST to the subscriber URL
+  delivery_guarantees: not documented
+  retry_policy: not documented
+  signing: not documented
+  secret: not documented
+  replay: not available
+  gap_note: >-
+    No signature header, shared secret, retry policy, delivery guarantee, ordering
+    guarantee or replay mechanism is documented. A receiver cannot verify that a callback
+    came from Hyperstack, and cannot recover an event it missed.
+management_operations:
+- operationId: Attach_callback_to_VM
+  method: POST
+  path: /core/virtual-machines/{vm_id}/attach-callback
+  body_schema: Attach_Callback_Payload
+  body_example: '{"url": "https://example.com/example-webhook"}'
+- operationId: Update_VM_callback
+  method: PUT
+  path: /core/virtual-machines/{vm_id}/update-callback
+  body_schema: Attach_Callback_Payload
+- operationId: Delete_VM_callback
+  method: DELETE
+  path: /core/virtual-machines/{vm_id}/delete-callback
+- operationId: Attach_callback_to_volume
+  method: POST
+  path: /core/volumes/{volume_id}/attach-callback
+  body_schema: Attach_Callback_Payload
+- operationId: Update_volume_callback
+  method: PUT
+  path: /core/volumes/{volume_id}/update-callback
+  body_schema: Attach_Callback_Payload
+- operationId: Delete_volume_callback
+  method: DELETE
+  path: /core/volumes/{volume_id}/delete-callback
+event_count: 32
+events:
+- resource: virtual-machine
+  outcome: success
+  items:
+  - {name: InstanceCreationSuccess, states: [CREATING, BUILD, ACTIVE], description: VM created and progressing through provisioning until ACTIVE or failure.}
+  - {name: InstanceDeleteSuccess, states: [DELETING, DELETED], description: VM deletion completed successfully.}
+  - {name: InstanceStartSuccess, states: [STARTING, ACTIVE], description: VM started.}
+  - {name: InstanceStopSuccess, states: [STOPPING, SHUTOFF], description: VM stopped.}
+  - {name: InstanceRebootSuccess, states: [REBOOTING, ACTIVE], description: VM hard-rebooted.}
+  - {name: AttachFloatingIPToInstanceSuccess, states: [ATTACHING, ATTACHED], description: Public IP attached to a VM.}
+  - {name: DetachFloatingIPToInstanceSuccess, states: [DETACHING, DETACHED], description: Public IP detached from a VM.}
+  - {name: AttachVolumeToInstanceSuccess, states: [ATTACHING, ATTACHED], description: Volume attached to a VM.}
+  - {name: DetachVolumeToInstanceSuccess, states: [DETACHING, DETACHED], description: Volume detached from a VM.}
+  - {name: HibernateInstanceSuccess, states: [HIBERNATING, HIBERNATED], description: VM entered hibernation.}
+  - {name: RestoreHibernationInstanceSuccess, states: [RESTORING, ACTIVE], description: Hibernated VM restored.}
+  - {name: AttachSecurityRuleToInstanceSuccess, states: [NA], description: Firewall rule attached to a VM.}
+  - {name: DetachSecurityRuleToInstanceSuccess, states: [NA], description: Firewall rule detached from a VM.}
+  - {name: GenerateVNCConsoleSuccess, states: [NA], description: VNC console URL generated for a VM.}
+- resource: virtual-machine
+  outcome: failure
+  note: In some cases the failure also means the VM has transitioned to an ERROR state.
+  items:
+  - {name: InstanceCreationFailed, description: VM creation failed.}
+  - {name: InstanceDeleteFailed, description: VM deletion failed.}
+  - {name: AttachFloatingIPToInstanceFailed, description: Attaching a public IP failed.}
+  - {name: DetachFloatingIPToInstanceFailed, description: Detaching a public IP failed.}
+  - {name: AttachVolumeToInstanceFailed, description: Attaching a volume failed.}
+  - {name: DetachVolumeToInstanceFailed, description: Detaching a volume failed.}
+  - {name: HibernateInstanceFailed, description: Hibernation failed.}
+  - {name: RestoreHibernationInstanceFailed, description: Restoring a hibernated VM failed.}
+  - {name: AttachSecurityRuleToInstanceFailed, description: Attaching a firewall rule failed.}
+  - {name: DetachSecurityRuleToInstanceFailed, description: Detaching a firewall rule failed.}
+  - {name: GenerateVNCConsoleFailed, description: Generating a VNC console failed.}
+- resource: volume
+  outcome: success
+  items:
+  - {name: VolumeCreationSuccess, states: [CREATING, AVAILABLE], description: Volume created and provisioned to AVAILABLE.}
+  - {name: VolumeDeleteSuccess, states: [DELETING, DELETED], description: Volume deletion begun and completed.}
+  - {name: AttachVolumeToInstanceSuccess, states: [ATTACHING, ATTACHED], description: Volume attached to a VM.}
+  - {name: DetachVolumeToInstanceSuccess, states: [DETACHING, DETACHED], description: Volume detached from a VM.}
+- resource: volume
+  outcome: failure
+  items:
+  - {name: VolumeCreationFailed, description: Volume creation failed.}
+  - {name: VolumeDeleteFailed, description: Volume deletion failed.}
+  - {name: AttachVolumeToInstanceFailed, description: Attaching a volume failed.}
+  - {name: DetachVolumeToInstanceFailed, description: Detaching a volume failed.}
+coverage_gaps:
+  note: >-
+    Callbacks cover virtual machines and volumes only. There are no callback events for
+    Kubernetes clusters or node groups, snapshots, images, object-storage buckets,
+    firewalls as objects, billing thresholds or credit balance, and none at all for
+    AI Studio. An agent operating clusters or watching spend must poll.
+payload_schema:
+  published: false
+  note: >-
+    The provider documents event NAMES and the state sequences they represent, but not the
+    body an endpoint receives. There is no published payload schema or example delivery.

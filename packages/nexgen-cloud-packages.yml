@@ -1,0 +1,121 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  registry.npmjs.org, pypi.org/pypi, proxy.golang.org, registry.terraform.io,
+  github.com/NexGenCloud, and https://docs.hyperstack.cloud/docs/libraries
+note: >-
+  Every Hyperstack SDK is generated from the same Infrahub OpenAPI document with
+  OpenAPI Generator, and they share one version line (1.54.x). The provider labels all
+  four language SDKs "alpha" in its own documentation. Registry metadata carries the
+  OpenAPI Generator community as author/email rather than NexGen Cloud, which is the
+  generator's default and not a sign of third-party authorship - the packages are
+  published from repositories in the NexGenCloud GitHub organization and the npm
+  packages are under the @nexgencloud scope.
+package_count: 6
+official_count: 6
+packages:
+- name: hyperstack
+  registry: pypi
+  url: https://pypi.org/project/hyperstack/
+  language: Python
+  official: true
+  version: 1.54.7a0
+  published: '2026-08-04'
+  source_code: https://github.com/NexGenCloud/hyperstack-sdk-python
+  docs: https://docs.hyperstack.cloud/docs/libraries/python
+  maturity: alpha
+  note: >-
+    PyPI summary is "Infrahub-API", matching info.title of the provider's OpenAPI, and
+    the version matches the v1.54.7-alpha tag across the sibling SDK repos.
+- name: '@nexgencloud/hyperstack-sdk-javascript'
+  registry: npm
+  url: https://www.npmjs.com/package/@nexgencloud/hyperstack-sdk-javascript
+  language: JavaScript
+  official: true
+  version: 1.54.7-alpha
+  published: '2026-08-04'
+  source_code: https://github.com/NexGenCloud/hyperstack-sdk-javascript
+  docs: https://docs.hyperstack.cloud/docs/libraries/javascript
+  maturity: alpha
+- name: '@nexgencloud/hyperstack-sdk-typescript'
+  registry: npm
+  url: https://www.npmjs.com/package/@nexgencloud/hyperstack-sdk-typescript
+  language: TypeScript
+  official: true
+  version: 1.54.7-alpha
+  published: '2026-08-04'
+  source_code: https://github.com/NexGenCloud/hyperstack-sdk-typescript
+  docs: https://docs.hyperstack.cloud/docs/libraries/javascript
+  maturity: alpha
+- name: github.com/nexgencloud/hyperstack-sdk-go
+  registry: go
+  url: https://pkg.go.dev/github.com/nexgencloud/hyperstack-sdk-go
+  language: Go
+  official: true
+  version: v0.2.0
+  published: '2024-07-25'
+  source_code: https://github.com/NexGenCloud/hyperstack-sdk-go
+  docs: https://docs.hyperstack.cloud/docs/libraries/go
+  maturity: alpha
+  note: >-
+    ABANDONMENT SIGNAL. The Go module proxy's latest tagged version is v0.2.0 from
+    2024-07-25 - more than two years behind the Python/JS/TS line (1.54.7, 2026-08-04)
+    generated from the same spec. The repository's own api/openapi.yaml is current
+    (224 operations), so the code is regenerated but not tagged for the module proxy;
+    `go get` on the module resolves to a 2024 build of a 2026 API.
+- name: NexGenCloud/hyperstack
+  registry: terraform
+  url: https://registry.terraform.io/providers/NexGenCloud/hyperstack/latest
+  language: HCL
+  official: true
+  version: 1.54.13-alpha
+  published: '2026-08-21'
+  source_code: https://github.com/NexGenCloud/terraform-provider-hyperstack
+  docs: https://docs.hyperstack.cloud/docs/libraries/terraform
+  maturity: alpha
+  downloads: 8718
+  note: The most recently released first-party artifact, and ahead of the SDK line.
+- name: ghcr.io/nexgencloud/hyperstack-mcp-server
+  registry: ghcr
+  url: https://github.com/NexGenCloud/hyperstack-agent
+  language: Go
+  official: true
+  version: null
+  published: null
+  kind: container
+  docs: https://docs.hyperstack.cloud/docs/libraries/mcp-server/installation
+  note: >-
+    The Hyperstack API MCP Server, distributed only as a Docker image on GitHub
+    Container Registry and documented as `:latest`. version/published are null because
+    the GHCR tag list requires a token (HTTP 401 anonymously) and the install command
+    the provider publishes is unpinned - a consumer running it cannot tell which build
+    they are getting either. The documented /health response reports service version
+    0.1.0.
+not_first_party:
+- name: hyperstack
+  registry: npm
+  note: >-
+    Unrelated. npm `hyperstack` (1.0.34, 2023-10-20) has no description, no repository
+    and no link to NexGen Cloud. NOT the Hyperstack SDK; the official JS package is
+    scoped under @nexgencloud.
+- name: hyperstack-sdk
+  registry: npm
+  note: >-
+    Unrelated. npm `hyperstack-sdk` (1.0.0, 2026-02-10) is "Cloud memory for AI agents",
+    a different product.
+related_open_source:
+- name: csi-hyperstack
+  url: https://github.com/NexGenCloud/csi-hyperstack
+  language: Go
+  official: true
+  note: Official Kubernetes CSI driver, distributed as a Helm chart. Latest module-proxy
+    pseudo-version 2026-07-15. No tagged release.
+- name: hyperstack-llm-inference-toolkit
+  url: https://github.com/NexGenCloud/hyperstack-llm-inference-toolkit
+  language: Python
+  official: true
+  version: null
+  published: null
+  note: >-
+    Open-source LLM inference toolkit. Not published to PyPI (pypi.org/pypi/hyperstack-llm-inference-toolkit/json
+    returns 404); installed from source. version null = checked, no registry to read.

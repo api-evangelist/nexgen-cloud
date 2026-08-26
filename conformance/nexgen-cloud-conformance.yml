@@ -1,0 +1,195 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  openapi/nexgen-cloud-hyperstack-openapi.json, openapi/nexgen-cloud-ai-studio-openapi.json,
+  https://docs.hyperstack.cloud/.well-known/api-catalog, the RFC 8288 Link header served by
+  docs.hyperstack.cloud, https://www.nexgencloud.com/security,
+  https://www.nexgencloud.com/news/nexgen-cloud-achieves-soc-2-type-2-attestation-strengthening-verified-security-assurance-for-enterprise-ai
+conformance:
+- id: openapi-3
+  name: OpenAPI Specification
+  conforms: true
+  version: 3.0.1 (Hyperstack API), 3.1.0 (AI Studio API)
+  evidence: >-
+    Two OpenAPI documents published by the provider at docs.hyperstack.cloud/openapi/hyperstack.json
+    (209 operations, 323 schemas) and docs.hyperstack.cloud/openapi/ai-studio.json (33 operations).
+    A third, the raw generator source, is served at infrahub-api-doc.nexgencloud.com/api.json.
+- id: rfc9727
+  name: 'RFC 9727 - api-catalog: A Well-Known URI and Link Relation to Help Discovery of APIs'
+  conforms: true
+  evidence: >-
+    https://docs.hyperstack.cloud/.well-known/api-catalog returns 200 with
+    application/linkset+json, naming both APIs and binding each anchor to a service-desc
+    (OpenAPI JSON) and a service-doc (HTML reference). This is a correctly-formed linkset,
+    not a stub - rare enough in the catalog to be worth naming.
+  file: well-known/nexgen-cloud-api-catalog.json
+- id: rfc8288
+  name: RFC 8288 Web Linking
+  conforms: true
+  evidence: >-
+    docs.hyperstack.cloud serves a Link response header on documentation pages carrying
+    rel="service-doc", rel="service-desc" (x2), rel="llms-txt", rel="mcp-server" and
+    rel="api-catalog". An agent can discover every machine-readable surface from one HEAD
+    request without knowing any path in advance.
+- id: mcp
+  name: Model Context Protocol
+  conforms: true
+  version: '2025-06-18'
+  evidence: >-
+    Live anonymous initialize + tools/list against https://docs.hyperstack.cloud/mcp
+    returned protocolVersion 2025-06-18, serverInfo {name "Hyperstack Docs", version 1.0.0},
+    and 5 tools with complete JSON Schema draft-07 inputSchemas and readOnlyHint/destructiveHint
+    annotations. A second, self-hosted API MCP server is published as a Docker image.
+  file: mcp/nexgen-cloud-docs-mcp-tools.json
+- id: llmstxt
+  name: llms.txt
+  conforms: true
+  evidence: >-
+    https://docs.hyperstack.cloud/llms.txt returns a real 260-line index of the entire
+    documentation corpus with per-link descriptions, plus base URL, console URL, auth
+    header and MCP endpoint stated up front. (The marketing hosts www.hyperstack.cloud and
+    www.nexgencloud.com answer /llms.txt with an HTML SPA shell - a soft 200, not a document.)
+  file: llms/nexgen-cloud-llms.txt
+- id: rfc9457
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: >-
+    No application/problem+json media type appears in either spec. Errors use a vendor
+    envelope {status, message, error_reason}, with a divergent third shape
+    {code, message, status} on AI Studio.
+- id: oauth2
+  name: OAuth 2.0
+  conforms: false
+  evidence: >-
+    Only apiKey security schemes are declared. No oauth2 flows, no
+    /.well-known/oauth-authorization-server (404 on every host), no scope surface.
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: >-
+    /.well-known/openid-configuration returns 404 on every probed host. The API's
+    interactive-login path is served by authentik (the OpenAPI declares an `auth` tag
+    described as "Authentication APIs using authentik"), but no OIDC discovery document is
+    exposed publicly.
+- id: rfc8594
+  name: RFC 8594 Sunset HTTP Header
+  conforms: false
+  evidence: No Sunset or Deprecation header is declared or documented. See lifecycle/.
+- id: rfc9116
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on all six probed hosts.
+- id: idempotency
+  name: Idempotency (Idempotency-Key)
+  conforms: false
+  evidence: No idempotency header, parameter or extension anywhere in either contract.
+- id: pagination
+  name: Documented pagination
+  conforms: true
+  evidence: >-
+    Page-number pagination is documented in full at
+    https://docs.hyperstack.cloud/docs/api-reference/pagination, including all three
+    page-size parameter names and all three response envelope shapes.
+- id: json-api
+  name: 'JSON:API'
+  conforms: false
+  evidence: Plain JSON with a vendor envelope; no JSON:API media type or document structure.
+domain_standards:
+- id: openai-chat-completions
+  name: OpenAI Chat Completions API (de-facto inference interface standard)
+  market: AI inference / model serving
+  conforms: true
+  confidence: high
+  evidence: >-
+    Declared BY THE CONTRACT, not by a marketing page. AI Studio's OpenAPI exposes
+    POST /chat/completions (operationId chatCompletions), POST /images/generations,
+    POST /images/edits and GET /models, and states "OpenAI-compatible" in six places
+    including info.description ("OpenAI-compatible chat completions"), the Inference tag
+    description, the /models description ("Returns all models available to the
+    authenticated user in OpenAI-compatible format"), and two response schemas named
+    OpenAIModelSchema and OpenAIModelsListResponseSchema whose `object` field is pinned to
+    the OpenAI literal "list".
+  spec_locations:
+  - openapi/nexgen-cloud-ai-studio-openapi.json#/paths/~1chat~1completions/post
+  - openapi/nexgen-cloud-ai-studio-openapi.json#/paths/~1models/get
+  - openapi/nexgen-cloud-ai-studio-openapi.json#/paths/~1images~1generations/post
+  - openapi/nexgen-cloud-ai-studio-openapi.json#/paths/~1images~1edits/post
+  - openapi/nexgen-cloud-ai-studio-openapi.json#/components/schemas/OpenAIModelsListResponseSchema
+  buyer_impact: >-
+    A team already calling OpenAI, Anthropic-via-proxy, vLLM or any OpenAI-shaped gateway
+    can point an existing client at https://console.hyperstack.cloud/ai/api/v1 and change
+    a base URL and a key. No bespoke connector.
+- id: s3-api
+  name: Amazon S3 object storage API (de-facto standard)
+  market: object storage
+  conforms: true
+  confidence: medium
+  evidence: >-
+    The Hyperstack OpenAPI describes its buckets and access-keys surface as "S3-compatible"
+    object storage, and the object-storage endpoints manage S3 access-key credentials. The
+    S3 data-plane itself is not described in the OpenAPI - only the control plane for
+    provisioning buckets, regions and access keys - so compatibility of the data plane is
+    a documented claim rather than a contract-level assertion, which is why this is medium
+    and not high.
+  spec_locations:
+  - openapi/nexgen-cloud-hyperstack-openapi.json#/paths/~1object-storage~1access-keys
+- id: kubernetes
+  name: Kubernetes / CNCF CSI
+  market: container orchestration
+  conforms: true
+  confidence: high
+  evidence: >-
+    Managed Kubernetes clusters and node groups are first-class API resources
+    (Create_Cluster, Create_Node_Group, Get_Cluster_Versions), and the provider publishes
+    an official CSI driver implementing the CNCF Container Storage Interface at
+    github.com/NexGenCloud/csi-hyperstack, distributed as a Helm chart.
+- id: cloud-init
+  name: cloud-init
+  market: VM provisioning
+  conforms: true
+  confidence: high
+  evidence: >-
+    VM creation accepts cloud-config user data; documented at
+    https://docs.hyperstack.cloud/docs/virtual-machines/initialization-configuration and
+    validated server-side since the 2026-07-21 release.
+- id: terraform
+  name: HashiCorp Terraform provider protocol
+  market: infrastructure as code
+  conforms: true
+  confidence: high
+  evidence: >-
+    Official provider published to the Terraform Registry as NexGenCloud/hyperstack,
+    v1.54.13-alpha (2026-08-21), 8,718 downloads.
+compliance:
+  published: true
+  certifications:
+  - name: SOC 2 Type 2
+    status: attested
+    evidence: >-
+      NexGen Cloud announcement "NexGen Cloud Achieves SOC 2 Type 2 Attestation,
+      Strengthening Verified Security Assurance for Enterprise AI"
+      (https://www.nexgencloud.com/news/nexgen-cloud-achieves-soc-2-type-2-attestation-strengthening-verified-security-assurance-for-enterprise-ai).
+      The company's own security page describes the SOC 2 programme and its roadmap.
+  - name: ISO 27001
+    status: in-progress
+    evidence: >-
+      https://www.nexgencloud.com/security states an ISO 27001 ISMS build-out with
+      certification expected in early 2026. No certificate is published. Recorded as
+      in-progress, not certified.
+  - name: Tier 3 data centres
+    status: claimed
+    evidence: >-
+      Provider knowledge-base article on data-centre certifications. Facility-level, not a
+      NexGen Cloud attestation.
+  trust_center: security/nexgen-cloud-trust-center.yml
+  note: >-
+    NexGen Cloud publishes a security page describing its programme and standards, and a
+    news post announcing the SOC 2 Type 2 attestation, but does NOT operate a trust portal
+    where a buyer can self-serve the report - there is no Vanta/Drata/SafeBase surface, no
+    downloadable SOC 2, and no subprocessor list. Compliance here is announced, not
+    evidenced on demand.
+  regulatory_context: >-
+    UK-headquartered (NexGen Cloud Limited) with EU (NORWAY-1), Canadian (CANADA-1) and US
+    (US-1) regions, marketed for sovereign AI. GDPR/UK-GDPR applies to the EU and UK
+    footprint; no DPA, subprocessor list or data-residency commitment is published as a
+    machine-readable artifact.

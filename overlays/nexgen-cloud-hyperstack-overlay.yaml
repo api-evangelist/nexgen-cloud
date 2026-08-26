@@ -1,0 +1,138 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Hyperstack API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-08-26'
+  method: generated
+  source: >-
+    openapi/nexgen-cloud-hyperstack-openapi.json plus the artifacts derived alongside it in
+    this repository. Captures API Evangelist annotations WITHOUT mutating the provider's
+    original document, which stays byte-identical to what docs.hyperstack.cloud serves.
+extends: ../openapi/nexgen-cloud-hyperstack-openapi.json
+actions:
+- target: $.info
+  description: Attach cross-references to the derived artifacts in this repository.
+  update:
+    x-apievangelist:
+      profile: https://apis.io/provider/nexgen-cloud
+      artifacts:
+        authentication: authentication/nexgen-cloud-authentication.yml
+        conventions: conventions/nexgen-cloud-conventions.yml
+        errors: errors/nexgen-cloud-problem-types.yml
+        rate_limits: rate-limits/nexgen-cloud-rate-limits.yml
+        plans: plans/nexgen-cloud-plans-pricing.yml
+        lifecycle: lifecycle/nexgen-cloud-lifecycle.yml
+        changelog: changelog/nexgen-cloud-changelog.yml
+        conformance: conformance/nexgen-cloud-conformance.yml
+        data_model: data-model/nexgen-cloud-data-model.yml
+        webhooks: asyncapi/nexgen-cloud-webhooks.yml
+        mcp: mcp/nexgen-cloud-mcp.yml
+        tool_crosswalk: mcp/nexgen-cloud-tool-crosswalk.yml
+        packages: packages/nexgen-cloud-packages.yml
+        skills: skills/_index.yml
+- target: $.info
+  description: >-
+    Record the runtime facts a client needs that the contract itself does not state -
+    the published rate ceiling, the absence of rate-limit response headers, and the
+    absence of any idempotency mechanism.
+  update:
+    x-rate-limit:
+      scope: per-source-ip
+      limit: 500
+      window: 1 minute
+      exhaustion_status: 429
+      response_headers: none documented
+      source: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+    x-idempotency:
+      supported: false
+      note: >-
+        No Idempotency-Key header exists. A timed-out create can provision and bill a
+        duplicate resource on retry. Name-availability probes are a collision check, not
+        idempotency.
+    x-error-envelope:
+      rfc9457: false
+      shape: '{status: boolean, message: string, error_reason: string}'
+      variants: 3
+      note: object storage reuses the field names under its own schema; AI Studio uses {code, message, status}.
+- target: $.info
+  description: Record the pagination facts a generic client cannot infer from the contract.
+  update:
+    x-pagination:
+      style: page-number
+      page_param: page
+      page_size_params:
+        core: pageSize
+        billing_and_pricebook_and_images: per_page
+        object_storage: page_size
+      envelope_shapes: 3
+      stable_across_writes: false
+      source: https://docs.hyperstack.cloud/docs/api-reference/pagination
+- target: $.paths['/core/virtual-machines/{vm_id}'].delete
+  description: Flag the irreversibility of VM deletion for agent consumers.
+  update:
+    x-reversibility:
+      reversible: false
+      reversal_operation: null
+      window: null
+      note: >-
+        Permanent. There is no undelete operation, no soft-delete state and no retention
+        window. Ephemeral disk data is lost. Snapshot first (Create_Snapshot_for_VM) if the
+        state matters.
+    x-consequence: destructive-irreversible
+- target: $.paths['/core/volumes/{volume_id}'].delete
+  description: Flag the irreversibility of volume deletion.
+  update:
+    x-reversibility:
+      reversible: false
+      reversal_operation: null
+      window: null
+    x-consequence: destructive-irreversible
+- target: $.paths['/core/clusters/{id}'].delete
+  description: Flag the irreversibility of cluster deletion.
+  update:
+    x-reversibility:
+      reversible: false
+      reversal_operation: null
+      window: null
+    x-consequence: destructive-irreversible
+- target: $.paths['/core/virtual-machines/{vm_id}/hibernate'].get
+  description: Record the documented inverse operation and its non-identity-preserving side effect.
+  update:
+    x-reversibility:
+      reversible: true
+      reversal_operation: Restore_VM_from_hibernation
+      window: not stated by the provider
+      note: >-
+        The attached public IP is RELEASED by default and a different one assigned on
+        restore, unless retain_ip=true is passed. The reversal restores the machine, not
+        the address.
+    x-consequence: state-change-reversible
+- target: $.paths['/core/virtual-machines/{vm_id}/stop'].get
+  description: Record the inverse operation and the billing consequence.
+  update:
+    x-reversibility:
+      reversible: true
+      reversal_operation: Start_VM
+      window: not stated
+      note: SHUTOFF continues to bill all reserved resources. Stopping is not a cost saving; hibernating is.
+    x-consequence: state-change-reversible
+- target: $.paths['/core/virtual-machines'].post
+  description: Flag the cost consequence and the retry hazard on the primary write.
+  update:
+    x-consequence: billable-provisioning
+    x-idempotency:
+      supported: false
+      note: >-
+        No safe-retry key. A client that times out and retries can create a second billable
+        GPU virtual machine. Use Check_VM_name_availability plus a unique name, and treat a
+        409 already_exist as evidence the first call succeeded.
+    x-cost-rehearsal: Calculate_resource_billing_rate
+- target: $.paths['/billing/payment/payment-initiate'].post
+  description: Flag that payments have no reversal in the contract.
+  update:
+    x-reversibility:
+      reversible: false
+      reversal_operation: null
+      note: No refund, void or reverse operation exists in the published API.
+    x-consequence: financial-irreversible

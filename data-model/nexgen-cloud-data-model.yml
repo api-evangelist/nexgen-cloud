@@ -1,0 +1,274 @@
+generated: '2026-08-26'
+method: derived
+source: >-
+  openapi/nexgen-cloud-hyperstack-openapi.json (323 schemas, 209 operations) and
+  openapi/nexgen-cloud-ai-studio-openapi.json (28 schemas, 33 operations), enriched from
+  https://docs.hyperstack.cloud/docs/api-reference/
+note: >-
+  Derived from $ref graph and id-reference fields in the published contracts. Identifiers
+  are INTEGERS across the Hyperstack API, not prefixed strings - there is no id-prefix
+  scheme to key an entity off, so an id alone does not tell an agent what it points at.
+  The one scoping rule that matters operationally is documented in the error reference:
+  IDs are REGION-SCOPED, so an ID from CANADA-1 is not visible to a key scoped to
+  NORWAY-1, and the API answers 404 rather than 403.
+id_scheme:
+  type: integer
+  prefixed: false
+  region_scoped: true
+  source: https://docs.hyperstack.cloud/docs/api-reference/errors
+tenancy:
+  root: Organization
+  chain: Organization -> Environment (region-bound) -> resources
+  note: >-
+    Environment is the scoping container inside an organization and is bound to a region.
+    Virtual machines, volumes, firewalls and keypairs all belong to an environment. An API
+    key is personal to a user and works across every environment and region in the
+    organization - the key is NOT the tenancy boundary, the environment is.
+entities:
+- name: Organization
+  schemas: [OrganizationFields, GetOrganizationResponseModel, UpdateOrganizationPayload]
+  key: id
+  operations: [Retrieve_Organization_Information, Update_Organization_Information, Remove_Organization_Member, List_Org_notification_thresholds]
+  relationships:
+  - {type: has_many, target: User, via: members}
+  - {type: has_many, target: Environment, via: org_id}
+  - {type: has_many, target: RBACRole, via: org_id}
+  - {type: has_many, target: Invite, via: org_id}
+  - {type: has_one, target: Credit, via: org_id}
+- name: User
+  schemas: [AuthUserFields, AuthUserInfoResponseModel, OrganizationUserResponseModel]
+  key: id
+  operations: [Get_Authenticated_User, Get_User_Organizations, Change_Organization_for_Token, List_User_Permissions]
+  relationships:
+  - {type: belongs_to, target: Organization, via: org_id}
+  - {type: has_many, target: APIKey, via: user_id}
+  - {type: has_many, target: RBACRole, via: assigned roles}
+- name: APIKey
+  schemas: [ApiKeyFields, GenerateUpdateApiKeyPayload, GetApiKeysResponseModel]
+  key: id
+  operations: [Generate_API_Key, Get_API_Key, Update_API_Key, Delete_API_Key]
+  relationships:
+  - {type: belongs_to, target: User, via: user_id}
+- name: RBACRole
+  schemas: [RbacRoleFields, RolePolicyFields, RolePermissionFields, CreateUpdateRbacRolePayload, AssignRbacRolePayload]
+  key: id
+  operations: [Create_RBAC_Role, Retrieve_RBAC_Role_Details, Update_RBAC_Role, Delete_RBAC_Role, List_RBAC_Roles, Assign_RBAC_Role_to_User, Remove_RBAC_Role_From_User]
+  relationships:
+  - {type: belongs_to, target: Organization, via: org_id}
+  - {type: has_many, target: Policy, via: policies}
+  - {type: has_many, target: Permission, via: permissions}
+- name: Environment
+  schemas: [Environment, Environment_Fields, Environments, Environment_Features]
+  key: id
+  operations: [Create_environment, Get_environment, Update_environment, Delete_environment, List_environments, Get_environment_VM_quota]
+  relationships:
+  - {type: belongs_to, target: Organization, via: org_id}
+  - {type: belongs_to, target: Region, via: region}
+  - {type: has_many, target: VirtualMachine, via: environment}
+  - {type: has_many, target: Volume, via: environment}
+  - {type: has_many, target: Firewall, via: environment}
+- name: Region
+  schemas: [Region_Fields, Regions, GPU_Region_Fields]
+  key: id
+  operations: [List_Regions, listRegionsEndpoint]
+  values: [CANADA-1, NORWAY-1, US-1]
+  relationships:
+  - {type: has_many, target: Environment, via: region_id}
+  - {type: has_many, target: Flavor, via: region}
+- name: VirtualMachine
+  schemas: [Instance, Instance_Fields, CreateInstancesResponse, Create_Instances_Payload, InstanceResizePayload, InstanceEventsFields]
+  key: id
+  aliases: [instance, vm]
+  operations: [Create_Vms, List_Vms, Get_VM, Delete_VM, Start_VM, Stop_VM, Hibernate_VM, Restore_VM_from_hibernation, Hard_reboot_VM, Resize_VM, Add_VM_Label, List_VM_events, Get_VM_metrics, Get_VM_Logs]
+  states: [CREATING, BUILD, ACTIVE, STOPPING, SHUTOFF, STARTING, REBOOTING, HIBERNATING, HIBERNATED, RESTORING, DELETING, DELETED, ERROR]
+  relationships:
+  - {type: belongs_to, target: Environment, via: environment}
+  - {type: belongs_to, target: Flavor, via: flavor_id}
+  - {type: belongs_to, target: Image, via: image_id}
+  - {type: belongs_to, target: Keypair, via: keypair_name}
+  - {type: has_many, target: Volume, via: volume_attachments}
+  - {type: has_many, target: FloatingIP, via: floating_ip}
+  - {type: has_many, target: Firewall, via: security_rules}
+  - {type: has_many, target: Snapshot, via: vm_id}
+  - {type: has_one, target: Callback, via: callback_url}
+  - {type: belongs_to, target: Contract, via: contract_id}
+- name: Flavor
+  schemas: [Flavor_Fields, Flavor_List_Response, FlavorLabelFields, FlavorRestrictions, CompatibleFlavor, Instance_Flavor_Fields]
+  key: id
+  operations: [List_Flavors, Get_Cluster_Master_Flavors]
+  relationships:
+  - {type: belongs_to, target: Region, via: region_name}
+  - {type: has_one, target: GPU, via: gpu}
+- name: GPU
+  schemas: [GPU_Fields, GPU_List, GPU_Region_Fields]
+  key: id
+  operations: [List_Gpus, Get_GPU_stock]
+  relationships:
+  - {type: has_many, target: Flavor, via: gpu}
+- name: Image
+  schemas: [Image, Image_Fields, Create_Image, CreateImagePayload, Image_Get_Response, Instance_Image_Fields]
+  key: id
+  operations: [List_Images, Get_Image, Create_custom_image, Delete_image, Fetch_Image_name_availability]
+  relationships:
+  - {type: has_many, target: VirtualMachine, via: image_id}
+  - {type: belongs_to, target: Snapshot, via: snapshot_id}
+- name: Snapshot
+  schemas: [SnapshotFields, SnapshotRetrieve, SnapshotRetrieveFields, CreateSnapshotPayload, CreateSnapshotResponse, SnapshotRestoreRequest]
+  key: id
+  operations: [Create_Snapshot_for_VM, List_snapshots, Get_snapshot, Delete_snapshot, Restore_snapshot, Create_custom_image, List_Snapshot_Events]
+  constraints: [max 100 GB, one at a time per VM, not supported for cluster VMs or bootable-volume VMs]
+  relationships:
+  - {type: belongs_to, target: VirtualMachine, via: vm_id}
+  - {type: has_many, target: Image, via: snapshot_id}
+- name: Volume
+  schemas: [Create_Volume_Payload, Attachments_Fields_for_Volume, Environment_Fields_for_Volume, Attach_Volumes_Payload, Detach_Volumes_Payload]
+  key: id
+  operations: [Create_volume, List_volumes, Get_Volume, Update_volume, Delete_volume, List_volume_types]
+  states: [CREATING, AVAILABLE, ATTACHING, ATTACHED, DETACHING, DETACHED, DELETING, DELETED]
+  relationships:
+  - {type: belongs_to, target: Environment, via: environment}
+  - {type: has_many, target: VolumeAttachment, via: attachments}
+  - {type: has_one, target: Callback, via: callback_url}
+- name: VolumeAttachment
+  schemas: [Attach_Volume_Fields, Attach_Volumes, Detach_Volumes]
+  key: volume_attachment_id
+  operations: [Attach_volumes_to_VM, Detach_volumes_from_VM, Update_volume_attachment]
+  relationships:
+  - {type: belongs_to, target: Volume, via: volume_id}
+  - {type: belongs_to, target: VirtualMachine, via: instance_id}
+- name: Firewall
+  schemas: [FirewallFields, FirewallDetailFields, Firewall_Rule, Firewall_Attachment_Model, Firewall_Attachment_VM_Model, CreateFirewallPayload, Create_Firewall_Rule_Payload]
+  key: id
+  operations: [Create_firewall, Get_firewall, Delete_existing_firewall, Add_rule_to_firewall, Delete_rule_from_firewall, Attach_firewalls_to_VM, Attach_firewall_to_Vms]
+  relationships:
+  - {type: belongs_to, target: Environment, via: environment}
+  - {type: has_many, target: FirewallRule, via: rules}
+  - {type: has_many, target: VirtualMachine, via: attachments}
+- name: FloatingIP
+  schemas: []
+  schemas_note: No dedicated floating-IP schema is declared; the address is carried on Instance_Fields.
+  operations: [Attach_public_IP_to_VM, Detach_public_IP_from_VM]
+  relationships:
+  - {type: belongs_to, target: VirtualMachine, via: instance_id}
+  note: Released by default on hibernation unless retain_ip=true; a different IP is assigned on restore.
+- name: Keypair
+  schemas: [Keypair_Fields, Keypairs, Import_Keypair_Payload, Update_Keypair_Name, Instance_Keypair_Fields]
+  key: id
+  operations: [Import_key_pair, List_key_pairs, Update_key_pair_name, Delete_key_pair, List_supported_key_pair_types]
+  relationships:
+  - {type: belongs_to, target: Environment, via: environment}
+  - {type: has_many, target: VirtualMachine, via: keypair_name}
+- name: Cluster
+  schemas: [ClusterFields, ClusterResponse, Create_Cluster_Payload, ClusterVersion, ClusterEvents]
+  key: id
+  operations: [Create_Cluster, List_Clusters, Getting_Cluster_Detail, Delete_cluster, Reconcile_cluster, Get_Cluster_Versions, List_cluster_events]
+  relationships:
+  - {type: belongs_to, target: Environment, via: environment_name}
+  - {type: has_many, target: NodeGroup, via: cluster_id}
+  - {type: has_many, target: ClusterNode, via: cluster_id}
+- name: NodeGroup
+  schemas: [ClusterNodeGroupFields, Create_ClusterNodeGroup_payload, ClusterNodeGroupFirewallFields]
+  key: node_group_id
+  operations: [Create_Node_Group, List_Node_Groups, Get_Node_Group, Update_Node_Group, Delete_Node_Group]
+  relationships:
+  - {type: belongs_to, target: Cluster, via: cluster_id}
+  - {type: has_many, target: ClusterNode, via: node_group_id}
+- name: ClusterNode
+  schemas: [ClusterNodeFields, ClusterNodeInstanceFields, CreateClusterNodeFields]
+  key: node_id
+  operations: [Create_Node, Get_Cluster_Nodes, Delete_Cluster_Node, Delete_Cluster_Nodes]
+  relationships:
+  - {type: belongs_to, target: NodeGroup, via: node_group_id}
+  - {type: has_one, target: VirtualMachine, via: instance}
+- name: Bucket
+  schemas: [object_storage__BucketResponse, object_storage__BucketListResponse]
+  operations: [listBucketsEndpoint, retrieveBucketEndpoint, deleteBucketEndpoint]
+  relationships:
+  - {type: belongs_to, target: Region, via: region}
+  - {type: has_many, target: AccessKey, via: access keys}
+  note: S3-compatible object storage. Control plane only in the OpenAPI.
+- name: AccessKey
+  schemas: [object_storage__AccessKeyResponse, object_storage__AccessKeyListResponse, object_storage__AccessKeyCreateRequest, object_storage__AccessKeyCreateResponse]
+  operations: [listAccessKeysEndpoint, createAccessKeyEndpoint, deleteAccessKeyEndpoint]
+  relationships:
+  - {type: belongs_to, target: Organization, via: org}
+- name: Template
+  schemas: [Template, Template_Fields, Templates, Update_Template]
+  key: id
+  operations: [Create_template, List_templates, Get_template, Update_template, Delete_template]
+  relationships:
+  - {type: has_many, target: Deployment, via: template_id}
+  note: Marketplace VM templates.
+- name: Deployment
+  schemas: [Deployment_Fields, Deployments, Start_Deployment, Start_Deployment_Payload]
+  key: id
+  operations: [Start_Deployment, List_Deployments, Get_deployment, Delete_Deployment]
+  relationships:
+  - {type: belongs_to, target: Template, via: template_id}
+- name: Profile
+  schemas: [Profile_Fields, Profile_List_Response, Profile_Object_Fields, Create_Profile_Payload, Create_Profile_Response]
+  key: id
+  operations: [Create_profile, List_profiles, Get_profile, Delete_profile]
+  note: Saved, reusable VM deployment configurations.
+- name: Callback
+  schemas: [Attach_Callback_Payload]
+  operations: [Attach_callback_to_VM, Update_VM_callback, Delete_VM_callback, Attach_callback_to_volume, Update_volume_callback, Delete_volume_callback]
+  relationships:
+  - {type: belongs_to, target: VirtualMachine, via: vm_id}
+  - {type: belongs_to, target: Volume, via: volume_id}
+  detail: asyncapi/nexgen-cloud-webhooks.yml
+- name: Contract
+  schemas: [Contract, CustomerContractFields, CustomerContractDetailResponseModel, ContractInstanceFields, ContractDiscountPlanFields]
+  key: contract_id
+  operations: [List_customer_contracts, Retrieve_contract, Get_contract_GPU_allocation_graph, Get_contract_Vms, List_billing_contract_history]
+  relationships:
+  - {type: has_many, target: VirtualMachine, via: contract_id}
+  note: Long-term reserved GPU commitments.
+- name: BillingRecord
+  schemas: [OrganizationLevelBillingHistory, OrganizationLevelBillingHistoryResponseModel, Billing_metrices_fields, ResourceBillingEventsHistoryResponse]
+  operations: [Get_usage, Get_last_day_cost, Get_User_Billing_History, Get_VM_Billing_History, Get_Volume_Billing_History]
+  relationships:
+  - {type: belongs_to, target: Organization, via: org_id}
+  - {type: belongs_to, target: VirtualMachine, via: vm_id}
+  - {type: belongs_to, target: Volume, via: volume_id}
+- name: Credit
+  schemas: [Get_credit_and_threshold_info, Get_credit_and_threshold_info_in_response, Organization_Threshold_fields]
+  operations: [Get_user_credit, Redeem_a_voucher, Get_notification_threshold]
+  relationships:
+  - {type: belongs_to, target: Organization, via: org_id}
+- name: Payment
+  schemas: [Payment_Details_Fields, Payment_Details_Response, Payment_Initiate_Payload, Payment_Initiate_Response]
+  key: payment_id
+  operations: [Initiate_Payment, List_payment_details, Get_payment_receipt]
+  relationships:
+  - {type: belongs_to, target: Organization, via: org_id}
+  note: No refund/void/reverse operation exists.
+ai_studio_entities:
+- name: BaseModel
+  operations: [getBaseModels, getBaseModel, getBaseModelPricing]
+  note: Third-party hosted models only since 2026-08-25.
+- name: Model
+  operations: [getModels, getModelsChoices]
+  note: OpenAI-compatible model list shape.
+- name: Conversation
+  operations: [getConversations, sendMessage, getConversationMessages, renameConversation, deleteConversation, uploadImage]
+  relationships:
+  - {type: has_many, target: Message, via: conversation_id}
+  - {type: belongs_to, target: SystemPrompt, via: system prompt}
+  - {type: belongs_to, target: KnowledgeBase, via: grounding}
+- name: SystemPrompt
+  operations: [listSystemPrompts, createSystemPrompt, getSystemPrompt, updateSystemPrompt, deleteSystemPrompt]
+- name: KnowledgeBase
+  operations: [listKnowledgeBases, createKnowledgeBase, getKnowledgeBase, deleteKnowledgeBase, getKbFileUploadUrl, ingestKbFiles, deleteKnowledgeBaseFiles, getKnowledgeBaseStatus, postKnowledgeBasesStatus, cancelKnowledgeBaseIngestion, listKnowledgeBaseChoices]
+  relationships:
+  - {type: has_many, target: KnowledgeBaseFile, via: kb_id}
+- name: ImageJob
+  operations: [generateImageFromText, generateImageFromImage, getImageUploadUrl, getImageResult]
+  key: job_id
+  note: Asynchronous - submit then poll getImageResult by job_id.
+cross_api_note: >-
+  The two APIs share an API key and an organization but nothing else. There is no entity
+  linking a Hyperstack virtual machine to an AI Studio conversation or model, and the two
+  contracts declare no shared schema. The only join is billing: Hyperstack's billing
+  history exposes serverless_inference, image_generation and (now-withdrawn) fine_tuning
+  and model_evaluation history endpoints for AI Studio consumption.

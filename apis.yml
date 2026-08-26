@@ -1,18 +1,103 @@
 aid: nexgen-cloud
 name: NexGen Cloud
-description: 'NexGen Cloud is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'NexGen Cloud Limited is a UK-headquartered AI cloud and GPU infrastructure
+  provider. Its on-demand platform, Hyperstack, sells NVIDIA GPU and CPU virtual machines,
+  managed Kubernetes clusters, block storage volumes, S3-compatible object storage
+  and high-speed networking across three regions (CANADA-1, NORWAY-1, US-1), billed
+  per minute. A second product, Hyperstack AI Studio, provides an OpenAI-compatible
+  inference API over a catalog of third-party hosted text and image models, with playgrounds,
+  system prompts, conversations and knowledge bases. The company also sells Secure
+  Private Cloud, a single-tenant sovereign supercluster offering. Everything Hyperstack
+  does in the console is available through a documented REST API at infrahub-api.nexgencloud.com,
+  with official Python, Go, JavaScript and TypeScript SDKs, a Terraform provider, a
+  Kubernetes CSI driver, a hosted read-only documentation MCP server and a self-hosted
+  API MCP server.'
+image: https://www.hyperstack.cloud/hubfs/hyperstack_2023/home/logo.svg
 url: https://raw.githubusercontent.com/api-evangelist/nexgen-cloud/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-26'
 modified: '2026-08-26'
 tags:
 - Company
-apis: []
+- Cloud
+- GPU
+- Artificial Intelligence
+- Machine Learning
+- Infrastructure
+- Compute
+- Kubernetes
+- Storage
+- Inference
+- Virtual Machines
+- Sovereign AI
+apis:
+- aid: nexgen-cloud-hyperstack-api
+  name: Hyperstack API
+  description: 'The Hyperstack API is a REST API for deploying and managing GPU infrastructure
+    on the Hyperstack cloud: provision virtual machines, manage snapshots and images,
+    attach block-storage volumes, manage S3-compatible object-storage buckets and access
+    keys, configure firewalls and floating IPs, provision Kubernetes clusters and node
+    groups, administer organizations, RBAC roles and API keys, and read pricing, credit
+    and billing data programmatically. 209 documented operations across 46 tags. API-key
+    authentication via the api_key header.'
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Cloud
+  - GPU
+  - Compute
+  - Virtual Machines
+  - Kubernetes
+  - Storage
+  - Billing
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-hyperstack-openapi.json
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-infrahub-api-openapi.json
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Overlay
+    url: overlays/nexgen-cloud-hyperstack-overlay.yaml
+- aid: nexgen-cloud-ai-studio-api
+  name: Hyperstack AI Studio API
+  description: 'The AI Studio API is a REST API for inference on Hyperstack AI Studio:
+    list the base-model catalog with pricing, run OpenAI-compatible chat completions,
+    generate and edit images, manage conversations and message history, create reusable
+    system prompts, and build knowledge bases from text and Markdown files for grounded
+    retrieval-augmented answers. 33 operations. API-key authentication via the api_key
+    header.'
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+  baseURL: https://console.hyperstack.cloud/ai/api/v1
+  tags:
+  - Artificial Intelligence
+  - Inference
+  - Machine Learning
+  - Image Generation
+  - Knowledge Base
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-ai-studio-openapi.json
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+  - type: Overlay
+    url: overlays/nexgen-cloud-ai-studio-overlay.yaml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +105,133 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.hiive.com/securities/nexgen-cloud-stock
+  url: https://www.nexgencloud.com/
+- type: DeveloperPortal
+  url: https://docs.hyperstack.cloud/docs/intro
+- type: Documentation
+  url: https://docs.hyperstack.cloud/docs/intro
+- type: APIReference
+  url: https://docs.hyperstack.cloud/docs/api-reference/
+- type: GettingStarted
+  url: https://docs.hyperstack.cloud/docs/getting-started
+- type: Support
+  url: https://docs.hyperstack.cloud/docs/support
+- type: Blog
+  url: https://www.hyperstack.cloud/blog
+- type: GitHubOrganization
+  url: https://github.com/NexGenCloud
+- type: Pricing
+  url: https://www.hyperstack.cloud/gpu-pricing
+- type: SignUp
+  url: https://console.hyperstack.cloud/login
+- type: TermsOfService
+  url: https://www.hyperstack.cloud/terms-and-conditions
+- type: PrivacyPolicy
+  url: https://www.hyperstack.cloud/privacy-policy
+- type: StatusPage
+  url: https://status.hyperstack.cloud/
+- type: ChangeLog
+  url: https://docs.hyperstack.cloud/docs/release-notes
+- type: LLMsTxt
+  url: llms/nexgen-cloud-llms.txt
+- type: WellKnown
+  url: well-known/nexgen-cloud-well-known.yml
+- type: APICatalog
+  url: well-known/nexgen-cloud-api-catalog.json
+- type: MCPServer
+  url: mcp/nexgen-cloud-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/nexgen-cloud-tool-crosswalk.yml
+- type: Packages
+  url: packages/nexgen-cloud-packages.yml
+- type: SDKs
+  url: packages/nexgen-cloud-packages.yml
+- type: Authentication
+  url: authentication/nexgen-cloud-authentication.yml
+- type: Conventions
+  url: conventions/nexgen-cloud-conventions.yml
+- type: ErrorCatalog
+  url: errors/nexgen-cloud-problem-types.yml
+- type: RateLimits
+  url: rate-limits/nexgen-cloud-rate-limits.yml
+- type: Plans
+  url: plans/nexgen-cloud-plans-pricing.yml
+- type: Lifecycle
+  url: lifecycle/nexgen-cloud-lifecycle.yml
+- type: ChangeLog
+  url: changelog/nexgen-cloud-changelog.yml
+- type: Conformance
+  url: conformance/nexgen-cloud-conformance.yml
+- type: Compliance
+  url: conformance/nexgen-cloud-conformance.yml
+- type: TrustCenter
+  url: security/nexgen-cloud-trust-center.yml
+- type: DomainSecurity
+  url: security/nexgen-cloud-domain-security.yml
+- type: DataModel
+  url: data-model/nexgen-cloud-data-model.yml
+- type: Webhooks
+  url: asyncapi/nexgen-cloud-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-26'
+  status: enriched
+  artifacts_added: 30
+  pass: local-v1
+x-pointer-verification:
+  checked: '2026-08-26'
+  method: >-
+    Every common[] and properties[] URL was fetched with a browser User-Agent on 2026-08-26
+    and its HTTP status recorded before the pointer was emitted.
+  results:
+  - {url: 'https://www.nexgencloud.com/', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/intro', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/api-reference/', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/api-reference/introduction', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/getting-started', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/api-reference/quickstart', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/support', status: 200}
+  - {url: 'https://www.hyperstack.cloud/blog', status: 200}
+  - {url: 'https://github.com/NexGenCloud', status: 200}
+  - {url: 'https://www.hyperstack.cloud/gpu-pricing', status: 200}
+  - {url: 'https://console.hyperstack.cloud/login', status: 200}
+  - {url: 'https://www.hyperstack.cloud/terms-and-conditions', status: 200}
+  - {url: 'https://www.hyperstack.cloud/privacy-policy', status: 200}
+  - {url: 'https://status.hyperstack.cloud/', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/release-notes', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/api-reference/authentication', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/api-reference/rate-limits', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/api-reference/errors', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/api-reference/callbacks', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference', status: 200}
+  - {url: 'https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/', status: 200}
+  - {url: 'https://www.hyperstack.cloud/hubfs/hyperstack_2023/home/logo.svg', status: 200}
+  not_emitted:
+  - {type: Roadmap, reason: No public API or product roadmap is published.}
+  - {type: Postman, reason: No public Postman collection or workspace found.}
+  - {type: Idempotency, reason: 'The API declares no idempotency mechanism - emitting the pointer would be false credit. See conventions/nexgen-cloud-conventions.yml.'}
+  - {type: Deprecation, reason: 'No deprecation policy is published and no Sunset/Deprecation headers are emitted, despite an observed August 2026 withdrawal. See lifecycle/nexgen-cloud-lifecycle.yml.'}
+  - {type: Security, reason: 'No security.txt (404 on six hosts), no vulnerability-disclosure policy and no bug-bounty programme found. The published security page describes the compliance programme, not a reporting channel.'}
+  - {type: SecurityTxt, reason: /.well-known/security.txt returns 404 on every probed host.}
+  - {type: AgentCard, reason: '/.well-known/agent-card.json and /.well-known/agent.json return 404 on all six probed hosts. Never derived.'}
+  - {type: AsyncAPI, reason: 'No AsyncAPI document is published. The 32-event webhook catalog is captured under type Webhooks instead.'}
+  - {type: CLI, reason: 'No first-party CLI. The Terraform provider and SDKs are recorded under Packages/SDKs.'}
+  - {type: Sandbox, reason: No sandbox, test mode or test-credential surface is published.}
+  - {type: OAuthScopes, reason: API-key authentication only - no oauth2 securityScheme, no scope surface.}
+  - {type: Protobuf, reason: 'No .proto published; buf.build/nexgencloud does not exist.'}
+  - {type: WSDL, reason: '?wsdl returns 404 on every baseURL host. No SOAP surface.'}
+  - {type: GraphQL, reason: /graphql returns 404 on the API host. No GraphQL surface.}
+  - {type: DeclineCodes, reason: Not a payments/authorization provider.}
+  - {type: Components, reason: No embeddable/client-side UI component library is published.}
+x-base-url-reconciliation:
+  checked: '2026-08-26'
+  tool_verdict: disagreement
+  resolution: >-
+    Not a defect. repair-api-bases.py flags a disagreement because two different registrable
+    hosts appear (infrahub-api.nexgencloud.com and console.hyperstack.cloud), but they belong
+    to two DIFFERENT APIs and both are flagged ok. The provider's own docs and its
+    /.well-known/api-catalog assign them explicitly: the Hyperstack API is served from
+    https://infrahub-api.nexgencloud.com/v1 and the AI Studio API from
+    https://console.hyperstack.cloud/ai/api/v1. Each is written to its matching apis[] entry
+    and matches the servers[] block of the spec that entry links. No repair applied.

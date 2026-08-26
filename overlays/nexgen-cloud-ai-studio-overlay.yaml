@@ -1,0 +1,80 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Hyperstack AI Studio API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-08-26'
+  method: generated
+  source: >-
+    openapi/nexgen-cloud-ai-studio-openapi.json plus the artifacts derived alongside it.
+    The provider's original document is not mutated.
+extends: ../openapi/nexgen-cloud-ai-studio-openapi.json
+actions:
+- target: $.info
+  description: Attach cross-references and record the divergent error envelope.
+  update:
+    x-apievangelist:
+      profile: https://apis.io/provider/nexgen-cloud
+      artifacts:
+        authentication: authentication/nexgen-cloud-authentication.yml
+        conventions: conventions/nexgen-cloud-conventions.yml
+        errors: errors/nexgen-cloud-problem-types.yml
+        conformance: conformance/nexgen-cloud-conformance.yml
+        data_model: data-model/nexgen-cloud-data-model.yml
+    x-error-envelope:
+      shape: '{code: integer, message: string, status: string}'
+      diverges_from: >-
+        The Hyperstack Core envelope {status: boolean, message, error_reason}. `status` is a
+        STRING here and a BOOLEAN there. Client code that shares an error handler across the
+        two APIs will misread every AI Studio failure.
+- target: $.info
+  description: Record the domain-standard conformance the contract itself declares.
+  update:
+    x-domain-standard:
+      id: openai-chat-completions
+      name: OpenAI Chat Completions API
+      conforms: true
+      evidence: >-
+        POST /chat/completions, GET /models returning OpenAI-shaped model objects,
+        POST /images/generations and POST /images/edits, with OpenAIModelSchema and
+        OpenAIModelsListResponseSchema declared in components.
+      buyer_impact: An existing OpenAI-shaped client needs only a base URL and a key change.
+- target: $.info
+  description: Record the 2026-08-25 withdrawal that removed capability from this API.
+  update:
+    x-lifecycle:
+      last_breaking_change: '2026-08-25'
+      withdrawn:
+      - fine-tuning
+      - LoRA adapter training and import
+      - model deployment
+      - model aliases
+      - model evaluations
+      - training metrics and logs
+      - datasets
+      - data synthesis
+      retired_models:
+      - openai/gpt-oss-120b
+      - mistralai/Mistral-Small-24B-Instruct-2501
+      - meta-llama/Llama-3.3-70B-Instruct
+      - meta-llama/Llama-3.1-8B-Instruct
+      notice: none - effective on announcement, with no Sunset or Deprecation header
+      source: https://docs.hyperstack.cloud/docs/release-notes
+- target: $.paths['/images/generations'].post
+  description: Flag the asynchronous submit-then-poll shape.
+  update:
+    x-async:
+      pattern: submit-then-poll
+      poll_operation: getImageResult
+      handle: job_id
+- target: $.paths['/knowledge-bases/{kb_id}'].delete
+  description: Flag irreversibility of knowledge-base deletion.
+  update:
+    x-reversibility:
+      reversible: false
+      reversal_operation: null
+      note: >-
+        No restore operation exists. Ingestion can be cancelled mid-flight
+        (cancelKnowledgeBaseIngestion), but a deleted knowledge base and its indexed files
+        cannot be recovered through the API.
+    x-consequence: destructive-irreversible

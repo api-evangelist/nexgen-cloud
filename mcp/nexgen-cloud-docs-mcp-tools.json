@@ -1,0 +1,180 @@
+{
+  "_provenance": {
+    "fetched": "2026-08-26",
+    "url": "https://docs.hyperstack.cloud/mcp",
+    "method": "POST tools/list (JSON-RPC 2.0, Streamable HTTP, anonymous)",
+    "http_status": 200,
+    "protocol_version": "2025-06-18",
+    "server_info": {
+      "name": "Hyperstack Docs",
+      "version": "1.0.0"
+    }
+  },
+  "tools": [
+    {
+      "name": "search_docs",
+      "title": "Search Hyperstack docs",
+      "description": "Search the Hyperstack documentation in natural language. Use this first for any question about a Hyperstack product, feature, workflow, or API. Returns the best-matching passages, each with its page title, breadcrumb, and the docs URL to cite as the source. For a question about a specific API endpoint, request, or response, set resource_type to 'api' (core API) or 'ai_studio_api' (AI Studio API) so only reference pages are searched.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Natural language search query"
+          },
+          "resource_type": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Narrow results to one product area: vm, cluster, volume, networking, billing, ai_studio, hardware, api, ai_studio_api"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Number of results (default 5, max 20)"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_page",
+      "title": "Get a docs page",
+      "description": "Fetch the content of one documentation page as Markdown, by its docs URL or /docs/... path (as returned by search_docs). Use it when the answer needs the complete parameter table, code example, or step-by-step procedure rather than a passage. Long pages come back as their intro plus a list of sections; pass `section` to read one.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Docs URL or path, e.g. https://docs.hyperstack.cloud/docs/virtual-machines/spot/ or docs/virtual-machines/spot"
+          },
+          "section": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Optional: the heading of one section to return instead of the whole page (case-insensitive; a prefix is enough), or 'all' to force the whole page. Pages longer than 20,000 characters return their intro and a section list unless a section (or 'all') is given."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "list_sections",
+      "title": "List docs sections",
+      "description": "List the documentation table of contents: every page title with its URL, optionally narrowed to one product area (vm, cluster, volume, networking, billing, ai_studio, hardware, api, ai_studio_api). Use it to see what is documented, or to find the right page when a search is too vague.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Product area filter: vm, cluster, volume, networking, billing, ai_studio, hardware, api, ai_studio_api, or 'all' (default)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "lookup_error",
+      "title": "Look up an API error",
+      "description": "Look up a Hyperstack API error by HTTP status code, error_reason value, or the error message text, and get when it occurs, the fix, and a link to the reference. Use it when a user pastes an API error or asks why a request failed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "error_message": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "HTTP status code, error_reason value, or raw error message, e.g. '401', 'not_found', 'out of stock'"
+          },
+          "context": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "What operation was being attempted (optional)"
+          }
+        },
+        "required": [
+          "error_message"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_flavor_info",
+      "title": "GPU flavor specifications",
+      "description": "Get GPU flavor specifications (GPU model and count, CPUs, RAM, disks, regions, and supported features) from a natural-language hardware question or a GPU model filter. Use it before recommending hardware. It documents specifications only: it does not report current stock or prices.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Natural language hardware query, e.g. 'fastest single-GPU flavor', 'cheapest with NVLink', '8 GPU setup'"
+          },
+          "gpu_model": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "GPU model filter: B300, B200, H200, H100, A100, RTX PRO 6000, L40, RTX A6000, RTX A4000, CPU Only"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ]
+}

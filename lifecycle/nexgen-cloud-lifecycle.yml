@@ -1,0 +1,97 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://docs.hyperstack.cloud/docs/release-notes,
+  https://docs.hyperstack.cloud/docs/support,
+  https://status.hyperstack.cloud/,
+  https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - cross-derived against openapi/nexgen-cloud-hyperstack-openapi.json
+versioning:
+  style: uri-path
+  current: v1
+  base_url: https://infrahub-api.nexgencloud.com/v1
+  policy_published: false
+  note: >-
+    No written versioning policy exists. The API has carried /v1 since launch; the spec and
+    SDKs move on an independent 1.54.x line that is not surfaced in the URI or in any
+    response header. A consumer cannot tell which build of the contract they are talking to.
+deprecation_policy:
+  published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  advance_notice: not stated
+  note: >-
+    Hyperstack has no written deprecation policy and emits no RFC 8594 Sunset or
+    Deprecation headers. Deprecation happens - the 2026-08-25 release note withdrew
+    AI Studio fine-tuning, model deployment, evaluations, datasets and data synthesis from
+    the API on the day it was announced, along with four named base models - but it is
+    announced only as prose in the release notes, with no machine-readable signal, no
+    notice period and no migration window. This is the single largest operational gap for
+    an autonomous consumer: an agent has no runtime way to learn that an operation it
+    depends on is going away.
+  observed_deprecations:
+  - date: '2026-08-25'
+    scope: AI Studio
+    withdrawn:
+    - fine-tuning
+    - LoRA adapter training and import
+    - model deployment
+    - model aliases
+    - model evaluations
+    - training metrics and logs
+    - datasets
+    - data synthesis
+    - 'retired models: openai/gpt-oss-120b, mistralai/Mistral-Small-24B-Instruct-2501, meta-llama/Llama-3.3-70B-Instruct, meta-llama/Llama-3.1-8B-Instruct'
+    notice: none - effective on announcement
+    source: https://docs.hyperstack.cloud/docs/release-notes
+deprecated_operations:
+  count: 0
+  note: >-
+    Not one operation in either published OpenAPI carries `deprecated: true`. Verified
+    across all 209 Hyperstack operations and all 33 AI Studio operations. This is not a
+    clean bill of health - billing-history operations for the withdrawn AI Studio features
+    (Get_fine-tuning_billing_history, Get_data_synthesis_billing_history,
+    Get_model_evaluation_billing_history, Get_resource_fine-tuning_billing_history,
+    Get_resource_model_evaluation_billing_history) are still declared as live in the
+    contract the day after the features they bill for were removed.
+status_page:
+  published: true
+  url: https://status.hyperstack.cloud/
+  http_status: 200
+  incidents_feed: not published
+  maintenance_notices: true
+  note: Linked from the docs support page as "Service Status".
+sla:
+  published: false
+  note: >-
+    No public SLA or uptime commitment. Availability commitments for Secure Private Cloud
+    are contracted, not published.
+health_endpoints:
+- operationId: Get_alive
+  path: /billing/alive
+  scope: billing API liveness
+- operationId: healthzEndpoint
+  path: /object-storage/healthz
+  scope: object storage API liveness
+- url: http://localhost:8080/health
+  scope: self-hosted API MCP Server liveness (documented response includes service version)
+support:
+  channels:
+  - {type: ticket, url: 'https://nexgencloudsupport.zendesk.com/hc/en-gb', note: 'Support Center (Zendesk). Returns 403 to a plain crawler UA; live for a browser.'}
+  - {type: email, value: support@hyperstack.cloud}
+  - {type: docs, url: 'https://docs.hyperstack.cloud/docs/support'}
+security_advisories:
+  published: true
+  example:
+    id: CVE-2026-31431
+    title: 'Security Advisory: Copy Fail'
+    url: https://docs.hyperstack.cloud/docs/support/cve-2026-31431
+    summary: Linux kernel privilege-escalation flaw and Hyperstack VM mitigation steps.
+  note: >-
+    The provider publishes named CVE advisories with mitigation steps in its own docs. It
+    does NOT publish a security.txt or a vulnerability-disclosure policy - see
+    security/nexgen-cloud-vulnerability-disclosure.yml.
+changelog:
+  url: https://docs.hyperstack.cloud/docs/release-notes
+  detail: changelog/nexgen-cloud-changelog.yml

@@ -1,0 +1,151 @@
+generated: '2026-08-26'
+method: probed
+source: https://docs.hyperstack.cloud/mcp (live tools/list) + https://docs.hyperstack.cloud/docs/libraries/docs-mcp
+  + https://docs.hyperstack.cloud/docs/libraries/mcp-server
+status: published
+deployment:
+  mode: both
+  endpoint: https://docs.hyperstack.cloud/mcp
+  install: 'docker run --rm --name hyperstack-mcp -p 8080:8080 -e HYPERSTACK_API_KEY=your_api_key_here
+    ghcr.io/nexgencloud/hyperstack-mcp-server:latest'
+  package: ghcr.io/nexgencloud/hyperstack-mcp-server:latest
+  auth: none
+  verified: probed
+  note: >-
+    NexGen Cloud ships TWO distinct MCP servers and they are not the same product.
+    The remote one (mode contribution: remote) is the Docs MCP Server at
+    https://docs.hyperstack.cloud/mcp - hosted by Hyperstack, Streamable HTTP, NO
+    authentication, read-only over the documentation corpus. An agent can call it right
+    now; we did, anonymously, and its five tools with full inputSchemas are saved
+    verbatim in nexgen-cloud-docs-mcp-tools.json. The self-hosted one (mode contribution:
+    local-stdio) is the Hyperstack API MCP Server, distributed as a Docker image on
+    GitHub Container Registry, which a human must run on a machine with their own
+    Hyperstack API key before any agent can reach it; it creates, modifies and deletes
+    real billable infrastructure. `auth: none` above describes the reachable remote
+    endpoint; the self-hosted server is api-key.
+servers:
+- name: Hyperstack Docs MCP Server
+  slug: hyperstack-docs
+  mode: remote
+  endpoint: https://docs.hyperstack.cloud/mcp
+  transport: streamable-http
+  auth: none
+  read_only: true
+  verified: probed
+  probe:
+    fetched: '2026-08-26'
+    url: https://docs.hyperstack.cloud/mcp
+    http_status: 200
+    protocol_version: '2025-06-18'
+    server_info:
+      name: Hyperstack Docs
+      version: 1.0.0
+  docs: https://docs.hyperstack.cloud/docs/libraries/docs-mcp
+  tools_file: nexgen-cloud-docs-mcp-tools.json
+  tool_count: 5
+  tools:
+  - name: search_docs
+    title: Search Hyperstack docs
+    inputs: [query, resource_type, limit]
+    read_only: true
+  - name: get_page
+    title: Get a docs page
+    inputs: [path, section]
+    read_only: true
+  - name: list_sections
+    title: List docs sections
+    inputs: [filter]
+    read_only: true
+  - name: lookup_error
+    title: Look up an API error
+    inputs: [error_message, context]
+    read_only: true
+  - name: get_flavor_info
+    title: GPU flavor specifications
+    inputs: [query, gpu_model]
+    read_only: true
+  install_examples:
+  - client: Claude Code
+    command: claude mcp add --transport http hyperstack-docs https://docs.hyperstack.cloud/mcp
+  - client: Codex
+    command: codex mcp add hyperstack-docs --url https://docs.hyperstack.cloud/mcp
+  - client: any
+    command: npx add-mcp https://docs.hyperstack.cloud/mcp --name hyperstack-docs
+- name: Hyperstack API MCP Server
+  slug: hyperstack-api
+  mode: local-stdio
+  endpoint: null
+  package: ghcr.io/nexgencloud/hyperstack-mcp-server:latest
+  install: 'docker run --rm --name hyperstack-mcp -p 8080:8080 -e HYPERSTACK_API_KEY=your_api_key_here
+    ghcr.io/nexgencloud/hyperstack-mcp-server:latest'
+  transport: http (localhost:8080), commonly bridged to clients with mcp-remote
+  auth: api-key
+  auth_env: HYPERSTACK_API_KEY
+  read_only: false
+  verified: searched
+  version_reported: 0.1.0
+  version_source: documented /health response in the installation guide
+  docs: https://docs.hyperstack.cloud/docs/libraries/mcp-server
+  tools_reference: https://docs.hyperstack.cloud/docs/libraries/mcp-server/mcp-tools-reference
+  tool_count: 39
+  destructive: true
+  provider_warning: >-
+    "This MCP server can create, modify, and delete real Hyperstack resources, which
+    may incur charges on your account. Always review actions before confirming them.
+    NexGen Cloud is not liable for any unintended resource usage, costs, or data loss
+    resulting from the use of this tool."
+  note: >-
+    Tool names and descriptions below are transcribed verbatim from the provider's
+    published tools reference. Their inputSchemas were NOT introspected: the server is
+    self-hosted and requires a Hyperstack API key, so a live tools/list would have
+    required credentials. Input shapes must be read from the backing OpenAPI operations
+    recorded in nexgen-cloud-tool-crosswalk.yml.
+  tools:
+  - group: Billing & Usage
+    tools:
+    - {name: get_billing_status, description: Retrieve the current billing account status.}
+    - {name: get_billing_usage, description: Get billing usage with optional filtering by environment or deleted resources.}
+    - {name: get_previous_day_cost, description: Retrieve the cost breakdown for the previous day.}
+    - {name: get_credit_balance, description: Get the current credit balance for the account.}
+    - {name: get_payment_history, description: Retrieve historical payment transactions.}
+  - group: Clusters (Kubernetes)
+    tools:
+    - {name: create_cluster, description: Create a new Kubernetes cluster with specified configuration.}
+    - {name: list_clusters, description: List all clusters with optional filtering and pagination.}
+    - {name: get_cluster, description: Retrieve details for a specific cluster by ID.}
+    - {name: delete_cluster, description: Delete an existing cluster (requires confirmation).}
+    - {name: get_cluster_events, description: Retrieve events associated with a specific cluster.}
+    - {name: list_cluster_versions, description: List all available Kubernetes cluster versions.}
+  - group: Virtual Machines
+    tools:
+    - {name: create_vm, description: Create a new virtual machine instance.}
+    - {name: list_vms, description: List all VMs with optional filtering and pagination.}
+    - {name: get_vm, description: Retrieve detailed information about a specific VM.}
+    - {name: start_vm, description: Start a stopped virtual machine.}
+    - {name: stop_vm, description: Stop a running virtual machine.}
+    - {name: delete_vm, description: Permanently delete a VM and all associated resources.}
+    - {name: hard_reboot_vm, description: Perform a hard reboot (forcible restart).}
+    - {name: hibernate_vm, description: Hibernate a VM, saving its current state.}
+    - {name: restore_vm, description: Restore a hibernated VM.}
+    - {name: attach_volume_to_vm, description: Attach one or more storage volumes to a VM.}
+    - {name: detach_volume_from_vm, description: Detach one or more storage volumes from a VM.}
+    - {name: attach_floating_ip_to_vm, description: Attach a floating IP address to a VM.}
+    - {name: detach_floating_ip_from_vm, description: Detach a floating IP address from a VM.}
+    - {name: add_firewall_rule, description: Add a firewall rule to control network traffic.}
+    - {name: remove_firewall_rule, description: Remove a firewall rule from a VM.}
+    - {name: get_vm_events, description: Retrieve events or logs related to a VM.}
+  - group: Storage Volumes
+    tools:
+    - {name: create_volume, description: Create a new storage volume.}
+    - {name: list_volumes, description: List all volumes with optional filtering and pagination.}
+    - {name: get_volume, description: Retrieve detailed information about a specific volume.}
+    - {name: update_volume, description: Update a volume's configuration (for example, environment assignment).}
+    - {name: delete_volume, description: Permanently delete a volume.}
+    - {name: list_volume_types, description: Retrieve a list of available volume types.}
+    - {name: update_volume_attachment, description: Update volume attachment properties (for example, protection settings).}
+  - group: Infrastructure
+    tools:
+    - {name: list_flavors, description: List available VM flavors (instance types) for a specific region.}
+    - {name: list_environments, description: List all available environments with optional search and pagination.}
+    - {name: get_environment, description: Retrieve detailed information about a specific environment.}
+    - {name: check_stocks, description: Check GPU stock availability across all regions.}

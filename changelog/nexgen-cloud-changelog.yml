@@ -1,0 +1,141 @@
+generated: '2026-08-26'
+method: searched
+source: https://docs.hyperstack.cloud/docs/release-notes
+docs: https://docs.hyperstack.cloud/docs/release-notes
+scheme: dated
+cadence: >-
+  Dated entries, roughly weekly. 39 dated clusters published between 2026-01-06 and
+  2026-08-25 - a genuinely maintained log, not a stale page.
+current_version:
+  api: v1
+  spec_line: '1.54.x'
+  note: >-
+    The public API has a single major version (v1) that has never been rebased. Change is
+    communicated exclusively through these dated release notes; there is no version
+    number on a release, no RSS/Atom feed, and no machine-readable changelog.
+tags:
+- Hyperstack Core
+- AI Studio
+entries:
+- date: '2026-08-25'
+  product: AI Studio
+  title: Fine-tuning and Hyperstack-hosted models removed
+  breaking: true
+  highlights:
+  - >-
+    Fine-tuning and Hyperstack-hosted base models removed from BOTH the console and the
+    API. LoRA adapter training and import, model deployment, model aliases, model
+    evaluations, training metrics, logs, datasets and data synthesis all withdrawn with
+    them.
+  - >-
+    Retired models: openai/gpt-oss-120b, mistralai/Mistral-Small-24B-Instruct-2501,
+    meta-llama/Llama-3.3-70B-Instruct, meta-llama/Llama-3.1-8B-Instruct. Callers must
+    pick a replacement from the Model Catalog and change the model name in their requests.
+  - >-
+    Unaffected: inference through the API, the Playground, Knowledge Bases, system prompts
+    and conversations. Billing history for past usage remains available.
+  note: >-
+    The largest breaking change in the window and the clearest deprecation signal in this
+    repo. AI Studio is now inference-only over third-party hosted models. Note that
+    billing history endpoints for the withdrawn features are still declared in the
+    Hyperstack OpenAPI (Get_fine-tuning_billing_history,
+    Get_data_synthesis_billing_history, Get_model_evaluation_billing_history), so the
+    contract still describes surfaces the product no longer sells.
+- date: '2026-08-10'
+  product: Hyperstack Core
+  title: Operation failure reporting fix
+  breaking: false
+  highlights:
+  - >-
+    Operations such as creating a VM or deleting a volume now report a failure when they
+    cannot complete. Previously an operation could intermittently stop without reporting
+    an error, so the request appeared accepted but never completed.
+- date: '2026-08-06'
+  product: AI Studio
+  title: Knowledge Bases and grounded responses
+  breaking: false
+  additions:
+  - New Knowledge Bases APIs for programmatic management.
+  - Grounding a message by passing a knowledge base to the Send message endpoint.
+  - Cited sources with numbered citation markers on grounded replies.
+- date: '2026-08-05'
+  product: Hyperstack Core
+  title: Console fixes and improvements
+  breaking: false
+- date: '2026-08-03'
+  product: Hyperstack Core
+  title: Docs MCP Server
+  breaking: false
+  additions:
+  - >-
+    Launch of the hosted, anonymous, read-only documentation MCP server at
+    https://docs.hyperstack.cloud/mcp.
+- date: '2026-07-30'
+  product: AI Studio
+  title: Kimi K3 in AI Studio
+  breaking: false
+- date: '2026-07-29'
+  product: Hyperstack Core
+  title: Public IP address accuracy fix
+  breaking: false
+- date: '2026-07-27'
+  product: Hyperstack Core
+  title: SSH key validation and Kubernetes cluster fixes
+  breaking: false
+- date: '2026-07-22'
+  product: Hyperstack Core
+  title: Cluster billing history ownership validation
+  breaking: false
+- date: '2026-07-21'
+  product: Hyperstack Core
+  title: Cloud-init script validation
+  breaking: false
+- date: '2026-07-20'
+  product: Hyperstack Core
+  title: Volume attachment state fix
+  breaking: false
+- date: '2026-07-16'
+  product: Hyperstack Core
+  title: Expanded email notification controls
+  breaking: false
+- date: '2026-07-14'
+  product: Hyperstack Core
+  title: Concurrent creation reliability
+  breaking: false
+- date: '2026-07-09'
+  product: Hyperstack Core
+  title: Resource Activity and platform fixes
+  breaking: false
+- date: '2026-07-06'
+  product: AI Studio
+  title: Image-to-text models and conversation history
+  breaking: false
+- date: '2026-06-30'
+  product: Hyperstack Core
+  title: Cumulative and Delta views for performance metrics
+  breaking: false
+- date: '2026-06-29'
+  product: Hyperstack Core
+  title: Faster API responses
+  breaking: false
+- date: '2026-06-23'
+  product: Hyperstack Core
+  title: Organization management improvements
+  breaking: false
+- date: '2026-06-22'
+  product: Hyperstack Core
+  title: Kubernetes version update and payment receipt fix
+  breaking: false
+- date: '2026-06-16'
+  product: AI Studio
+  title: Image Playground and vision models
+  breaking: false
+window:
+  from: '2026-06-16'
+  to: '2026-08-25'
+  entries_in_window: 20
+  total_dated_clusters_on_page: 39
+  earliest_on_page: '2026-01-06'
+machine_readable:
+  feed: false
+  note: No RSS/Atom feed or JSON changelog is published; the page is HTML only.

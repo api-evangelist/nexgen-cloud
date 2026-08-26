@@ -1,0 +1,118 @@
+generated: '2026-08-26'
+method: probed
+source: live GET probes of /.well-known/* on every apis.yml and OpenAPI servers[] host
+note: >-
+  docs.hyperstack.cloud serves a real RFC 9727 API catalog (application/linkset+json)
+  naming both published APIs and linking each to its service-desc OpenAPI document.
+  No other host serves any /.well-known/ document; www.nexgencloud.com, www.hyperstack.cloud,
+  console.hyperstack.cloud, infrahub-api.nexgencloud.com and infrahub-api-doc.nexgencloud.com
+  all return 404 on every probed path. No security.txt is published anywhere.
+hosts:
+- host: docs.hyperstack.cloud
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    file: nexgen-cloud-api-catalog.json
+    content_type: application/linkset+json
+    note: RFC 9727 linkset naming "Hyperstack API" and "AI Studio API", each with a
+      service-desc OpenAPI document and a service-doc HTML reference.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: www.nexgencloud.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: www.hyperstack.cloud
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: console.hyperstack.cloud
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: infrahub-api.nexgencloud.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: infrahub-api-doc.nexgencloud.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+llms_txt:
+- host: docs.hyperstack.cloud
+  path: /llms.txt
+  status: 200
+  file: ../llms/nexgen-cloud-llms.txt
+  note: Real llms.txt, 260 lines, indexing the whole documentation corpus.
+- host: www.hyperstack.cloud
+  path: /llms.txt
+  status: 200
+  note: >-
+    Soft 200 - returns the marketing site's HTML SPA shell, not an llms.txt document.
+    Treated as a miss.
+- host: www.nexgencloud.com
+  path: /llms.txt
+  status: 200
+  note: Soft 200 - HTML SPA shell, not an llms.txt document. Treated as a miss.

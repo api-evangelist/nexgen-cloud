@@ -1,0 +1,159 @@
+generated: '2026-08-26'
+method: searched
+source: https://www.hyperstack.cloud/gpu-pricing
+docs: https://www.hyperstack.cloud/gpu-pricing
+currency: USD
+billing_model: usage-based
+billing_granularity: per-minute
+note: >-
+  Hyperstack sells consumption, not subscription tiers - there is no free/pro/enterprise
+  ladder. What it publishes instead is a full public rate card for three purchase modes
+  (on-demand, reserved, spot) plus storage and networking, all in USD and billed per
+  minute. Enterprise-scale contracts are quoted directly. The plans below model each
+  purchase mode as a tier; the per-GPU rates are recorded under prices[]. Every figure is
+  transcribed verbatim from the public pricing page on 2026-08-26 and rates change.
+plan_count: 4
+plans:
+- name: On-Demand
+  price_model: usage-based
+  currency: USD
+  billing_period: per-minute (rates quoted per hour)
+  commitment: none
+  quota: null
+  overage: null
+  limits:
+  - 500 API requests per minute per source IP (see rate-limits/)
+  prices:
+  - resource: NVIDIA B300
+    vram_gb: 288
+    max_pcpus_per_gpu: 28
+    max_ram_gb_per_gpu: 240
+    price_per_hour: 7.40
+  - resource: NVIDIA B200
+    vram_gb: 192
+    max_pcpus_per_gpu: 31
+    max_ram_gb_per_gpu: 256
+    price_per_hour: 6.00
+  - resource: NVIDIA H200 SXM
+    vram_gb: 141
+    max_pcpus_per_gpu: 22
+    max_ram_gb_per_gpu: 225
+    price_per_hour: 3.99
+  - resource: NVIDIA H100 SXM
+    vram_gb: 80
+    max_pcpus_per_gpu: 24
+    max_ram_gb_per_gpu: 240
+    price_per_hour: 3.20
+  - resource: NVIDIA H100 NVLink
+    vram_gb: 80
+    price_per_hour: 2.60
+  - resource: NVIDIA H100
+    vram_gb: 80
+    price_per_hour: 2.50
+  - resource: NVIDIA RTX Pro 6000 SE
+    vram_gb: 96
+    price_per_hour: 1.85
+  - resource: NVIDIA A100 SXM
+    vram_gb: 80
+    price_per_hour: 1.60
+  - resource: NVIDIA A100 NVLink
+    vram_gb: 80
+    price_per_hour: 1.40
+  - resource: NVIDIA A100
+    vram_gb: 80
+    price_per_hour: 1.35
+  - resource: NVIDIA L40
+    vram_gb: 48
+    price_per_hour: 1.00
+  - resource: NVIDIA A6000
+    vram_gb: 48
+    price_per_hour: 0.50
+  - resource: NVIDIA A4000
+    vram_gb: 16
+    price_per_hour: 0.15
+  - resource: n1-cpu-small (4 cores / 4 GB RAM / 100 GB root)
+    price_per_hour: 0.35
+  - resource: n1-cpu-medium (8 cores / 8 GB RAM / 100 GB root)
+    price_per_hour: 0.65
+  - resource: n1-cpu-large (16 cores / 16 GB RAM / 200 GB root)
+    price_per_hour: 1.30
+  - resource: n1-cpu-xlarge (16 cores / 32 GB RAM / 100 GB root)
+    price_per_hour: 1.90
+  - resource: n1-cpu-xxlarge (32 cores / 64 GB RAM / 100 GB root)
+    price_per_hour: 3.74
+- name: Reserved
+  price_model: committed-term
+  currency: USD
+  billing_period: contract term
+  commitment: long-term GPU reservation with discount; see https://docs.hyperstack.cloud/docs/billing/contracts
+  prices:
+  - resource: NVIDIA B200
+    price_per_hour_from: 5.10
+  - resource: NVIDIA H200 SXM
+    price_per_hour_from: 2.79
+  - resource: NVIDIA H100 SXM
+    price_per_hour_from: 2.72
+  - resource: NVIDIA H100 NVLink
+    price_per_hour_from: 1.82
+  - resource: NVIDIA H100
+    price_per_hour_from: 1.75
+  - resource: NVIDIA A100 SXM
+    price_per_hour_from: 1.36
+  - resource: NVIDIA RTX Pro 6000 SE
+    price_per_hour_from: 1.30
+  - resource: NVIDIA A100 NVLink
+    price_per_hour_from: 0.98
+  - resource: NVIDIA A100
+    price_per_hour_from: 0.95
+  - resource: NVIDIA L40
+    price_per_hour_from: 0.70
+  - resource: NVIDIA A6000
+    price_per_hour_from: 0.35
+  - resource: NVIDIA A4000
+    price_per_hour_from: 0.11
+- name: Spot VMs
+  price_model: usage-based-interruptible
+  currency: USD
+  billing_period: per-minute (rates quoted per hour)
+  commitment: none
+  note: Low-cost interruptible capacity. https://docs.hyperstack.cloud/docs/virtual-machines/spot
+  prices:
+  - resource: NVIDIA H100 PCIe
+    price_per_hour: 2.00
+  - resource: NVIDIA RTX Pro 6000 SE
+    price_per_hour: 1.48
+  - resource: NVIDIA A100
+    price_per_hour: 1.08
+  - resource: NVIDIA L40
+    price_per_hour: 0.80
+  - resource: NVIDIA A6000
+    price_per_hour: 0.40
+- name: Enterprise / Secure Private Cloud
+  price_model: contact-sales
+  currency: USD
+  price: null
+  note: >-
+    "For larger enterprise-scale contracts, please contact us directly." Single-tenant
+    sovereign superclusters are quoted, not listed.
+other_pricing:
+- resource: Cloud-SSD volumes (SSVs)
+  price: 0.000096774 per GB per hour (approximately $0.10 per TB per hour)
+- resource: Snapshots
+  price: Estimated at creation from VM size + attached volumes at current Cloud-SSD rates
+  docs: https://docs.hyperstack.cloud/docs/billing/snapshots
+- resource: Public IP address
+  price: 0.00672043 per hour
+- resource: Egress / ingress traffic
+  price: free
+- resource: On-Demand Kubernetes master node
+  price: free
+machine_readable_pricing:
+  available: true
+  note: >-
+    Pricing is also queryable through the API rather than only the marketing page - the
+    Pricebook (GET /pricebook) and Calculate endpoints return resource rates by flavor
+    and region. This is unusual and materially useful to an agent budgeting a run.
+  operations:
+  - Get_pricebook
+  - Calculate_resource_billing_rate
+  docs: https://docs.hyperstack.cloud/docs/api-reference/pricebook

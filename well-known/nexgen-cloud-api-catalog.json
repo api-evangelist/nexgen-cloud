@@ -1,0 +1,47 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://docs.hyperstack.cloud/.well-known/api-catalog",
+      "item": [
+        {
+          "href": "https://docs.hyperstack.cloud/docs/api-reference/introduction/",
+          "title": "Hyperstack API"
+        },
+        {
+          "href": "https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/",
+          "title": "AI Studio API"
+        }
+      ]
+    },
+    {
+      "anchor": "https://docs.hyperstack.cloud/docs/api-reference/introduction/",
+      "service-desc": [
+        {
+          "href": "https://docs.hyperstack.cloud/openapi/hyperstack.json",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://docs.hyperstack.cloud/docs/api-reference/introduction/",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/",
+      "service-desc": [
+        {
+          "href": "https://docs.hyperstack.cloud/openapi/ai-studio.json",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/",
+          "type": "text/html"
+        }
+      ]
+    }
+  ]
+}
