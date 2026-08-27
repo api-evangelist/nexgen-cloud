@@ -33,30 +33,19 @@ tags:
 - Virtual Machines
 - Sovereign AI
 apis:
-- aid: nexgen-cloud-hyperstack-api
-  name: Hyperstack API
-  description: 'The Hyperstack API is a REST API for deploying and managing GPU infrastructure
-    on the Hyperstack cloud: provision virtual machines, manage snapshots and images,
-    attach block-storage volumes, manage S3-compatible object-storage buckets and access
-    keys, configure firewalls and floating IPs, provision Kubernetes clusters and node
-    groups, administer organizations, RBAC roles and API keys, and read pricing, credit
-    and billing data programmatically. 209 documented operations across 46 tags. API-key
-    authentication via the api_key header.'
+- aid: nexgen-cloud:nexgen-cloud-access-keys-api
+  name: NexGen Cloud Access Keys API
+  description: >-
+    Access keys authenticate S3-compatible object storage operations. Each key has an access ID and a
+    secret. Generate access keys via this API or in the console, then use them to sign requests to bucket
+    endpoints.
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
-  - Cloud
-  - GPU
-  - Compute
-  - Virtual Machines
-  - Kubernetes
-  - Storage
-  - Billing
+  - Access Keys
   properties:
   - type: OpenAPI
-    url: openapi/nexgen-cloud-hyperstack-openapi.json
-  - type: OpenAPI
-    url: openapi/nexgen-cloud-infrahub-api-openapi.json
+    url: openapi/nexgen-cloud-access-keys-api-openapi.yml
   - type: Documentation
     url: https://docs.hyperstack.cloud/docs/api-reference/introduction
   - type: APIReference
@@ -71,39 +60,1917 @@ apis:
     url: https://docs.hyperstack.cloud/docs/api-reference/errors
   - type: Webhooks
     url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
-  - type: Overlay
-    url: overlays/nexgen-cloud-hyperstack-overlay.yaml
-- aid: nexgen-cloud-ai-studio-api
-  name: Hyperstack AI Studio API
-  description: 'The AI Studio API is a REST API for inference on Hyperstack AI Studio:
-    list the base-model catalog with pricing, run OpenAI-compatible chat completions,
-    generate and edit images, manage conversations and message history, create reusable
-    system prompts, and build knowledge bases from text and Markdown files for grounded
-    retrieval-augmented answers. 33 operations. API-key authentication via the api_key
-    header.'
-  humanURL: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
-  baseURL: https://console.hyperstack.cloud/ai/api/v1
-  tags:
-  - Artificial Intelligence
-  - Inference
-  - Machine Learning
-  - Image Generation
-  - Knowledge Base
-  properties:
-  - type: OpenAPI
-    url: openapi/nexgen-cloud-ai-studio-openapi.json
   - type: Documentation
     url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
   - type: APIReference
     url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
-  - type: Overlay
-    url: overlays/nexgen-cloud-ai-studio-overlay.yaml
+- aid: nexgen-cloud:nexgen-cloud-alive-api
+  name: NexGen Cloud Alive API
+  description: >-
+    Service liveness check for the billing API. Use to confirm the billing service is reachable.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Alive
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-alive-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-api-key-api
+  name: NexGen Cloud API Key API
+  description: >-
+    API keys authenticate requests to the Hyperstack API. Generate keys in the console; each key is server-side
+    and scoped to a specific environment. Rotate keys periodically and revoke any key whose secret may
+    have been exposed.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - API Key
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-api-key-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-assigning-member-role-api
+  name: NexGen Cloud Assigning Member Role API
+  description: Bulk role assignments for organization members.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Assigning Member Role
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-assigning-member-role-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-auth-api
+  name: NexGen Cloud Auth API
+  description: >-
+    Auth endpoints manage organization tokens, including changing the active organization on the current
+    token. Use these endpoints when an account spans multiple organizations and you need to scope subsequent
+    calls to a specific one.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Auth
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-auth-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-auto-topup-api
+  name: NexGen Cloud Auto Topup API
+  description: The auto-topup API from NexGen Cloud — 2 operation(s) for auto-topup.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - auto-topup
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-auto-topup-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-base-models-api
+  name: NexGen Cloud Base Models API
+  description: >-
+    Pre-trained foundation models available in AI Studio. These endpoints let you list available models,
+    retrieve pricing, and fetch details for a specific base model.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Base Models
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-base-models-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-beta-access-api
+  name: NexGen Cloud beta access API
+  description: Beta Access APIs
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - beta access
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-beta-access-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-billing-api
+  name: NexGen Cloud Billing API
+  description: >-
+    Billing endpoints expose your account's billing history, current credit balance, payment history,
+    and usage costs. Use these to reconcile spend, build internal cost reports, or trigger alerts when
+    balances drop below a threshold.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Billing
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-billing-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-buckets-api
+  name: NexGen Cloud Buckets API
+  description: >-
+    A bucket is an S3-compatible object storage container. Buckets are region-scoped and accessed via
+    standard S3 SDKs once you have access keys. Use these endpoints to list and delete buckets, bucket
+    creation happens through the S3 protocol against the bucket endpoint URL, not this API.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Buckets
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-buckets-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-calculate-api
+  name: NexGen Cloud Calculate API
+  description: >-
+    Calculate endpoints return billing-rate breakdowns for specific resources. Provide a resource type
+    and ID to retrieve its hourly cost, including pre- and post-discount components.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Calculate
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-calculate-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-callbacks-api
+  name: NexGen Cloud Callbacks API
+  description: >-
+    Webhook callback registrations on virtual machines and volumes for state-change notifications.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Callbacks
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-callbacks-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-cluster-events-api
+  name: NexGen Cloud cluster events API
+  description: Cluster Event APIs
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - cluster events
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-cluster-events-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-clusters-api
+  name: NexGen Cloud Clusters API
+  description: >-
+    A cluster is a managed Kubernetes cluster on Hyperstack, control plane + worker nodes preconfigured
+    for GPU workloads. Clusters are region-scoped and can attach data volumes via Container Storage Interface
+    (CSI) drivers. Most workflows: deploy cluster → configure storage → deploy workload → autoscale workers.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Clusters
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-clusters-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-compliance-api
+  name: NexGen Cloud Compliance API
+  description: Compliance APIs
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - compliance
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-compliance-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-conversations-api
+  name: NexGen Cloud Conversations API
+  description: >-
+    Conversation threads and message history for AI Studio chat sessions. These endpoints let you create
+    conversations, send messages, retrieve message history, and delete conversation threads.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Conversations
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-conversations-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-credit-api
+  name: NexGen Cloud Credit API
+  description: >-
+    Credit endpoints retrieve your account's current credit balance. Credits are consumed by resource
+    usage and replenished via payments or vouchers.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Credit
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-credit-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-customer-contract-api
+  name: NexGen Cloud Customer Contract API
+  description: >-
+    Customer contract endpoints retrieve negotiated pricing terms applied to your account. Contracts override
+    standard pricebook rates for the resources they cover.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Customer Contract
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-customer-contract-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-dashboard-api
+  name: NexGen Cloud Dashboard API
+  description: >-
+    Aggregate account-level metrics for the calling user, VM and resource counts, recent activity.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Dashboard
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-dashboard-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-deployment-api
+  name: NexGen Cloud Deployment API
+  description: >-
+    Deployment endpoints manage scripts that run during virtual machine boot to install dependencies,
+    configure services, or prepare GPU workloads. Attach a deployment script to a VM at launch; the script
+    runs once on first boot and is logged for review.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Deployment
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-deployment-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-email-opt-in-out-api
+  name: NexGen Cloud Email Opt In Out API
+  description: User email preference management
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - email-opt-in-out
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-email-opt-in-out-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-email-preferences-api
+  name: NexGen Cloud Email Preferences API
+  description: >-
+    Email preference endpoints control which optional email notifications Hyperstack sends to your account.
+    Use them to read your current preferences and change them, individually or all at once. See the [**Email
+    Notification Preferences guide**](https://docs.hyperstack.cloud/docs/resource-management/email-notifications)
+    for the full feature walkthrough.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Email Preferences
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-email-preferences-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-environment-api
+  name: NexGen Cloud Environment API
+  description: >-
+    An environment is a logical container for resources within a region. Use environments to separate
+    development, staging, and production resources, or to isolate per-team workloads. Most resource endpoints
+    require an environment name in the request.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Environment
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-environment-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-fip-exclusions-api
+  name: NexGen Cloud FIP Exclusions API
+  description: >-
+    FIP exclusion endpoints manage which virtual machines are exempt from automatic floating-IP detachment
+    policies.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - FIP Exclusions
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-fip-exclusions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-firewall-attachment-api
+  name: NexGen Cloud Firewall Attachment API
+  description: Firewall Attachments APIs
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - firewall-attachment
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-firewall-attachment-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-firewalls-api
+  name: NexGen Cloud Firewalls API
+  description: >-
+    A firewall is a set of inbound and outbound rules scoped to an environment. Attach a firewall to one
+    or more virtual machines or Kubernetes clusters to control which network traffic each resource can
+    send and receive. Default rules block all inbound traffic, add explicit allow rules for SSH, HTTP,
+    or any service you need to expose.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Firewalls
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-firewalls-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-flavor-api
+  name: NexGen Cloud Flavor API
+  description: >-
+    A flavor is a machine type, its CPU count, memory, and GPU configuration. Flavors are region-specific.
+    List flavors before deploying a virtual machine to find one available in your target region with the
+    GPU and resource shape you need.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Flavor
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-flavor-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-floating-ip-api
+  name: NexGen Cloud Floating IP API
+  description: >-
+    A floating IP is a static public IPv4 address that can be assigned to a virtual machine. Floating
+    IPs persist across VM lifecycle events, detach from one VM and reattach to another to keep the address.
+    Allocating a floating IP without attaching it incurs a small reservation fee.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Floating IP
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-floating-ip-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-gpu-api
+  name: NexGen Cloud GPU API
+  description: GPU model availability and stock per region.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - GPU
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-gpu-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-health-api
+  name: NexGen Cloud Health API
+  description: >-
+    Service liveness check for object storage. Use to confirm the object-storage service is reachable.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-health-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-image-api
+  name: NexGen Cloud Image API
+  description: >-
+    An image is the operating system disk a virtual machine boots from. Images include Ubuntu, Rocky Linux,
+    and other distributions, with optional pre-installed CUDA or AI/ML frameworks. Images are region-scoped,
+    list images per region to find what's available before deploying.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Image
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-image-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-image-generation-api
+  name: NexGen Cloud Image Generation API
+  description: >-
+    Text-to-image and image-to-image generation. Submit a generation or edit request, then poll the task
+    endpoint to retrieve the resulting image. Use a presigned upload URL to supply a source image for
+    edits.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Image Generation
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-image-generation-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-inference-api
+  name: NexGen Cloud Inference API
+  description: >-
+    OpenAI-compatible chat completions endpoint for running inference against deployed models. Use this
+    endpoint to send prompts and receive generated responses.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Inference
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-inference-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-invite-api
+  name: NexGen Cloud Invite API
+  description: >-
+    Invite endpoints add and manage users within an organization. Invite a user by email; they accept
+    the invitation and gain access to the organization with the role you specified.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Invite
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-invite-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-keypair-api
+  name: NexGen Cloud Keypair API
+  description: >-
+    A keypair is an SSH public/private key pair used to authenticate into virtual machines after deployment.
+    Generate the keypair locally, register the public key with Hyperstack, then reference the keypair
+    name when deploying a VM. Hyperstack never stores private keys.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Keypair
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-keypair-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-knowledge-bases-api
+  name: NexGen Cloud Knowledge Bases API
+  description: Collections of your own documents that models can search at inference time.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Knowledge Bases
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-knowledge-bases-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-models-api
+  name: NexGen Cloud Models API
+  description: >-
+    User-deployed models and model aliases. These endpoints let you deploy and undeploy models, list available
+    models, manage model aliases, and retrieve deployment details.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Models
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-models-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-organization-api
+  name: NexGen Cloud Organization API
+  description: >-
+    Organization endpoints manage organization-level metadata: name, members, and configuration. Most
+    users belong to a single organization; multi-organization accounts use these endpoints to switch context
+    and manage memberships.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Organization
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-organization-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-overview-api
+  name: NexGen Cloud Overview API
+  description: Organization-level summary and resource usage metrics for the AI Studio account.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Overview
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-overview-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-partner-config-api
+  name: NexGen Cloud Partner Config API
+  description: Partner config fetch endpoint
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - partner-config
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-partner-config-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-payment-api
+  name: NexGen Cloud Payment API
+  description: >-
+    Payment endpoints initiate and retrieve payments. Use these to add funds to your account programmatically
+    or to fetch receipts for reconciliation.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Payment
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-payment-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-permission-api
+  name: NexGen Cloud Permission API
+  description: >-
+    Permission endpoints list the granular permissions defined by Hyperstack. Permissions compose into
+    RBAC roles, which are assigned to organization members. List permissions to discover what's available
+    before building a custom role.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Permission
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-permission-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-policy-api
+  name: NexGen Cloud Policy API
+  description: Authorization policies that bind permissions to roles.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Policy
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-policy-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-pricebook-api
+  name: NexGen Cloud Pricebook API
+  description: >-
+    Pricebook endpoints expose Hyperstack's pricing for compute, storage, and networking resources. Use
+    these to estimate costs before deploying or to surface live pricing in your application.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Pricebook
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-pricebook-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-profile-api
+  name: NexGen Cloud Profile API
+  description: Saved virtual-machine deployment configurations that can be reused across new VMs.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Profile
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-profile-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-rbac-role-api
+  name: NexGen Cloud RBAC Role API
+  description: >-
+    RBAC role endpoints create, list, update, and delete custom roles. A role is a named bundle of permissions
+    that you can assign to organization members. Built-in roles (`admin`, `member`, `viewer`) cover most
+    cases, create custom roles for finer control.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - RBAC Role
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-rbac-role-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-region-api
+  name: NexGen Cloud Region API
+  description: >-
+    A region is a geographic location where Hyperstack hosts compute and storage. Resources are region-scoped,
+    virtual machines, volumes, snapshots, and firewalls all belong to exactly one region. List regions
+    to discover which are available to your account.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Region
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-region-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-regions-api
+  name: NexGen Cloud Regions API
+  description: Regions where object storage is available.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Regions
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-regions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-security-rules-api
+  name: NexGen Cloud Security Rules API
+  description: Security Rule APIs
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - security-rules
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-security-rules-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-snapshot-events-api
+  name: NexGen Cloud snapshot events API
+  description: Snapshot Events APIs
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - snapshot events
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-snapshot-events-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-snapshots-api
+  name: NexGen Cloud Snapshots API
+  description: >-
+    A snapshot is a point-in-time copy of a virtual machine or volume. Snapshots are stored in the same
+    region as the source resource and can be used to clone, restore, or migrate state. Snapshot creation
+    is non-blocking, the source VM remains running while the snapshot completes in the background.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Snapshots
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-snapshots-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-stock-api
+  name: NexGen Cloud Stock API
+  description: >-
+    GPU and CPU stock availability per flavor and region. Use before deployment to confirm capacity.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Stock
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-stock-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-system-prompts-api
+  name: NexGen Cloud System Prompts API
+  description: >-
+    Reusable system prompt templates for AI Studio deployments. These endpoints let you create, retrieve,
+    update, and delete system prompts that can be applied to deployed models.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - System Prompts
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-system-prompts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-template-api
+  name: NexGen Cloud Template API
+  description: >-
+    A template is a saved virtual machine configuration that you can reuse to deploy identical VMs without
+    re-specifying every parameter. Templates capture flavor, image, keypair, networking, and metadata.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Template
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-template-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-user-api
+  name: NexGen Cloud User API
+  description: Account-level user information and billing identity.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - User
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-user-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-user-consent-api
+  name: NexGen Cloud User Consent API
+  description: >-
+    User Consent endpoints record each user's grant or revoke decision for a given consent type (e.g.
+    marketing communications, data-sharing terms). Use these endpoints to read what consent has been granted,
+    fetch current consent templates, and update consent state programmatically.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - User Consent
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-user-consent-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-user-consent-events-api
+  name: NexGen Cloud User Consent Events API
+  description: User Consent management
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - user-consent-events
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-user-consent-events-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-user-detail-choice-api
+  name: NexGen Cloud User Detail Choice API
+  description: User-specific configuration choices (profile preferences, defaults).
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - User Detail Choice
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-user-detail-choice-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-user-permission-api
+  name: NexGen Cloud User Permission API
+  description: Permissions assigned to specific users in the calling organization.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - User Permission
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-user-permission-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-virtual-machine-api
+  name: NexGen Cloud Virtual Machine API
+  description: >-
+    A virtual machine on Hyperstack is a single-tenant compute instance backed by dedicated GPU and CPU
+    resources. Each VM runs in a region, attaches a root volume and optional data volumes, and is protected
+    by an environment-scoped firewall. Most workflows follow this lifecycle: deploy → attach data volumes
+    → run workload → snapshot → terminate. For long-running development VMs, hibernation is the cost-effective
+    alternative to termination.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Virtual Machine
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-virtual-machine-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-virtual-machine-events-api
+  name: NexGen Cloud virtual machine events API
+  description: Virtual Machine Event APIs
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - virtual machine events
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-virtual-machine-events-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-vnc-url-api
+  name: NexGen Cloud VNC URL API
+  description: Console-access URLs for connecting to a virtual machine over VNC.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - VNC URL
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-vnc-url-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-volume-api
+  name: NexGen Cloud Volume API
+  description: >-
+    A volume is persistent block storage that attaches to a virtual machine. Volumes are region-scoped
+    and can be detached and reattached to other VMs in the same region. Snapshots capture a point-in-time
+    copy of a volume that can be restored to any new volume of equal or greater size.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Volume
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-volume-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-volume-attachment-api
+  name: NexGen Cloud Volume Attachment API
+  description: >-
+    Volume attachment endpoints manage the binding between a volume and a virtual machine. A volume can
+    be attached to one VM at a time. Detach a volume before attaching it elsewhere; the data persists
+    on the volume across attachments.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Volume Attachment
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-volume-attachment-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-vouchers-api
+  name: NexGen Cloud Vouchers API
+  description: >-
+    Voucher endpoints redeem promotional codes to add credit to your account. Vouchers are single-use.
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Vouchers
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-vouchers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/nexgen-cloud-hyperstack-overlay.yaml
+- type: Overlay
+  url: overlays/nexgen-cloud-ai-studio-overlay.yaml
 - type: Website
   url: https://www.nexgencloud.com/
 - type: DeveloperPortal
