@@ -26,6 +26,8 @@ deliveryModel:
   method: derived
 image: https://www.hyperstack.cloud/hubfs/hyperstack_2023/home/logo.svg
 url: https://raw.githubusercontent.com/api-evangelist/nexgen-cloud/refs/heads/main/apis.yml
+x-api-posture: no-product-api
+x-api-posture-basis: observed
 x-type: company
 x-source: harvest:secondary-market
 specificationVersion: '0.20'
