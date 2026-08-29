@@ -12,6 +12,18 @@ description: 'NexGen Cloud Limited is a UK-headquartered AI cloud and GPU infras
   with official Python, Go, JavaScript and TypeScript SDKs, a Terraform provider, a
   Kubernetes CSI driver, a hosted read-only documentation MCP server and a self-hosted
   API MCP server.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://www.hyperstack.cloud/hubfs/hyperstack_2023/home/logo.svg
 url: https://raw.githubusercontent.com/api-evangelist/nexgen-cloud/refs/heads/main/apis.yml
 x-type: company
@@ -1967,6 +1979,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/nexgen-cloud-capability-edges.yml
+  name: NexGen Cloud Business Capability Map
 - type: Overlay
   url: overlays/nexgen-cloud-hyperstack-overlay.yaml
 - type: Overlay
