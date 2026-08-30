@@ -38,6 +38,19 @@ tags:
 - Cloud
 - GPU
 - Artificial Intelligence
+- Machine-Learning
+- Infrastructure
+- Compute
+- Kubernetes
+- Storage
+- Inference
+- Virtual Machines
+- Sovereign AI
+tags_raw:
+- Company
+- Cloud
+- GPU
+- Artificial Intelligence
 - Machine Learning
 - Infrastructure
 - Compute
@@ -116,6 +129,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - APIKeys
+  tags_raw:
   - API Key
   properties:
   - type: OpenAPI
@@ -175,6 +190,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Authentication
+  tags_raw:
   - Auth
   properties:
   - type: OpenAPI
@@ -441,6 +458,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Cluster
+  tags_raw:
   - Clusters
   properties:
   - type: OpenAPI
@@ -469,6 +488,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Compliance
+  tags_raw:
   - compliance
   properties:
   - type: OpenAPI
@@ -981,6 +1002,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Image-Generation
+  tags_raw:
   - Image Generation
   properties:
   - type: OpenAPI
@@ -1041,6 +1064,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - invite
+  tags_raw:
   - Invite
   properties:
   - type: OpenAPI
@@ -1072,6 +1097,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Key Pair
+  tags_raw:
   - Keypair
   properties:
   - type: OpenAPI
@@ -1482,6 +1509,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Security Rules
+  tags_raw:
   - security-rules
   properties:
   - type: OpenAPI
