@@ -1,0 +1,342 @@
+openapi: 3.2.0
+info:
+  title: AI Studio Inference API
+  version: '0.1'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
+
+
+    ## Base URL
+
+
+    All requests are sent to:
+
+
+    ```
+
+    https://console.hyperstack.cloud/ai/api/v1
+
+    ```
+
+
+    ## Authentication
+
+
+    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
+
+
+    ## Request and response format
+
+
+    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+servers:
+- url: https://console.hyperstack.cloud/ai/api/v1
+security:
+- apiKey: []
+tags:
+- name: Inference
+  description: OpenAI-compatible chat completions endpoint for running inference against deployed models. Use this endpoint to send prompts and receive generated responses.
+paths:
+  /chat/completions:
+    post:
+      description: Sends a chat prompt to a model and returns a completion. Supports both streaming (server-sent events) and non-streaming response modes. Use the `model` field to target a base model by its `model_name`. Optional sampling parameters include `temperature`, `top_p`, `top_k`, `max_tokens`, `presence_penalty`, and `repetition_penalty`. Total tokens (prompt + completion) must not exceed the model's context window.
+      operationId: chatCompletions
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InferenceRequestSchema'
+              example:
+                model: Qwen/Qwen3-VL-8B-Instruct
+                messages:
+                - role: user
+                  content:
+                  - type: text
+                    text: Describe this image.
+                  - type: image_url
+                    image_url:
+                      url: https://example.com/photo.png
+                stream: false
+            example:
+              model: Qwen/Qwen3-VL-8B-Instruct
+              messages:
+              - role: user
+                content:
+                - type: text
+                  text: Describe this image.
+                - type: image_url
+                  image_url:
+                    url: https://example.com/photo.png
+              stream: false
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                choices:
+                - finish_reason: stop
+                  index: 0
+                  message:
+                    content: 'This is a minimalist, pixel-art style image depicting a serene sunset or sunrise over a mountain range.
+
+
+                      The key elements are:
+
+
+                      *   **The Sky:** The background features a smooth gradient, transitioning from a deep purple at the top to a warm orange-pink near the horizon. This creates a calm, atmospheric effect.
+
+                      *   **The Sun:** A large, bright, off-white circle representing the sun is positioned just above the horizon, partially obscured by the mountains.
+
+                      *   **The Mountains:** Two simple, dark purple, triangular mountain silhouettes dominate the lower half of the image. They are rendered in a low-resolution, pixelated style, giving the scene a retro video game aesthetic.
+
+
+                      The overall composition is balanced and tranquil, with the sun acting as a central focal point. The use of simple shapes and a limited color palette emphasizes the peacefulness of the scene.'
+                    role: assistant
+                created: 1736932200
+                id: a1b2c3d4e5f6789012345678901234ab
+                model: qwen/qwen3-vl-8b-instruct
+                object: chat.completion
+                usage:
+                  completion_tokens: 177
+                  prompt_tokens: 91
+                  total_tokens: 268
+              schema:
+                type: object
+                description: OpenAI-compatible chat completion response.
+                properties:
+                  choices:
+                    type: array
+                    description: Array of completion choices. Most requests produce one choice.
+                    items:
+                      type: object
+                      properties:
+                        finish_reason:
+                          type: string
+                          description: 'Reason generation stopped: `stop`, `length`, or `content_filter`.'
+                        index:
+                          type: integer
+                          description: Index of this choice.
+                        logprobs:
+                          type: object
+                          description: Log probabilities for tokens, if requested.
+                        message:
+                          type: object
+                          description: The generated message.
+                          properties:
+                            role:
+                              type: string
+                              description: Always `"assistant"`.
+                            content:
+                              type: string
+                              description: Generated text content.
+                  created:
+                    type: integer
+                    description: Unix timestamp of when the completion was created.
+                  id:
+                    type: string
+                    description: Unique identifier for this completion.
+                  model:
+                    type: string
+                    description: Model that generated the completion.
+                  object:
+                    type: string
+                    description: Always `"chat.completion"`.
+                  usage:
+                    type: object
+                    description: Token usage for this completion.
+                    properties:
+                      prompt_tokens:
+                        type: integer
+                        description: Tokens in the input prompt.
+                      completion_tokens:
+                        type: integer
+                        description: Tokens generated in the response.
+                      total_tokens:
+                        type: integer
+                        description: Total tokens consumed.
+                example:
+                  choices:
+                  - finish_reason: stop
+                    index: 0
+                    message:
+                      content: 'This is a minimalist, pixel-art style image depicting a serene sunset or sunrise over a mountain range.
+
+
+                        The key elements are:
+
+
+                        *   **The Sky:** The background features a smooth gradient, transitioning from a deep purple at the top to a warm orange-pink near the horizon. This creates a calm, atmospheric effect.
+
+                        *   **The Sun:** A large, bright, off-white circle representing the sun is positioned just above the horizon, partially obscured by the mountains.
+
+                        *   **The Mountains:** Two simple, dark purple, triangular mountain silhouettes dominate the lower half of the image. They are rendered in a low-resolution, pixelated style, giving the scene a retro video game aesthetic.
+
+
+                        The overall composition is balanced and tranquil, with the sun acting as a central focal point. The use of simple shapes and a limited color palette emphasizes the peacefulness of the scene.'
+                      role: assistant
+                  created: 1736932200
+                  id: a1b2c3d4e5f6789012345678901234ab
+                  model: qwen/qwen3-vl-8b-instruct
+                  object: chat.completion
+                  usage:
+                    completion_tokens: 177
+                    prompt_tokens: 91
+                    total_tokens: 268
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: The request was invalid. This includes sending image content to a model that does not support image input, which returns the error "Model X does not support image input."
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+      summary: Create chat completion
+      tags:
+      - Inference
+components:
+  schemas:
+    ChatCompletionMessageSchema:
+      properties:
+        content:
+          type: array
+          nullable: true
+          description: The message content. For image-to-text models, pass an array of content parts, each a `text` part or an `image_url` part (shown below). For plain text-only messages, you can also pass `content` as a single string.
+          items:
+            type: object
+            required:
+            - type
+            properties:
+              type:
+                type: string
+                enum:
+                - text
+                - image_url
+                description: The content part type.
+              text:
+                type: string
+                description: The text of this part. Provide when `type` is `text`.
+              image_url:
+                type: object
+                description: The image for this part. Provide when `type` is `image_url`.
+                required:
+                - url
+                properties:
+                  url:
+                    type: string
+                    description: The image as a data URI (base64-encoded) or a publicly reachable URL.
+                  detail:
+                    type: string
+                    enum:
+                    - auto
+                    - high
+                    - low
+                    default: auto
+                    description: How much detail the model uses when processing the image.
+        role:
+          type: string
+          description: 'The role of the message author: `system`, `user`, or `assistant`.'
+      required:
+      - role
+      type: object
+      description: A single chat message. For image-to-text models, `content` may be an array of text and image parts.
+    InferenceRequestSchema:
+      properties:
+        messages:
+          items:
+            $ref: '#/components/schemas/ChatCompletionMessageSchema'
+          minItems: 1
+          type: array
+          description: Conversation history as an ordered array of messages. Each message has a `role` and `content`. For image-to-text models, `content` may be an array of text and image parts.
+        model:
+          type: string
+          example: Llama-3.3-70B-Instruct
+          description: Model identifier. Use the `model_name` from [List base models](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-base-models) for base models, or the `model_name` from [List owned models](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-owned-models) for fine-tuned or imported models.
+        stream:
+          default: false
+          type: boolean
+          example: false
+          description: When `true`, returns the response as a stream of server-sent events, yielding tokens as they are generated. When `false` (default), waits for the full completion before returning.
+        stream_options:
+          default: {}
+          title: Stream Options
+          type: object
+          description: Options that control streaming behaviour, such as whether to include token usage in the final stream chunk.
+        max_tokens:
+          type: integer
+          description: Maximum number of tokens to generate. Defaults to the model's maximum if omitted.
+          minimum: 1
+          maximum: 4095
+        temperature:
+          type: number
+          description: Sampling temperature controlling randomness. Lower values produce more deterministic output; higher values increase variety.
+          minimum: 0
+          maximum: 2
+          default: 1
+        top_p:
+          type: number
+          description: Nucleus sampling threshold. Only tokens comprising the top `top_p` probability mass are considered. Set to `null` to disable.
+          minimum: 0
+          maximum: 1
+        top_k:
+          type: integer
+          description: Limits sampling to the `top_k` most probable tokens at each step. Set to `-1` to disable.
+          minimum: -1
+          maximum: 200
+          default: -1
+        presence_penalty:
+          type: number
+          description: Penalizes tokens that have already appeared in the output, encouraging topic variety.
+          minimum: -2
+          maximum: 2
+          default: 0
+        repetition_penalty:
+          type: number
+          description: Multiplier applied to the logit of previously generated tokens to reduce repetition. Values above `1.0` penalize repeats; values below `1.0` encourage them.
+          minimum: 0.01
+          maximum: 2
+          default: 1
+      required:
+      - model
+      - messages
+      title: InferenceRequestSchema
+      type: object
+      example:
+        model: Llama-3.3-70B-Instruct
+        messages:
+        - role: user
+          content: 'Reply with exactly: OK'
+        stream: false
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'

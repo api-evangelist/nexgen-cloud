@@ -1,0 +1,230 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Calculate API
+  version: '1.0'
+  description: 'Operations tagged Calculate across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Calculate
+  description: Calculate endpoints return billing-rate breakdowns for specific resources. Provide a resource type and ID to retrieve its hourly cost, including pre- and post-discount components.
+paths:
+  /pricebook/calculate/resource/{resource_type}/{id}:
+    get:
+      tags:
+      - Calculate
+      summary: Retrieve billing rate for resource
+      description: Retrieve a detailed breakdown of hourly billing costs for a specific resource by including the resource type and ID in the path. Resource types include `virtual-machine`, `volume`, or `cluster`. The billing cost information returned by this API includes the status of the resource, the total hourly price for the resource, and the pricing for each component before and after any discounts are applied.
+      operationId: Calculate_resource_billing_rate
+      parameters:
+      - name: resource_type
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Type of resource to calculate pricing for.
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the {resource type}.
+      responses:
+        '200':
+          description: Successfully retrieved billing rate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceBillingResponseForCustomer'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    ResourceObjectResponseForCustomer:
+      type: object
+      properties:
+        org_id:
+          type: integer
+          description: Identifier of the organization that owns the resource.
+        resource:
+          $ref: '#/components/schemas/InfrahubResourceObjectResponseForCustomer'
+          description: Resource the entry refers to.
+    InfrahubResourceObjectResponseForCustomer:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type of the resource.
+        name:
+          type: string
+          description: Name of the resource.
+        infrahub_id:
+          type: integer
+          description: Internal numeric identifier used by Hyperstack for cross-system references.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+        host:
+          type: string
+          description: Hostname or IP that clients connect to.
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/PricebookResourceObjectResponseForCustomer'
+          description: A list of resource components associated with the main resource, detailing individual billing rates.
+        price:
+          type: number
+          description: The listed price per hour for using the resource.
+        actual_price:
+          type: number
+          description: The actual price per hour after applying any discounts or adjustments.
+    PricebookResourceObjectResponseForCustomer:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type of the resource.
+        name:
+          type: string
+          description: Name of the resource.
+        amount:
+          type: integer
+          description: Charge amount in the response's `currency` units.
+        rate:
+          type: number
+          description: The standard billing rate per hour for a single resource component.
+        discounted_rate:
+          type: number
+          description: The billing rate per hour after applying discounts.
+        price:
+          type: number
+          description: The listed price per hour for using the resource.
+        actual_price:
+          type: number
+          description: The actual price per hour after applying any discounts or adjustments.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    ResourceBillingResponseForCustomer:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        calculated_resource_bills:
+          $ref: '#/components/schemas/ResourceObjectResponseForCustomer'
+          description: Contains detailed billing information for a specified resource.
+    ResourceObjectResponseForCustomer_2:
+      type: object
+      properties:
+        org_id:
+          type: integer
+        resource:
+          $ref: '#/components/schemas/InfrahubResourceObjectResponseForCustomer_2'
+    InfrahubResourceObjectResponseForCustomer_2:
+      type: object
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+        infrahub_id:
+          type: integer
+        status:
+          type: string
+        host:
+          type: string
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/PricebookResourceObjectResponseForCustomer_2'
+        price:
+          type: number
+        actual_price:
+          type: number
+    PricebookResourceObjectResponseForCustomer_2:
+      type: object
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+        amount:
+          type: integer
+        rate:
+          type: number
+        discounted_rate:
+          type: number
+        price:
+          type: number
+        actual_price:
+          type: number
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    ResourceBillingResponseForCustomer_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        calculated_resource_bills:
+          $ref: '#/components/schemas/ResourceObjectResponseForCustomer_2'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

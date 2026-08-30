@@ -1,0 +1,402 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud API Key API
+  version: '1.0'
+  description: 'Operations tagged API Key across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: API Key
+  description: API keys authenticate requests to the Hyperstack API. Generate keys in the console; each key is server-side and scoped to a specific environment. Rotate keys periodically and revoke any key whose secret may have been exposed.
+paths:
+  /api-key:
+    get:
+      tags:
+      - API Key
+      summary: Retrieve API keys
+      description: Retrieves a list of your API keys that can be used to [**authenticate**](https://docs.hyperstack.cloud/docs/api-reference/authentication) Hyperstack API requests.
+      operationId: Get_API_Key
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApiKeysResponseModel'
+              example:
+                status: true
+                message: Getting API Keys success
+                api_keys:
+                - id: 1129
+                  name: api-example-key
+                  description: ''
+                  key: '********-****-****-****-********be9a'
+                  created_at: '2026-05-06T15:18:42Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting API Keys success
+                    api_keys:
+                    - id: 1129
+                      name: api-example-key
+                      description: ''
+                      key: '********-****-****-****-********be9a'
+                      created_at: '2026-05-06T15:18:42Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /api-key/generate:
+    post:
+      tags:
+      - API Key
+      summary: Generate API key
+      description: Generates a new API key for use in authenticating API requests. Provide the API key `name` in the request body, plus an optional `description`. For details on how to pass the key in subsequent requests, see [**Authentication**](https://docs.hyperstack.cloud/docs/api-reference/authentication).
+      operationId: Generate_API_Key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateUpdateApiKeyPayload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateUpdateApiKeyResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: 'Forbidden
+
+
+            Common cause: `error_reason: forbidden`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Forbidden
+                  value:
+                    status: false
+                    message: Maximum API key limit reached
+                    error_reason: forbidden
+              example:
+                status: false
+                message: Maximum API key limit reached
+                error_reason: forbidden
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /api-key/{api_key_id}:
+    put:
+      tags:
+      - API Key
+      summary: Update API key
+      description: Updates the name and optionally the description of a specified API key. Include the ID of the API key in the path and the new name and optional description in the body of the request. To retrieve the ID of the API key call the [**List API Keys**](https://docs.hyperstack.cloud/docs/api-reference/get-api-key) API.
+      operationId: Update_API_Key
+      parameters:
+      - name: api_key_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the API key.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateUpdateApiKeyPayload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateUpdateApiKeyResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    delete:
+      tags:
+      - API Key
+      summary: Delete API key
+      description: Delete a specified API key by including the ID of the API key in the path. To retrieve the ID of the API key call the [**List API Keys**](https://docs.hyperstack.cloud/docs/api-reference/get-api-key) API.
+      operationId: Delete_API_Key
+      parameters:
+      - name: api_key_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the API key.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    CommonResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Not found
+    GenerateUpdateApiKeyResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Maximum API key limit reached
+        api_key:
+          $ref: '#/components/schemas/ApiKeyFields'
+          description: Returns the `api_key` object, containing details of the new API key.
+    ApiKeyFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 3287
+        name:
+          type: string
+          description: Name of the API key.
+          example: api-example-key
+        description:
+          type: string
+          description: Human-readable description of the resource.
+          example: ''
+        key:
+          type: string
+          example: '********-****-****-****-********be9a'
+          description: API key value used to authenticate requests.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T16:04:09Z'
+    GetApiKeysResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting API Keys success
+        api_keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKeyFields'
+          description: List of API keys belonging to the organization.
+    GenerateUpdateApiKeyPayload:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 200
+          minLength: 1
+          type: string
+          description: 'Name of the API key. Maximum length: 50 characters.'
+        description:
+          type: string
+          description: Optional description of the API key.
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    CommonResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    GenerateUpdateApiKeyResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        api_key:
+          $ref: '#/components/schemas/ApiKeyFields_2'
+    ApiKeyFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        key:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    GetApiKeysResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        api_keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKeyFields_2'
+    GenerateUpdateApiKeyPayload_2:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 200
+          minLength: 1
+          type: string
+        description:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

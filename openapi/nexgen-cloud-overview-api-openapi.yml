@@ -1,0 +1,139 @@
+openapi: 3.2.0
+info:
+  title: AI Studio Overview API
+  version: '0.1'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
+
+
+    ## Base URL
+
+
+    All requests are sent to:
+
+
+    ```
+
+    https://console.hyperstack.cloud/ai/api/v1
+
+    ```
+
+
+    ## Authentication
+
+
+    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
+
+
+    ## Request and response format
+
+
+    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+servers:
+- url: https://console.hyperstack.cloud/ai/api/v1
+security:
+- apiKey: []
+tags:
+- name: Overview
+  description: Organization-level summary and resource usage metrics for the AI Studio account.
+paths:
+  /org/summary:
+    get:
+      description: Returns a high-level summary of resource usage and model activity for the authenticated user's organization, including active model counts, recent training job status, and aggregate token usage.
+      operationId: getOrgSummary
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationSummaryResponse'
+                example:
+                  status: success
+                  summary:
+                    base_models_count: 60
+                    datasets_count: 15
+                    finetuned_models_count: 16
+                    logs_count: 0
+              example:
+                status: success
+                summary:
+                  base_models_count: 60
+                  datasets_count: 15
+                  finetuned_models_count: 16
+                  logs_count: 0
+          description: OK
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Internal Server Error
+      summary: Get organization summary
+      tags:
+      - Overview
+components:
+  schemas:
+    OrganizationSummaryResponse:
+      properties:
+        summary:
+          $ref: '#/components/schemas/OrganizationSummary'
+          description: Aggregated counts of the organization's models, datasets, and logs.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - summary
+      title: OrganizationSummaryResponse
+      type: object
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
+    OrganizationSummary:
+      properties:
+        base_models_count:
+          type: integer
+          description: Number of base models available to the organization.
+        datasets_count:
+          type: integer
+          description: Number of datasets created in the organization.
+        finetuned_models_count:
+          type: integer
+          description: Number of fine-tuned models owned by the organization.
+        logs_count:
+          type: integer
+          description: Total number of logs stored in the organization.
+      required:
+      - base_models_count
+      - finetuned_models_count
+      - datasets_count
+      - logs_count
+      title: OrganizationSummary
+      type: object
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'

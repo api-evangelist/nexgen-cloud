@@ -1,0 +1,486 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Profile API
+  version: '1.0'
+  description: 'Operations tagged Profile across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Profile
+  description: Saved virtual-machine deployment configurations that can be reused across new VMs.
+paths:
+  /core/profiles:
+    get:
+      tags:
+      - Profile
+      summary: List profiles
+      description: Returns a list of your existing provisioning profiles, providing virtual machine configuration details for each. For additional information about profiles, see [Load a provisioning profile](https://docs.hyperstack.cloud/docs/virtual-machines/provisioning-profiles#load-a-provisioning-profile).
+      operationId: List_profiles
+      responses:
+        '200':
+          description: Getting profiles success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile_List_Response'
+              example:
+                status: true
+                message: Getting profiles success.
+                profiles:
+                - id: 7613
+                  name: new-profile
+                  description: ''
+                  data: '{"name": "focused-tesla", "environment_name": "default-NORWAY-1", "image_name": "Ubuntu Server 22.04 LTS R535 CUDA 12.2", "volume_name": "", "flavor_name": "n1-cpu-large", "assign_floating_ip": false, "security_rules": [], "key_name": "example-key", "user_data": "", "labels": [], "count": 1}'
+                  created_at: '2026-05-06T15:18:42Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting profiles success.
+                    profiles:
+                    - id: 7613
+                      name: new-profile
+                      description: ''
+                      data: '{"name": "focused-tesla", "environment_name": "default-NORWAY-1", "image_name": "Ubuntu Server 22.04 LTS R535 CUDA 12.2", "volume_name": "", "flavor_name": "n1-cpu-large", "assign_floating_ip": false, "security_rules": [], "key_name": "example-key", "user_data": "", "labels": [], "count": 1}'
+                      created_at: '2026-05-06T15:18:42Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    post:
+      tags:
+      - Profile
+      summary: Create profile
+      description: Creates a [**provisioning profile**](https://docs.hyperstack.cloud/docs/virtual-machines/provisioning-profiles) by saving the configuration of a virtual machine for future use. Provide a `name`, optional `description`, and the virtual machine configuration in the `data` object. For the full set of virtual machine configuration fields, see the [**Create virtual machines**](https://docs.hyperstack.cloud/docs/api-reference/create-vms) endpoint.
+      operationId: Create_profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create_Profile_Payload'
+              example:
+                name: example-profile
+                description: Example profile
+                data:
+                  environment_name: canada-1
+                  flavor_name: n2-cpu-medium
+                  key_name: example-keypair
+                  name: example-vm
+                  count: '1'
+                  image_name: Ubuntu Server 24.04 LTS (Noble Numbat)
+                  assign_floating_ip: 'false'
+              properties: {}
+            example:
+              data:
+                environment_name: canada-1
+                flavor_name: n2-cpu-medium
+                key_name: example-keypair
+                name: example-vm
+                count: '1'
+                image_name: Ubuntu Server 24.04 LTS (Noble Numbat)
+                assign_floating_ip: 'false'
+              name: example-profile
+              description: Example profile
+        required: true
+      responses:
+        '201':
+          description: Profile created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Create_Profile_Response'
+              example:
+                status: true
+                message: Profile created successfully
+                profile:
+                  id: 3287
+                  name: example-profile
+                  description: Example profile
+                  data: '{"environment_name": "canada-1","flavor_name": "n2-cpu-medium","key_name": "example-keypair","name": "example-vm","count": "1","image_name": "Ubuntu Server 24.04 LTS (Noble Numbat)","assign_floating_ip": "false"}'
+                  created_at: '2026-05-06T16:04:09Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Profile created successfully
+                    profile:
+                      id: 3287
+                      name: example-profile
+                      description: Example profile
+                      data: '{"environment_name": "canada-1","flavor_name": "n2-cpu-medium","key_name": "example-keypair","name": "example-vm","count": "1","image_name": "Ubuntu Server 24.04 LTS (Noble Numbat)","assign_floating_ip": "false"}'
+                      created_at: '2026-05-06T16:04:09Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/profiles/{id}:
+    get:
+      tags:
+      - Profile
+      summary: Retrieve profile details
+      description: Retrieves the details of an existing [**provisioning profile**](https://docs.hyperstack.cloud/docs/virtual-machines/provisioning-profiles) containing the saved configuration of a virtual machine, ready for deployment. Include the profile ID in the path to retrieve the details.
+      operationId: Get_profile
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the profiles.
+      responses:
+        '200':
+          description: Profile details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Create_Profile_Response'
+              example:
+                status: true
+                message: Getting profile detail success.
+                profile:
+                  id: 3287
+                  name: example-profile
+                  description: Example profile
+                  data: '{"environment_name": "canada-1","flavor_name": "n2-cpu-medium","key_name": "example-keypair","name": "example-vm","count": "1","image_name": "Ubuntu Server 24.04 LTS (Noble Numbat)","assign_floating_ip": "false"}'
+                  created_at: '2026-05-06T16:04:09Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting profile detail success.
+                    profile:
+                      id: 3287
+                      name: example-profile
+                      description: Example profile
+                      data: '{"environment_name": "canada-1","flavor_name": "n2-cpu-medium","key_name": "example-keypair","name": "example-vm","count": "1","image_name": "Ubuntu Server 24.04 LTS (Noble Numbat)","assign_floating_ip": "false"}'
+                      created_at: '2026-05-06T16:04:09Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    delete:
+      tags:
+      - Profile
+      summary: Delete profile
+      description: Deletes an existing [**provisioning profile**](https://docs.hyperstack.cloud/docs/virtual-machines/provisioning-profiles) containing the saved configuration of a virtual machine. Include the profile ID in the path to delete the specified profile.
+      operationId: Delete_profile
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the profiles.
+      responses:
+        '200':
+          description: Profile deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Profile example-profile deleted.
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Profile example-profile deleted.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    Profile_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 1402
+        name:
+          type: string
+          description: Name of the provisioning profile.
+          example: new-profile
+        description:
+          type: string
+          description: Human-readable description of the resource.
+          example: example
+        data:
+          type: string
+          description: Provisioning profile configuration stored as a serialized string.
+          example: '{"name": "focused-tesla", "environment_name": "default-NORWAY-1", "image_name": "Ubuntu Server 22.04 LTS R535 CUDA 12.2", "volume_name": "", "flavor_name": "n1-cpu-large", "assign_floating_ip": false, "security_rules": [], "key_name": "example-key", "user_data": "", "labels": [], "count": 1}'
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T16:04:09Z'
+    Create_Profile_Payload:
+      required:
+      - data
+      - name
+      type: object
+      properties:
+        data:
+          type: object
+          description: An object containing the virtual machine configuration to save in this profile. Must include all fields required by the [**Create virtual machines**](https://docs.hyperstack.cloud/docs/api-reference/create-vms) endpoint (`environment_name`, `flavor_name`, `key_name`, `name`, `count`). Can also include optional fields such as `image_name` or `assign_floating_ip`. All values must be provided as strings.
+          properties:
+            environment_name:
+              type: string
+              description: Name of the environment in which to create the virtual machine.
+            flavor_name:
+              type: string
+              description: Name of the GPU hardware configuration ([flavor](https://docs.hyperstack.cloud/docs/hardware/flavors)) for the virtual machine.
+            key_name:
+              type: string
+              description: Name of the SSH key pair to use for access to the virtual machine.
+            name:
+              type: string
+              description: Name to assign to the virtual machine when deployed from this profile.
+            count:
+              type: string
+              description: Number of virtual machines to create (as a string, e.g. `"1"`).
+        name:
+          maxLength: 50
+          type: string
+          description: Name of the profile being created.
+        description:
+          maxLength: 150
+          type: string
+          description: Optional description for the profile being created.
+    Profile_List_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting profiles success.
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Profile_Fields'
+          description: List of provisioning profiles available to the user.
+    Create_Profile_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Profile created successfully
+        profile:
+          $ref: '#/components/schemas/Profile_Fields'
+          description: An object containing the configuration of the virtual machine saved in the created profile.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    Profile_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        data:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Create_Profile_Payload_2:
+      required:
+      - data
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The name of the profile being created.
+        description:
+          maxLength: 150
+          type: string
+          description: The optional description for the profile being created.
+        data:
+          type: object
+          additionalProperties:
+            type: string
+          description: The data object containing the configuration details of the virtual machine profile being created.
+    Profile_List_Response_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Profile_Fields_2'
+    Create_Profile_Response_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        profile:
+          $ref: '#/components/schemas/Profile_Fields_2'
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

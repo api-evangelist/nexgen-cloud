@@ -1,0 +1,3112 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Clusters API
+  version: '1.0'
+  description: 'Operations tagged Clusters across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Clusters
+  description: 'A cluster is a managed Kubernetes cluster on Hyperstack, control plane + worker nodes preconfigured for GPU workloads. Clusters are region-scoped and can attach data volumes via Container Storage Interface (CSI) drivers. Most workflows: deploy cluster → configure storage → deploy workload → autoscale workers.'
+paths:
+  /core/clusters:
+    get:
+      tags:
+      - Clusters
+      summary: List Clusters
+      operationId: List_Clusters
+      parameters:
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
+      - name: environment
+        in: query
+        description: Filter results to the specified environment.
+        schema:
+          type: string
+      - name: search
+        in: query
+        description: Search query to filter cluster by name
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterListResponse'
+              example:
+                status: true
+                message: Getting clusters success
+                page: 1
+                page_size: 10
+                count: 1
+                clusters:
+                - id: 9876
+                  name: example-c1
+                  environment_name: example-environment
+                  environment_region: NORWAY-1
+                  kubernetes_version: 1.35.1
+                  api_address: https://api.example-c1-8a1cf2.example-environment.hyperstackcustomers.cloud:6443
+                  kube_config: YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VSQ1ZFTkRRV1V5WjBGM1NVSkJaMGxKU0ZWVmFubzVTbEYwYmtsM1JGRlpTa3R2V2tsb2RtTk9RVkZGVEVKUlFYZEdWRVZVVFVKRlIwRXhWVVVLUVhoTlMyRXpWbWxhV0VwMVdsaFNiR042UVdWR2R6QjVUbXBCTVUxRVkzaE9lbFY1VFZSQ1lVWjNNSHBPYWtFeFRVUlJlRTU2VlROTlZFSmhUVUpWZUFwRmVrRlNRbWRPVmtKQlRWUkRiWFF4V1cxV2VXSnRWakJhV0UxM1oyZEZhVTFCTUVkRFUzRkhVMGxpTTBSUlJVSkJVVlZCUVRSSlFrUjNRWGRuWjBWTENrRnZTVUpCVVVNM1JVdFNlamRsTjNSaUsxTjZWa2RoT1c1R1RrSklXR2hHSzFka2VYQkRiMGd6WjB4blpWQnZRbTlpZUM4d1RsWjZkSHBLYTJJMWJUUUtZbUl6ZGtSbE5VTmtiSFVyYkhWcFMzRllXbWhQV0hwV05taEdWR05aYTNwTGFrUlZjMlZRU0ZaWk5XZG5Na1pDTURsdFkwVk5iMnhzUkhaV1owWldSQXBWTjJ0YVNIaDZUVGwzWjBWeGVqQkRiM2RCYUZGcFJXaFdRVVpJVHpVNU16bEpjRnBtZVdkaFVXVmlZbGx5ZUdadmMyVldZaTlHT1hOdVZ6SXdVRE01Q2pWTVluUXJPR3hNVEdKRFFrTXdNMG93V0dGU1NVUlVRbXRYZURSWlZWbDRTM05QY0dOU01tbENhVkpKYWsxamJrdHdNVTkwV21sQ2EycHdUV3RxYkcwS2EzaDVZbk13ZFRkblFucElObHBZYVZoMVJYUTVSMVJPTHpVMmRrTTNZelZxY0c5TVIyWjFRbmhsV1RoUlltWlVTRUpVYW0xWVpXUk1keXRJTlRrelNRcEllRXAwTW1oSVJqRkJiRVk0UlUxUVMwZGpNR2h6ZEdoSldtdHFRV2ROUWtGQlIycFhWRUpZVFVFMFIwRXhWV1JFZDBWQ0wzZFJSVUYzU1VOd1JFRlFDa0puVGxaSVVrMUNRV1k0UlVKVVFVUkJVVWd2VFVJd1IwRXhWV1JFWjFGWFFrSlVMM0ZKT1doYWRDdFdOMVZXTWtORWEyRk1XRXBWT1VOM1JteEVRVllLUW1kT1ZraFNSVVZFYWtGTloyZHdjbVJYU214amJUVnNaRWRXZWsxQk1FZERVM0ZIVTBsaU0wUlJSVUpEZDFWQlFUUkpRa0ZSUVU1Q1puSTBUa2xYUndwa00xRjZVa04yUzJsd2VIQkxUemRXT1VwMldsUnBSRFZDUVZoUWVHbFpObVp2YUdGSlpFeFZRVGNyWVVGSk9USlpUbnBpTVVWTlFUaDVlbll3Yml0TkNteDBkR2xNYzFaU2VGaFdSVFVyU1dRNFFUSklORXN3ZVhoR2RVNTZNRmd4VlVONE5sRm9WM2xaTlZGamRreHVVbUYzUjB0a1VIVnZXRkpJTkdOWFRGY0tRV1ZuUjFSRk1Fa3hWV3d5ZG1wd1FsQnZWR0ZWY1RScmFqSmpSRGc1S3pkWFpGTlpSRmN5VXpoMWNIaFBaVkpQWjJkQ00wOXRZMVJ6VFROcWRYQjRXUXBhVkVKQlNpdEJVRmswTUU5Q05raFNRVWc1TnpORGIyOW9iSEpZZDFOVFJESlZWbkV4ZG5kTWIwczNhbkJKUm01R1psTXlVVUZNWVd0WmIycGpZVkJNQ2xFM2JYTk5ka1JqZDFWV01HTTBXRXhNYVZSNWFEZHhZa2RzYlU5YVIwY3lhVFp3TjNKTVlUSlJNVzFLSzNkTWRVVlBNVkJLV1VOQk16RXdOMDk1UkZrS2NFRkZVMDg0YzFSa1kwZEVDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIHNlcnZlcjogaHR0cHM6Ly9hcGkuYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIuYXBpdGVzdC01NTJmODI2YS1lbnYuaHlwZXJzdGFja2N1c3RvbWVycy5jbG91ZDo2NDQzCiAgbmFtZTogYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIKY29udGV4dHM6Ci0gY29udGV4dDoKICAgIGNsdXN0ZXI6IGFwaXRlc3QtNTUyZjgyNmEtYzEtOGExY2YyCiAgICB1c2VyOiBrdWJlcm5ldGVzLWFkbWluCiAgbmFtZToga3ViZXJuZXRlcy1hZG1pbkBhcGl0ZXN0LTU1MmY4MjZhLWMxLThhMWNmMgpjdXJyZW50LWNvbnRleHQ6IGt1YmVybmV0ZXMtYWRtaW5AYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIKa2luZDogQ29uZmlnCnVzZXJzOgotIG5hbWU6IGt1YmVybmV0ZXMtYWRtaW4KICB1c2VyOgogICAgY2xpZW50LWNlcnRpZmljYXRlLWRhdGE6IExTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVVJMVkVORFFXaEhaMEYzU1VKQlowbEpXV05zY1d4b1dUUlFaR2QzUkZGWlNrdHZXa2xvZG1OT1FWRkZURUpSUVhkR1ZFVlVUVUpGUjBFeFZVVUtRWGhOUzJFelZtbGFXRXAxV2xoU2JHTjZRV1ZHZHpCNVRtcEJNVTFFWTNoT2VsVjVUVlJDWVVaM01IbE9la0V4VFVSamVFNTZWVE5OVkVKaFRVUjNlQXBJZWtGa1FtZE9Wa0pCYjFSR2JYUXhXVzFXYUZwSE1EWlpNbmd4WXpOU2JHTnBNV2hhUnpGd1ltNU5lRWRVUVZoQ1owNVdRa0ZOVkVWSGRERlpiVlo1Q21KdFZqQmFXRTEwV1ZkU2RHRlhOSGRuWjBWcFRVRXdSME5UY1VkVFNXSXpSRkZGUWtGUlZVRkJORWxDUkhkQmQyZG5SVXRCYjBsQ1FWRkRkbWw2YUZVS1ZrMTNSMGx5UzBoTlRHeHJVVkp5S3psNGRIWlVXVWR5TW1WSWJqTTNXRU5MT1V0UlFUTlVTbVUyTUVzeE1VOURNMWR4YW1GblVHOVBkRlJNUzJGbmFncFNVVW9yYURKNVJFTktXbVExYmxKU2JGYzBRMmhIT0dacU1qZFZTMk5CZG0xdFduWklkVGRPVm5SaFQxVXJWM0E1ZEhScVNIQllOMFpwWTFSTVpUSXZDbnBaVHpSRVJYbHdVMDlIYTJkb1QxQjNUM05RY0VGU2MwdFpaVTlXWWxoM1RXVnlVbVZCUTNNM1dqVnJWVE4wV1hJd1kybzVVVkZqYmxGUFUwaE5TSFVLTld4clNtTjFSbmhpZWtwNWVWQllXVTlsTVM5cGNtdFliVmx3VVV0aGJGUlJSMVV6UmpsS05XcFFUR3hTTVhsMVNEZExWVkJWVW1aRVowa3hSRloxZHdwTFVsaGFUak5GYm14Q2NFcHpVR2Q2ZUV0NGJ5c3ZSa0p2TTAxd2FrOXZNRXRHY2tVcmVXSXdiVzQwT0hwS2MyUlhjbTFUU1VNeWVYRkZPRUpOZWxaMENqWkdlVzU2YUZwV01scFZPR3czVlZwQlowMUNRVUZIYWxacVFsVk5RVFJIUVRGVlpFUjNSVUl2ZDFGRlFYZEpSbTlFUVZSQ1owNVdTRk5WUlVSRVFVc0tRbWRuY2tKblJVWkNVV05FUVdwQlRVSm5UbFpJVWsxQ1FXWTRSVUZxUVVGTlFqaEhRVEZWWkVsM1VWbE5RbUZCUmxBcmIyb3lSbTB6TlZoMFVsaFpTUXBQVW05MFkyeFVNRXhCVjFWTlFUQkhRMU54UjFOSllqTkVVVVZDUTNkVlFVRTBTVUpCVVVFMVYyUnRTMVpLVm1SUWVHbHJSMEprVkZFclVXNUxaek0zQ2pSc1NUQjFkV1JrYkRFeWNqRjJPSGh5WldaR1YzRktXRXB2VFd0cU1XZ3hZazE1YjB4c2IzTkdTa2hSWmtSMWJsRnpUR1ExYkV4Skx6WjZORXhoYUdvS2R6ZzBjbGxSTmtwa05IRmFhVmhGWkU1WGNYbHpXRTFWY1hFME5uQlRVazVHV0doT1JEZ3ZZamhRWW04NE5XWTRVbTVuVG5FME0yMVRlR1pNZEdKRVRncElTblE1UlRseFMwSndXV3gwY25SU1VFRnhNMGt6TW5sTGJFUnZVR3hzTWswelNFOXhjRmRUT1V0QlNVZzFWVzAxWm1KRmJWbExNVk50VlhnMWFtOHhDakJKZW1aTGRrRnVabmRrYzB4WVJVY3dLM0o2VFRRelFuVXJUbEE1VlZFNVJVeEliRlZpY1hBeFYwdG5lbXN5ZUZoWU5ubFFhM05HY0d4Q09HMDVNUzhLUWxGSmNVWmlhbEJ0Wm5SQ1ZFWk1UbEpwVlVVM2RHeENjVGx2TTBwRWVEWkJiRkZhZEZOSlYzaDJOWHBTU0hVemQxTXlTMVY0UkZCTmNIcFhDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIGNsaWVudC1rZXktZGF0YTogTFMwdExTMUNSVWRKVGlCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRcE5TVWxGY0VGSlFrRkJTME5CVVVWQmNqUnpORlpHVkUxQ2FVdDVhSHBETlZwRlJXRXZkbU5pWWpBeVFuRTVibWcxT1NzeGQybDJVMnRCVGpCNVdIVjBDa04wWkZSbmRERnhiekp2UkRaRWNsVjVlVzF2U1RCVlEyWnZaSE5uZDJsWFdHVmFNRlZhVm5WQmIxSjJTRFE1ZFRGRGJrRk1OWEJ0WW5nM2RYcFdZbGNLYW14UWJIRm1ZbUpaZURaV0szaFpia1Y1TTNSMk9ESkVkVUY0VFhGVmFtaHdTVWxVYWpoRWNrUTJVVVZpUTIxSWFteFhNVGhFU0hFd1dHZEJjazh5WlFwYVJrNDNWMHM1U0VrdlZVVklTakJFYTJoNlFqZDFXbHBEV0V4b1kxYzRlV056YWpFeVJHNTBaalJ4TlVZMWJVdFZRMjF3VlRCQ2JFNTRabE5sV1hwNUNqVlZaR055YUN0NWJFUXhSVmgzTkVOT1VURmljME5yVmpKVVpIaEtOVkZoVTJKRU5FMDRVM05oVUhaNFVXRk9la3RaZW5GT1EyaGhlRkJ6YlRsS2NDc0tVRTE1WWtoV2NUVnJhVUYwYzNGb1VFRlVUVEZpWldoamNEZzBWMVprYlZaUVNtVXhSMUZKUkVGUlFVSkJiMGxDUVVGbmNtRkpSekJQU2t0SmFIUndNd293UVdvd1duSmpOamxPU0c1UU5FOXdOMnBQUjFjNFZXWnRVSE5QZW1nMllWaFBSa2RUUTB0ekx6QjBMMjlhVEhKUFowRkRabXR4TVRaWWJrNHZObFJTQ21Zek16ZFFZWEZYVlRkd1YxRXpNbkZvVkZCdGFGbFZlRzlHWWtocU9FZExjWGN5VVhCbU1sVXJXSHBTWWxwV2VqUkliWEZDTkdsSWJtWjFkM2gwYVZNS1FtSTFUVTR6UkZoUU5XeEpkblJRZURCMFkzazRabUYwZGtGdWJtZG5WbUkzV1ZkRU4wRnJSM00zVEZKb2F6aE5WRk53VFhBNGVWTlhWRzV4UjJ0M2JncEtkR3BITTJkT1dqZDRRMDlrTW5aUFNWVXlaalpYV0dkSWFuQjRTVmd2WkhOSVJrTTBNR3RCTUhZclpXY3lNVUpwUWpBNVQyVjFPQ3RwUVcxNVlsSk1DalpXUjBWcFlsTkZUMVpXWWxNemExbGxOVlpETWs5emEwTlJNbkphTkVzeUsxQk5RbTlxZGxkYWR6WktOV0V5Tm5wME5HVjJabk5LTkVVeGMydEpTV1FLTHpNM1RXWjNSVU5uV1VWQmR6bFNRV1l6WkZOdk1VNTBVVmMzYmxkSGJWRTVla2h3YW5OalQyTjRaMEZQWW5FMlUwaDRiV1pTYlVWSFltWlJabVpTYVFwV1NFSTRjQ3MyTmtWUk5VczJlR3R0UjBsMVRrRjVOM2hNWjBoWE0wTlhkelJKTnprNFFuQkVTelo2VG5ZMFlsY3ZkbTVXV1dOdVlXTllUazFIYms1bkNrSmlUbnBFU1ZKU1dHNXhRMVJsWlZkclkzQmtablZoTjNweWNESmlWVXR0WmpJM2VqRlBNME5TWWpoNVJXRTJibHBGYjFFeVUydERaMWxGUVRWWWRGa0tZMDlTT1VkelF6QnVZWE15TTNrdmFqWlBaWFpoYURCWFdFMVhkM1kzUzA5Wk1WcDBMMUZJWTNaUGFYSlRkVlExVmpObVZYUkdkbGRFYzJoVldWQTVlQXBGVTI1NFFqSnpTRkJKVkZnNU1pdENVbkUzV1ZGM2VGZHJVRU1yU2s1NlpVNVpkMmxtYkVoeFlWTnBjV3ROVjBwMFUyMTJVVkpFTUhKd1pXNVFOWFpWQ25nNWNESjFiVkJyVm5kdWVHeE9TM05WVFVOamRFSTBaMGRtTUhaUWNUSjZWVXAxVTFOdVJVTm5XVUppZWpkc2JHbFpXQ3NyVUVGNVV6RkxMMmx6TjJrS1pHczBkMGRJWkZnd2NISlpaR2RyT0ZSellXMVNSRFZCTmtsTmFHRnRRbTVuYXpKUVZtdGtOa1UxT1dkV1pYZGpaV1ZFYXpaNU9EaERURk0xYUdod1JncFVaMVZWWlhSMVprMUhaRTlOYlU4clN6RmxNV1o2VDJoSFVrNUlSeko1WW1ZMlUyazJOalZUWnpGR2QxRlFTRUUzU1Zkc1NqTjRTakJtV1ZGQ056SlVDalZYYzBGSE0wTkllbkp2YTNaRFVGTjVlamRYT0ZGTFFtZFJRMGw1Tmxac04zQTJlRUYxZW05RVJHTjVhR3czU3paTmJVWmlVRGt5YjBKWlJIZENTRzRLU0RRclJGRmpablpEU21WTWJITkZXVXBuVDNrelFXWllWMmMwUzI5R2MzSlRlVUV5VG5SUWFXWkxTWFJEZEdjMldsZElabGhuZVVGaVJFazRNRlJxV2dwSVRXTXpSeXRsY21ScFZuWkdXVXBKWW5sbVkyeHdiakZPWTNaeFVFSTVNRmd3VG14VGMxUkZTMlJhVEhrcldWTlpVemxKYnpacGNFNVhZMnBoZGtrMENtVXZVMUl3VVV0Q1oxRkRRWFkxVlRBMldVb3hUazEyS3paVlkzQkVZVGhhVURjdlVubE5ZblZKWTB4S1pWZDRRVkV6VG05TE1saFZPWFpWVkVRdk5ta0thWFpKYVVrd2IwZFVjRmtySzJ0WWIxSndiMU0yUm1OQmRIZEdOSEJFZWxCSWIwRlBiMjlwVFZaaE5uUTBaVTgxWjJrdlpqUkJkVlZyWldoSlJWQkthQW94TlRaNVJHZFlObVJhT0U0eFJFUk9SR3AwVFd0b2JIZDRTbEprY2pSNFMyaE9SbGNyT1dKdlRsaEdXVTV3VjFJM2NFaGtVbmM5UFFvdExTMHRMVVZPUkNCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRbz0K
+                  status: ACTIVE
+                  status_reason: K8s is ready
+                  green_status: GREEN
+                  master_flavor:
+                    id: 7613
+                    name: n1-cpu-small
+                    cpu: 4
+                    ram: 4
+                    disk: 100
+                    ephemeral: 0
+                    gpu: ''
+                    gpu_count: 0
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+                  master_count: 2
+                  keypair_name: example-keypair
+                  created_at: '2026-05-07T09:21:55Z'
+                  image:
+                    name: Ubuntu 24.04 LTS Hyperstack Kubernetes v1.35.1
+                  node_groups:
+                  - id: 1402
+                    cluster_id: 3287
+                    name: default
+                    role: worker
+                    flavor:
+                      id: 8429
+                      name: n1-cpu-small
+                      cpu: 4
+                      ram: 4
+                      disk: 100
+                      ephemeral: 0
+                      gpu: ''
+                      gpu_count: 0
+                      labels: []
+                      features:
+                        network_optimised: false
+                        no_reboot: false
+                        no_hibernation: false
+                        no_snapshot: false
+                        local_storage_only: false
+                        api_only: false
+                    count: 1
+                    min_count: 1
+                    max_count: 1
+                    firewall_ids: []
+                  nodes:
+                  - id: 6190
+                    node_group_id: null
+                    node_group_name: null
+                    instance:
+                      id: 4501
+                      name: example-c1-bastion-0
+                      status: ACTIVE
+                      fixed_ip: 203.0.113.205
+                      floating_ip: 198.51.100.27
+                      floating_ip_status: ATTACHED
+                      contract_id: null
+                      image_id: 4501
+                    role: bastion
+                    status: ACTIVE
+                    status_reason: Node is reconciled
+                    is_bastion: true
+                    requires_public_ip: true
+                    created_at: '2026-05-06T14:32:11Z'
+                    updated_at: '2026-05-06T14:32:11Z'
+                  - id: 1129
+                    node_group_id: null
+                    node_group_name: null
+                    instance:
+                      id: 6190
+                      name: example-c1-load-balancer-0-2
+                      status: ACTIVE
+                      fixed_ip: 192.0.2.91
+                      floating_ip: 203.0.113.205
+                      floating_ip_status: ATTACHED
+                      contract_id: null
+                      image_id: 6190
+                    role: load-balancer
+                    status: ACTIVE
+                    status_reason: Node is reconciled
+                    is_bastion: false
+                    requires_public_ip: true
+                    created_at: '2026-05-06T15:18:42Z'
+                    updated_at: '2026-05-06T15:18:42Z'
+                  - id: 1402
+                    node_group_id: null
+                    node_group_name: null
+                    instance:
+                      id: 1129
+                      name: example-c1-master-0-3
+                      status: ACTIVE
+                      fixed_ip: 192.0.2.42
+                      floating_ip: null
+                      floating_ip_status: NO FLOATING IP
+                      contract_id: null
+                      image_id: 1129
+                    role: master
+                    status: ACTIVE
+                    status_reason: Node is reconciled
+                    is_bastion: false
+                    requires_public_ip: false
+                    created_at: '2026-05-06T16:04:09Z'
+                    updated_at: '2026-05-06T16:04:09Z'
+                  is_reconciling: false
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting clusters success
+                    page: 1
+                    page_size: 10
+                    count: 1
+                    clusters:
+                    - id: 9876
+                      name: example-c1
+                      environment_name: example-environment
+                      environment_region: NORWAY-1
+                      kubernetes_version: 1.35.1
+                      api_address: https://api.example-c1-8a1cf2.example-environment.hyperstackcustomers.cloud:6443
+                      kube_config: YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VSQ1ZFTkRRV1V5WjBGM1NVSkJaMGxKU0ZWVmFubzVTbEYwYmtsM1JGRlpTa3R2V2tsb2RtTk9RVkZGVEVKUlFYZEdWRVZVVFVKRlIwRXhWVVVLUVhoTlMyRXpWbWxhV0VwMVdsaFNiR042UVdWR2R6QjVUbXBCTVUxRVkzaE9lbFY1VFZSQ1lVWjNNSHBPYWtFeFRVUlJlRTU2VlROTlZFSmhUVUpWZUFwRmVrRlNRbWRPVmtKQlRWUkRiWFF4V1cxV2VXSnRWakJhV0UxM1oyZEZhVTFCTUVkRFUzRkhVMGxpTTBSUlJVSkJVVlZCUVRSSlFrUjNRWGRuWjBWTENrRnZTVUpCVVVNM1JVdFNlamRsTjNSaUsxTjZWa2RoT1c1R1RrSklXR2hHSzFka2VYQkRiMGd6WjB4blpWQnZRbTlpZUM4d1RsWjZkSHBLYTJJMWJUUUtZbUl6ZGtSbE5VTmtiSFVyYkhWcFMzRllXbWhQV0hwV05taEdWR05aYTNwTGFrUlZjMlZRU0ZaWk5XZG5Na1pDTURsdFkwVk5iMnhzUkhaV1owWldSQXBWTjJ0YVNIaDZUVGwzWjBWeGVqQkRiM2RCYUZGcFJXaFdRVVpJVHpVNU16bEpjRnBtZVdkaFVXVmlZbGx5ZUdadmMyVldZaTlHT1hOdVZ6SXdVRE01Q2pWTVluUXJPR3hNVEdKRFFrTXdNMG93V0dGU1NVUlVRbXRYZURSWlZWbDRTM05QY0dOU01tbENhVkpKYWsxamJrdHdNVTkwV21sQ2EycHdUV3RxYkcwS2EzaDVZbk13ZFRkblFucElObHBZYVZoMVJYUTVSMVJPTHpVMmRrTTNZelZxY0c5TVIyWjFRbmhsV1RoUlltWlVTRUpVYW0xWVpXUk1keXRJTlRrelNRcEllRXAwTW1oSVJqRkJiRVk0UlUxUVMwZGpNR2h6ZEdoSldtdHFRV2ROUWtGQlIycFhWRUpZVFVFMFIwRXhWV1JFZDBWQ0wzZFJSVUYzU1VOd1JFRlFDa0puVGxaSVVrMUNRV1k0UlVKVVFVUkJVVWd2VFVJd1IwRXhWV1JFWjFGWFFrSlVMM0ZKT1doYWRDdFdOMVZXTWtORWEyRk1XRXBWT1VOM1JteEVRVllLUW1kT1ZraFNSVVZFYWtGTloyZHdjbVJYU214amJUVnNaRWRXZWsxQk1FZERVM0ZIVTBsaU0wUlJSVUpEZDFWQlFUUkpRa0ZSUVU1Q1puSTBUa2xYUndwa00xRjZVa04yUzJsd2VIQkxUemRXT1VwMldsUnBSRFZDUVZoUWVHbFpObVp2YUdGSlpFeFZRVGNyWVVGSk9USlpUbnBpTVVWTlFUaDVlbll3Yml0TkNteDBkR2xNYzFaU2VGaFdSVFVyU1dRNFFUSklORXN3ZVhoR2RVNTZNRmd4VlVONE5sRm9WM2xaTlZGamRreHVVbUYzUjB0a1VIVnZXRkpJTkdOWFRGY0tRV1ZuUjFSRk1Fa3hWV3d5ZG1wd1FsQnZWR0ZWY1RScmFqSmpSRGc1S3pkWFpGTlpSRmN5VXpoMWNIaFBaVkpQWjJkQ00wOXRZMVJ6VFROcWRYQjRXUXBhVkVKQlNpdEJVRmswTUU5Q05raFNRVWc1TnpORGIyOW9iSEpZZDFOVFJESlZWbkV4ZG5kTWIwczNhbkJKUm01R1psTXlVVUZNWVd0WmIycGpZVkJNQ2xFM2JYTk5ka1JqZDFWV01HTTBXRXhNYVZSNWFEZHhZa2RzYlU5YVIwY3lhVFp3TjNKTVlUSlJNVzFLSzNkTWRVVlBNVkJLV1VOQk16RXdOMDk1UkZrS2NFRkZVMDg0YzFSa1kwZEVDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIHNlcnZlcjogaHR0cHM6Ly9hcGkuYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIuYXBpdGVzdC01NTJmODI2YS1lbnYuaHlwZXJzdGFja2N1c3RvbWVycy5jbG91ZDo2NDQzCiAgbmFtZTogYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIKY29udGV4dHM6Ci0gY29udGV4dDoKICAgIGNsdXN0ZXI6IGFwaXRlc3QtNTUyZjgyNmEtYzEtOGExY2YyCiAgICB1c2VyOiBrdWJlcm5ldGVzLWFkbWluCiAgbmFtZToga3ViZXJuZXRlcy1hZG1pbkBhcGl0ZXN0LTU1MmY4MjZhLWMxLThhMWNmMgpjdXJyZW50LWNvbnRleHQ6IGt1YmVybmV0ZXMtYWRtaW5AYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIKa2luZDogQ29uZmlnCnVzZXJzOgotIG5hbWU6IGt1YmVybmV0ZXMtYWRtaW4KICB1c2VyOgogICAgY2xpZW50LWNlcnRpZmljYXRlLWRhdGE6IExTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVVJMVkVORFFXaEhaMEYzU1VKQlowbEpXV05zY1d4b1dUUlFaR2QzUkZGWlNrdHZXa2xvZG1OT1FWRkZURUpSUVhkR1ZFVlVUVUpGUjBFeFZVVUtRWGhOUzJFelZtbGFXRXAxV2xoU2JHTjZRV1ZHZHpCNVRtcEJNVTFFWTNoT2VsVjVUVlJDWVVaM01IbE9la0V4VFVSamVFNTZWVE5OVkVKaFRVUjNlQXBJZWtGa1FtZE9Wa0pCYjFSR2JYUXhXVzFXYUZwSE1EWlpNbmd4WXpOU2JHTnBNV2hhUnpGd1ltNU5lRWRVUVZoQ1owNVdRa0ZOVkVWSGRERlpiVlo1Q21KdFZqQmFXRTEwV1ZkU2RHRlhOSGRuWjBWcFRVRXdSME5UY1VkVFNXSXpSRkZGUWtGUlZVRkJORWxDUkhkQmQyZG5SVXRCYjBsQ1FWRkRkbWw2YUZVS1ZrMTNSMGx5UzBoTlRHeHJVVkp5S3psNGRIWlVXVWR5TW1WSWJqTTNXRU5MT1V0UlFUTlVTbVUyTUVzeE1VOURNMWR4YW1GblVHOVBkRlJNUzJGbmFncFNVVW9yYURKNVJFTktXbVExYmxKU2JGYzBRMmhIT0dacU1qZFZTMk5CZG0xdFduWklkVGRPVm5SaFQxVXJWM0E1ZEhScVNIQllOMFpwWTFSTVpUSXZDbnBaVHpSRVJYbHdVMDlIYTJkb1QxQjNUM05RY0VGU2MwdFpaVTlXWWxoM1RXVnlVbVZCUTNNM1dqVnJWVE4wV1hJd1kybzVVVkZqYmxGUFUwaE5TSFVLTld4clNtTjFSbmhpZWtwNWVWQllXVTlsTVM5cGNtdFliVmx3VVV0aGJGUlJSMVV6UmpsS05XcFFUR3hTTVhsMVNEZExWVkJWVW1aRVowa3hSRloxZHdwTFVsaGFUak5GYm14Q2NFcHpVR2Q2ZUV0NGJ5c3ZSa0p2TTAxd2FrOXZNRXRHY2tVcmVXSXdiVzQwT0hwS2MyUlhjbTFUU1VNeWVYRkZPRUpOZWxaMENqWkdlVzU2YUZwV01scFZPR3czVlZwQlowMUNRVUZIYWxacVFsVk5RVFJIUVRGVlpFUjNSVUl2ZDFGRlFYZEpSbTlFUVZSQ1owNVdTRk5WUlVSRVFVc0tRbWRuY2tKblJVWkNVV05FUVdwQlRVSm5UbFpJVWsxQ1FXWTRSVUZxUVVGTlFqaEhRVEZWWkVsM1VWbE5RbUZCUmxBcmIyb3lSbTB6TlZoMFVsaFpTUXBQVW05MFkyeFVNRXhCVjFWTlFUQkhRMU54UjFOSllqTkVVVVZDUTNkVlFVRTBTVUpCVVVFMVYyUnRTMVpLVm1SUWVHbHJSMEprVkZFclVXNUxaek0zQ2pSc1NUQjFkV1JrYkRFeWNqRjJPSGh5WldaR1YzRktXRXB2VFd0cU1XZ3hZazE1YjB4c2IzTkdTa2hSWmtSMWJsRnpUR1ExYkV4Skx6WjZORXhoYUdvS2R6ZzBjbGxSTmtwa05IRmFhVmhGWkU1WGNYbHpXRTFWY1hFME5uQlRVazVHV0doT1JEZ3ZZamhRWW04NE5XWTRVbTVuVG5FME0yMVRlR1pNZEdKRVRncElTblE1UlRseFMwSndXV3gwY25SU1VFRnhNMGt6TW5sTGJFUnZVR3hzTWswelNFOXhjRmRUT1V0QlNVZzFWVzAxWm1KRmJWbExNVk50VlhnMWFtOHhDakJKZW1aTGRrRnVabmRrYzB4WVJVY3dLM0o2VFRRelFuVXJUbEE1VlZFNVJVeEliRlZpY1hBeFYwdG5lbXN5ZUZoWU5ubFFhM05HY0d4Q09HMDVNUzhLUWxGSmNVWmlhbEJ0Wm5SQ1ZFWk1UbEpwVlVVM2RHeENjVGx2TTBwRWVEWkJiRkZhZEZOSlYzaDJOWHBTU0hVemQxTXlTMVY0UkZCTmNIcFhDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIGNsaWVudC1rZXktZGF0YTogTFMwdExTMUNSVWRKVGlCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRcE5TVWxGY0VGSlFrRkJTME5CVVVWQmNqUnpORlpHVkUxQ2FVdDVhSHBETlZwRlJXRXZkbU5pWWpBeVFuRTVibWcxT1NzeGQybDJVMnRCVGpCNVdIVjBDa04wWkZSbmRERnhiekp2UkRaRWNsVjVlVzF2U1RCVlEyWnZaSE5uZDJsWFdHVmFNRlZhVm5WQmIxSjJTRFE1ZFRGRGJrRk1OWEJ0WW5nM2RYcFdZbGNLYW14UWJIRm1ZbUpaZURaV0szaFpia1Y1TTNSMk9ESkVkVUY0VFhGVmFtaHdTVWxVYWpoRWNrUTJVVVZpUTIxSWFteFhNVGhFU0hFd1dHZEJjazh5WlFwYVJrNDNWMHM1U0VrdlZVVklTakJFYTJoNlFqZDFXbHBEV0V4b1kxYzRlV056YWpFeVJHNTBaalJ4TlVZMWJVdFZRMjF3VlRCQ2JFNTRabE5sV1hwNUNqVlZaR055YUN0NWJFUXhSVmgzTkVOT1VURmljME5yVmpKVVpIaEtOVkZoVTJKRU5FMDRVM05oVUhaNFVXRk9la3RaZW5GT1EyaGhlRkJ6YlRsS2NDc0tVRTE1WWtoV2NUVnJhVUYwYzNGb1VFRlVUVEZpWldoamNEZzBWMVprYlZaUVNtVXhSMUZKUkVGUlFVSkJiMGxDUVVGbmNtRkpSekJQU2t0SmFIUndNd293UVdvd1duSmpOamxPU0c1UU5FOXdOMnBQUjFjNFZXWnRVSE5QZW1nMllWaFBSa2RUUTB0ekx6QjBMMjlhVEhKUFowRkRabXR4TVRaWWJrNHZObFJTQ21Zek16ZFFZWEZYVlRkd1YxRXpNbkZvVkZCdGFGbFZlRzlHWWtocU9FZExjWGN5VVhCbU1sVXJXSHBTWWxwV2VqUkliWEZDTkdsSWJtWjFkM2gwYVZNS1FtSTFUVTR6UkZoUU5XeEpkblJRZURCMFkzazRabUYwZGtGdWJtZG5WbUkzV1ZkRU4wRnJSM00zVEZKb2F6aE5WRk53VFhBNGVWTlhWRzV4UjJ0M2JncEtkR3BITTJkT1dqZDRRMDlrTW5aUFNWVXlaalpYV0dkSWFuQjRTVmd2WkhOSVJrTTBNR3RCTUhZclpXY3lNVUpwUWpBNVQyVjFPQ3RwUVcxNVlsSk1DalpXUjBWcFlsTkZUMVpXWWxNemExbGxOVlpETWs5emEwTlJNbkphTkVzeUsxQk5RbTlxZGxkYWR6WktOV0V5Tm5wME5HVjJabk5LTkVVeGMydEpTV1FLTHpNM1RXWjNSVU5uV1VWQmR6bFNRV1l6WkZOdk1VNTBVVmMzYmxkSGJWRTVla2h3YW5OalQyTjRaMEZQWW5FMlUwaDRiV1pTYlVWSFltWlJabVpTYVFwV1NFSTRjQ3MyTmtWUk5VczJlR3R0UjBsMVRrRjVOM2hNWjBoWE0wTlhkelJKTnprNFFuQkVTelo2VG5ZMFlsY3ZkbTVXV1dOdVlXTllUazFIYms1bkNrSmlUbnBFU1ZKU1dHNXhRMVJsWlZkclkzQmtablZoTjNweWNESmlWVXR0WmpJM2VqRlBNME5TWWpoNVJXRTJibHBGYjFFeVUydERaMWxGUVRWWWRGa0tZMDlTT1VkelF6QnVZWE15TTNrdmFqWlBaWFpoYURCWFdFMVhkM1kzUzA5Wk1WcDBMMUZJWTNaUGFYSlRkVlExVmpObVZYUkdkbGRFYzJoVldWQTVlQXBGVTI1NFFqSnpTRkJKVkZnNU1pdENVbkUzV1ZGM2VGZHJVRU1yU2s1NlpVNVpkMmxtYkVoeFlWTnBjV3ROVjBwMFUyMTJVVkpFTUhKd1pXNVFOWFpWQ25nNWNESjFiVkJyVm5kdWVHeE9TM05WVFVOamRFSTBaMGRtTUhaUWNUSjZWVXAxVTFOdVJVTm5XVUppZWpkc2JHbFpXQ3NyVUVGNVV6RkxMMmx6TjJrS1pHczBkMGRJWkZnd2NISlpaR2RyT0ZSellXMVNSRFZCTmtsTmFHRnRRbTVuYXpKUVZtdGtOa1UxT1dkV1pYZGpaV1ZFYXpaNU9EaERURk0xYUdod1JncFVaMVZWWlhSMVprMUhaRTlOYlU4clN6RmxNV1o2VDJoSFVrNUlSeko1WW1ZMlUyazJOalZUWnpGR2QxRlFTRUUzU1Zkc1NqTjRTakJtV1ZGQ056SlVDalZYYzBGSE0wTkllbkp2YTNaRFVGTjVlamRYT0ZGTFFtZFJRMGw1Tmxac04zQTJlRUYxZW05RVJHTjVhR3czU3paTmJVWmlVRGt5YjBKWlJIZENTRzRLU0RRclJGRmpablpEU21WTWJITkZXVXBuVDNrelFXWllWMmMwUzI5R2MzSlRlVUV5VG5SUWFXWkxTWFJEZEdjMldsZElabGhuZVVGaVJFazRNRlJxV2dwSVRXTXpSeXRsY21ScFZuWkdXVXBKWW5sbVkyeHdiakZPWTNaeFVFSTVNRmd3VG14VGMxUkZTMlJhVEhrcldWTlpVemxKYnpacGNFNVhZMnBoZGtrMENtVXZVMUl3VVV0Q1oxRkRRWFkxVlRBMldVb3hUazEyS3paVlkzQkVZVGhhVURjdlVubE5ZblZKWTB4S1pWZDRRVkV6VG05TE1saFZPWFpWVkVRdk5ta0thWFpKYVVrd2IwZFVjRmtySzJ0WWIxSndiMU0yUm1OQmRIZEdOSEJFZWxCSWIwRlBiMjlwVFZaaE5uUTBaVTgxWjJrdlpqUkJkVlZyWldoSlJWQkthQW94TlRaNVJHZFlObVJhT0U0eFJFUk9SR3AwVFd0b2JIZDRTbEprY2pSNFMyaE9SbGNyT1dKdlRsaEdXVTV3VjFJM2NFaGtVbmM5UFFvdExTMHRMVVZPUkNCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRbz0K
+                      status: ACTIVE
+                      status_reason: K8s is ready
+                      green_status: GREEN
+                      master_flavor:
+                        id: 7613
+                        name: n1-cpu-small
+                        cpu: 4
+                        ram: 4
+                        disk: 100
+                        ephemeral: 0
+                        gpu: ''
+                        gpu_count: 0
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+                      master_count: 2
+                      keypair_name: example-keypair
+                      created_at: '2026-05-07T09:21:55Z'
+                      image:
+                        name: Ubuntu 24.04 LTS Hyperstack Kubernetes v1.35.1
+                      node_groups:
+                      - id: 1402
+                        cluster_id: 3287
+                        name: default
+                        role: worker
+                        flavor:
+                          id: 8429
+                          name: n1-cpu-small
+                          cpu: 4
+                          ram: 4
+                          disk: 100
+                          ephemeral: 0
+                          gpu: ''
+                          gpu_count: 0
+                          labels: []
+                          features:
+                            network_optimised: false
+                            no_reboot: false
+                            no_hibernation: false
+                            no_snapshot: false
+                            local_storage_only: false
+                            api_only: false
+                        count: 1
+                        min_count: 1
+                        max_count: 1
+                        firewall_ids: []
+                      nodes:
+                      - id: 6190
+                        node_group_id: null
+                        node_group_name: null
+                        instance:
+                          id: 4501
+                          name: example-c1-bastion-0
+                          status: ACTIVE
+                          fixed_ip: 203.0.113.205
+                          floating_ip: 198.51.100.27
+                          floating_ip_status: ATTACHED
+                          contract_id: null
+                          image_id: 4501
+                        role: bastion
+                        status: ACTIVE
+                        status_reason: Node is reconciled
+                        is_bastion: true
+                        requires_public_ip: true
+                        created_at: '2026-05-06T14:32:11Z'
+                        updated_at: '2026-05-06T14:32:11Z'
+                      - id: 1129
+                        node_group_id: null
+                        node_group_name: null
+                        instance:
+                          id: 6190
+                          name: example-c1-load-balancer-0-2
+                          status: ACTIVE
+                          fixed_ip: 192.0.2.91
+                          floating_ip: 203.0.113.205
+                          floating_ip_status: ATTACHED
+                          contract_id: null
+                          image_id: 6190
+                        role: load-balancer
+                        status: ACTIVE
+                        status_reason: Node is reconciled
+                        is_bastion: false
+                        requires_public_ip: true
+                        created_at: '2026-05-06T15:18:42Z'
+                        updated_at: '2026-05-06T15:18:42Z'
+                      - id: 1402
+                        node_group_id: null
+                        node_group_name: null
+                        instance:
+                          id: 1129
+                          name: example-c1-master-0-3
+                          status: ACTIVE
+                          fixed_ip: 192.0.2.42
+                          floating_ip: null
+                          floating_ip_status: NO FLOATING IP
+                          contract_id: null
+                          image_id: 1129
+                        role: master
+                        status: ACTIVE
+                        status_reason: Node is reconciled
+                        is_bastion: false
+                        requires_public_ip: false
+                        created_at: '2026-05-06T16:04:09Z'
+                        updated_at: '2026-05-06T16:04:09Z'
+                      is_reconciling: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Retrieve a list of your current clusters in Hyperstack, providing detailed information for each, including cluster ID, operational status, environment, flavor (hardware configuration), and more.
+    post:
+      tags:
+      - Clusters
+      summary: Create Cluster
+      operationId: Create_Cluster
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create_Cluster_Payload'
+              example:
+                name: example-c1
+                environment_name: example-environment
+                kubernetes_version: 1.35.1
+                master_count: 2
+                master_flavor_name: n1-cpu-small
+                node_count: 1
+                node_flavor_name: n1-cpu-small
+                keypair_name: example-keypair
+              properties: {}
+            example:
+              environment_name: example-environment
+              keypair_name: example-keypair
+              kubernetes_version: 1.35.1
+              master_flavor_name: n1-cpu-small
+              name: example-c1
+              master_count: 2
+              node_count: 1
+              node_flavor_name: n1-cpu-small
+        required: true
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResponse'
+              example:
+                status: true
+                message: Cluster created successfully
+                cluster:
+                  id: 2058
+                  name: example-c1
+                  environment_name: example-environment
+                  environment_region: NORWAY-1
+                  kubernetes_version: 1.35.1
+                  api_address: null
+                  kube_config: null
+                  status: CREATING
+                  status_reason: null
+                  green_status: GREEN
+                  master_flavor:
+                    id: 3287
+                    name: n1-cpu-small
+                    cpu: 4
+                    ram: 4
+                    disk: 100
+                    ephemeral: 0
+                    gpu: ''
+                    gpu_count: 0
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+                  master_count: 2
+                  keypair_name: example-keypair
+                  created_at: '2026-05-07T11:47:30Z'
+                  image:
+                    name: Ubuntu 24.04 LTS Hyperstack Kubernetes v1.35.1
+                  node_groups:
+                  - id: 9876
+                    cluster_id: 8429
+                    name: default
+                    role: worker
+                    flavor:
+                      id: 4501
+                      name: n1-cpu-small
+                      cpu: 4
+                      ram: 4
+                      disk: 100
+                      ephemeral: 0
+                      gpu: ''
+                      gpu_count: 0
+                      labels: []
+                      features:
+                        network_optimised: false
+                        no_reboot: false
+                        no_hibernation: false
+                        no_snapshot: false
+                        local_storage_only: false
+                        api_only: false
+                    count: 1
+                    min_count: 1
+                    max_count: 1
+                    firewall_ids: []
+                  nodes:
+                  - id: 1129
+                    node_group_id: null
+                    node_group_name: null
+                    instance:
+                      id: 6190
+                      name: example-c1-bastion-0
+                      status: CREATING
+                      fixed_ip: null
+                      floating_ip: null
+                      floating_ip_status: ATTACHING
+                      contract_id: null
+                      image_id: 6190
+                    role: bastion
+                    status: CREATING
+                    status_reason: VM is creating
+                    is_bastion: true
+                    requires_public_ip: true
+                    created_at: '2026-05-06T15:18:42Z'
+                    updated_at: '2026-05-06T15:18:42Z'
+                  - id: 1402
+                    node_group_id: null
+                    node_group_name: null
+                    instance:
+                      id: 1129
+                      name: example-c1-load-balancer-0-2
+                      status: CREATING
+                      fixed_ip: null
+                      floating_ip: null
+                      floating_ip_status: ATTACHING
+                      contract_id: null
+                      image_id: 1129
+                    role: load-balancer
+                    status: CREATING
+                    status_reason: VM is creating
+                    is_bastion: false
+                    requires_public_ip: true
+                    created_at: '2026-05-06T16:04:09Z'
+                    updated_at: '2026-05-06T16:04:09Z'
+                  - id: 9876
+                    node_group_id: null
+                    node_group_name: null
+                    instance:
+                      id: 1402
+                      name: example-c1-master-0-3
+                      status: CREATING
+                      fixed_ip: null
+                      floating_ip: null
+                      floating_ip_status: NO FLOATING IP
+                      contract_id: null
+                      image_id: 1402
+                    role: master
+                    status: CREATING
+                    status_reason: VM is creating
+                    is_bastion: false
+                    requires_public_ip: false
+                    created_at: '2026-05-07T09:21:55Z'
+                    updated_at: '2026-05-07T09:21:55Z'
+                  is_reconciling: true
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Cluster created successfully
+                    cluster:
+                      id: 2058
+                      name: example-c1
+                      environment_name: example-environment
+                      environment_region: NORWAY-1
+                      kubernetes_version: 1.35.1
+                      api_address: null
+                      kube_config: null
+                      status: CREATING
+                      status_reason: null
+                      green_status: GREEN
+                      master_flavor:
+                        id: 3287
+                        name: n1-cpu-small
+                        cpu: 4
+                        ram: 4
+                        disk: 100
+                        ephemeral: 0
+                        gpu: ''
+                        gpu_count: 0
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+                      master_count: 2
+                      keypair_name: example-keypair
+                      created_at: '2026-05-07T11:47:30Z'
+                      image:
+                        name: Ubuntu 24.04 LTS Hyperstack Kubernetes v1.35.1
+                      node_groups:
+                      - id: 9876
+                        cluster_id: 8429
+                        name: default
+                        role: worker
+                        flavor:
+                          id: 4501
+                          name: n1-cpu-small
+                          cpu: 4
+                          ram: 4
+                          disk: 100
+                          ephemeral: 0
+                          gpu: ''
+                          gpu_count: 0
+                          labels: []
+                          features:
+                            network_optimised: false
+                            no_reboot: false
+                            no_hibernation: false
+                            no_snapshot: false
+                            local_storage_only: false
+                            api_only: false
+                        count: 1
+                        min_count: 1
+                        max_count: 1
+                        firewall_ids: []
+                      nodes:
+                      - id: 1129
+                        node_group_id: null
+                        node_group_name: null
+                        instance:
+                          id: 6190
+                          name: example-c1-bastion-0
+                          status: CREATING
+                          fixed_ip: null
+                          floating_ip: null
+                          floating_ip_status: ATTACHING
+                          contract_id: null
+                          image_id: 6190
+                        role: bastion
+                        status: CREATING
+                        status_reason: VM is creating
+                        is_bastion: true
+                        requires_public_ip: true
+                        created_at: '2026-05-06T15:18:42Z'
+                        updated_at: '2026-05-06T15:18:42Z'
+                      - id: 1402
+                        node_group_id: null
+                        node_group_name: null
+                        instance:
+                          id: 1129
+                          name: example-c1-load-balancer-0-2
+                          status: CREATING
+                          fixed_ip: null
+                          floating_ip: null
+                          floating_ip_status: ATTACHING
+                          contract_id: null
+                          image_id: 1129
+                        role: load-balancer
+                        status: CREATING
+                        status_reason: VM is creating
+                        is_bastion: false
+                        requires_public_ip: true
+                        created_at: '2026-05-06T16:04:09Z'
+                        updated_at: '2026-05-06T16:04:09Z'
+                      - id: 9876
+                        node_group_id: null
+                        node_group_name: null
+                        instance:
+                          id: 1402
+                          name: example-c1-master-0-3
+                          status: CREATING
+                          fixed_ip: null
+                          floating_ip: null
+                          floating_ip_status: NO FLOATING IP
+                          contract_id: null
+                          image_id: 1402
+                        role: master
+                        status: CREATING
+                        status_reason: VM is creating
+                        is_bastion: false
+                        requires_public_ip: false
+                        created_at: '2026-05-07T09:21:55Z'
+                        updated_at: '2026-05-07T09:21:55Z'
+                      is_reconciling: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    status: false
+                    message: Name must not exceed 20 characters
+                    error_reason: bad_request
+              example:
+                status: false
+                message: Name must not exceed 20 characters
+                error_reason: bad_request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Creates a Kubernetes cluster in Hyperstack with the specified custom configuration and features provided in the request body. To create a Kubernetes cluster, specify its configuration details by filling in the required fields in the request payload. These fields include the cluster name, node type, Kubernetes version, hardware configuration, and other relevant parameters. Once the payload is complete, send the request to the `/core/clusters` API using the **POST** method to deploy the cluster with the specified configuration. Creation usually takes around 15 minutes. Larger clusters, and creating several clusters at once, take longer. You can check the status of the cluster by calling the '[**Retrieve Cluster Details**](https://docs.hyperstack.cloud/docs/api-reference/getting-cluster-detail)' API. If your cluster is not in the `ACTIVE` state after 60 minutes, please remove the cluster and try again.
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/master-flavors:
+    get:
+      tags:
+      - Clusters
+      summary: Get cluster master flavors
+      operationId: Get_Cluster_Master_Flavors
+      responses:
+        '200':
+          description: Retrieved Flavors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterFlavorsResponse'
+              example:
+                status: true
+                message: Flavors retrieved successfully
+                flavors:
+                - id: 9876
+                  name: n1-cpu-small
+                  display_name: null
+                  region_name: NORWAY-1
+                  cpu: 4
+                  ram: 4
+                  disk: 100
+                  ephemeral: 0
+                  gpu: ''
+                  gpu_count: 0
+                  created_at: '2026-05-07T09:21:55Z'
+                  labels: []
+                  features:
+                    network_optimised: false
+                    no_reboot: false
+                    no_hibernation: false
+                    no_snapshot: false
+                    local_storage_only: false
+                    api_only: false
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Flavors retrieved successfully
+                    flavors:
+                    - id: 9876
+                      name: n1-cpu-small
+                      display_name: null
+                      region_name: NORWAY-1
+                      cpu: 4
+                      ram: 4
+                      disk: 100
+                      ephemeral: 0
+                      gpu: ''
+                      gpu_count: 0
+                      created_at: '2026-05-07T09:21:55Z'
+                      labels: []
+                      features:
+                        network_optimised: false
+                        no_reboot: false
+                        no_hibernation: false
+                        no_snapshot: false
+                        local_storage_only: false
+                        api_only: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Retrieves the list of available [**CPU-only flavors**](https://docs.hyperstack.cloud/docs/hardware/flavors/#cpu-only) supported for use as the master node in Kubernetes clusters. Master nodes host the Kubernetes control plane and must use CPU-only configurations. For guidance on selecting a master flavor for cluster deployment, see [**Select Master Node Flavor**](https://docs.hyperstack.cloud/docs/kubernetes/kubernetes-ui#cluster-node-types) in the [**Kubernetes UI Deployment Guide**](https://docs.hyperstack.cloud/docs/kubernetes/kubernetes-ui).
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/name-availability/{name}:
+    get:
+      tags:
+      - Clusters
+      summary: Fetch cluster name availability
+      description: Specify the cluster name in the path to verify its availability for deployment using the [**Create Cluster API**](https://docs.hyperstack.cloud/docs/api-reference/create-cluster).
+      operationId: Fetch_cluster_name_availability
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Cluster name to check for availability.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NameAvailableModel'
+              example:
+                name: example-cluster
+                available: false
+                message: Name must not exceed 20 characters
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    name: example-cluster
+                    available: false
+                    message: Name must not exceed 20 characters
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/versions:
+    get:
+      tags:
+      - Clusters
+      summary: List cluster versions
+      description: Retrieve a list of supported Kubernetes versions that can be used in the `kubernetes_version` field of the [**Create Cluster API**](https://docs.hyperstack.cloud/docs/api-reference/create-cluster) when deploying a cluster.
+      operationId: Get_Cluster_Versions
+      parameters:
+      - name: region
+        in: query
+        description: Filter versions by region name (optional)
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Retrieved Cluster Versions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterVersions'
+              example:
+                status: true
+                message: Cluster versions retrieved successfully
+                versions:
+                - id: 3287
+                  version: 1.35.1
+                  region:
+                    id: 3287
+                    name: CANADA-1
+                    country: CA
+                    description: null
+                    green_status: GREEN
+                    features:
+                      floating_ip: true
+                      volumes: true
+                  image:
+                    id: 8429
+                    name: Ubuntu 24.04 LTS Hyperstack Kubernetes v1.35.1
+                    region_name: CANADA-1
+                    type: Ubuntu
+                    version: Server 24.04 LTS Hyperstack Kubernetes v1.35.1
+                    size: 107374182400
+                    display_size: 100 GiB
+                    description: kubernetes
+                    snapshot: null
+                    is_public: true
+                    created_at: '2026-05-07T09:21:55Z'
+                    labels:
+                    - id: 5341
+                      label: k8s
+                  created_at: '2026-05-06T16:04:09Z'
+                  updated_at: null
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Cluster versions retrieved successfully
+                    versions:
+                    - id: 3287
+                      version: 1.35.1
+                      region:
+                        id: 3287
+                        name: CANADA-1
+                        country: CA
+                        description: null
+                        green_status: GREEN
+                        features:
+                          floating_ip: true
+                          volumes: true
+                      image:
+                        id: 8429
+                        name: Ubuntu 24.04 LTS Hyperstack Kubernetes v1.35.1
+                        region_name: CANADA-1
+                        type: Ubuntu
+                        version: Server 24.04 LTS Hyperstack Kubernetes v1.35.1
+                        size: 107374182400
+                        display_size: 100 GiB
+                        description: kubernetes
+                        snapshot: null
+                        is_public: true
+                        created_at: '2026-05-07T09:21:55Z'
+                        labels:
+                        - id: 5341
+                          label: k8s
+                      created_at: '2026-05-06T16:04:09Z'
+                      updated_at: null
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/{cluster_id}/events:
+    get:
+      tags:
+      - Clusters
+      summary: Fetch all of a cluster events
+      operationId: List_cluster_events
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID of the cluster.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterEvents'
+              example:
+                status: true
+                message: Successfully retrived events for Cluster example-c1
+                cluster_events:
+                - id: 2058
+                  cluster_id: 4501
+                  user_id: 7613
+                  org_id: 3287
+                  time: '2026-05-07T11:47:30Z'
+                  type: normal
+                  reason: ClusterCreationRequest
+                  object: example-c1
+                  message: Cluster example-c1 Creation Request Sent.
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Successfully retrived events for Cluster example-c1
+                    cluster_events:
+                    - id: 2058
+                      cluster_id: 4501
+                      user_id: 7613
+                      org_id: 3287
+                      time: '2026-05-07T11:47:30Z'
+                      type: normal
+                      reason: ClusterCreationRequest
+                      object: example-c1
+                      message: Cluster example-c1 Creation Request Sent.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Retrieve a list of events for a specified Kubernetes cluster, providing detailed information for each, including the type of event, event ID, timestamp, and a message describing the event.
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/{cluster_id}/node-groups:
+    get:
+      tags:
+      - Clusters
+      summary: List node groups for a cluster
+      operationId: List_Node_Groups
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterNodeGroupsListResponse'
+              example:
+                status: true
+                message: Node groups retrieved successfully
+                node_groups:
+                - id: 3287
+                  name: default
+                  role: worker
+                  flavor:
+                    id: 9876
+                    name: n1-cpu-small
+                    cpu: 4
+                    ram: 4
+                    disk: 100
+                    ephemeral: 0
+                    gpu: ''
+                    gpu_count: 0
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+                  count: 1
+                  min_count: 1
+                  max_count: 1
+                  firewall_ids: []
+                  firewalls: []
+                  created_at: '2026-05-06T16:04:09Z'
+                  updated_at: '2026-05-06T16:04:09Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Node groups retrieved successfully
+                    node_groups:
+                    - id: 3287
+                      name: default
+                      role: worker
+                      flavor:
+                        id: 9876
+                        name: n1-cpu-small
+                        cpu: 4
+                        ram: 4
+                        disk: 100
+                        ephemeral: 0
+                        gpu: ''
+                        gpu_count: 0
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+                      count: 1
+                      min_count: 1
+                      max_count: 1
+                      firewall_ids: []
+                      firewalls: []
+                      created_at: '2026-05-06T16:04:09Z'
+                      updated_at: '2026-05-06T16:04:09Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Retrieves a list of all node groups associated with a specified cluster in Hyperstack. Each node group represents a collection of nodes within the cluster with a shared configuration (e.g., instance flavor, role, and count).
+    post:
+      tags:
+      - Clusters
+      summary: Create a node group in a cluster
+      operationId: Create_Node_Group
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create_ClusterNodeGroup_payload'
+        required: true
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterNodeGroupsCreateResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    status: false
+                    message: Cluster 1617 is reconciling
+                    error_reason: bad_request
+              example:
+                status: false
+                message: Cluster 1617 is reconciling
+                error_reason: bad_request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Creates a [**node group**](https://docs.hyperstack.cloud/docs/kubernetes/kubernetes-ui#cluster-node-groups) and adds it to an existing Kubernetes cluster with a specified number of worker nodes of the selected flavor.
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/{cluster_id}/node-groups/{node_group_id}:
+    get:
+      tags:
+      - Clusters
+      summary: Retrieve a node group in a cluster
+      operationId: Get_Node_Group
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      - name: node_group_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the node group.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterNodeGroupsGetResponse'
+              example:
+                status: true
+                message: Node group 987 retrieved successfully
+                node_group:
+                  id: 8429
+                  name: default
+                  role: worker
+                  flavor:
+                    id: 2058
+                    name: n1-cpu-small
+                    cpu: 4
+                    ram: 4
+                    disk: 100
+                    ephemeral: 0
+                    gpu: ''
+                    gpu_count: 0
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+                  count: 1
+                  min_count: 1
+                  max_count: 1
+                  firewall_ids: []
+                  firewalls: []
+                  created_at: '2026-05-07T09:21:55Z'
+                  updated_at: '2026-05-07T09:21:55Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Node group 987 retrieved successfully
+                    node_group:
+                      id: 8429
+                      name: default
+                      role: worker
+                      flavor:
+                        id: 2058
+                        name: n1-cpu-small
+                        cpu: 4
+                        ram: 4
+                        disk: 100
+                        ephemeral: 0
+                        gpu: ''
+                        gpu_count: 0
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+                      count: 1
+                      min_count: 1
+                      max_count: 1
+                      firewall_ids: []
+                      firewalls: []
+                      created_at: '2026-05-07T09:21:55Z'
+                      updated_at: '2026-05-07T09:21:55Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Retrieves the full configuration and metadata of a specific node group within a given cluster in Hyperstack. Node groups represent groups of worker nodes with shared hardware configurations within a cluster.
+    delete:
+      tags:
+      - Clusters
+      summary: Delete a node group
+      operationId: Delete_Node_Group
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      - name: node_group_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the node group.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+      description: Deletes an existing [**node group**](https://docs.hyperstack.cloud/docs/kubernetes/kubernetes-ui#cluster-node-groups) from a Kubernetes cluster in Hyperstack. This operation removes all worker nodes associated with the specified node group. A cluster must always have at least one worker node in at least one node group. You cannot delete the last remaining worker node group in a cluster.
+    patch:
+      tags:
+      - Clusters
+      summary: Update a node group in a cluster
+      operationId: Update_Node_Group
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      - name: node_group_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the node group.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Update_ClusterNodeGroup_payload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterNodeGroupsCreateResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+      description: 'Updates the **minimum** and **maximum** worker node limits for an existing [**node group**](https://docs.hyperstack.cloud/docs/kubernetes/kubernetes-ui#cluster-node-groups) in a Kubernetes cluster. These boundaries define the range within which the node group can be scaled. Add firewall rules to all worker nodes within the node group using the `firewall_ids` parameter.
+
+
+        By default, `min_count` and `max_count` are both set to the number of worker nodes initially deployed in the node group. For example, if a node group is created with 2 worker nodes, both `min_count` and `max_count` default to `2`.
+
+
+        **Manual scaling:** These limits apply only to autoscaling operations. Manual addition or removal of worker nodes beyond `min_count` and `max_count` is not restricted by this API.'
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/{cluster_id}/nodes:
+    get:
+      tags:
+      - Clusters
+      summary: Get cluster nodes
+      operationId: Get_Cluster_Nodes
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterNodesListResponse'
+              example:
+                status: true
+                message: Cluster nodes retrieved successfully
+                nodes:
+                - id: 5341
+                  node_group_id: null
+                  node_group_name: null
+                  instance:
+                    id: 2058
+                    name: example-c1-bastion-0
+                    status: ACTIVE
+                    fixed_ip: 203.0.113.205
+                    floating_ip: 198.51.100.27
+                    floating_ip_status: ATTACHED
+                    contract_id: null
+                    image_id: 2058
+                  role: bastion
+                  status: ACTIVE
+                  status_reason: Node is reconciled
+                  is_bastion: true
+                  requires_public_ip: true
+                  created_at: '2026-05-06T14:32:11Z'
+                  updated_at: '2026-05-06T14:32:11Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Cluster nodes retrieved successfully
+                    nodes:
+                    - id: 5341
+                      node_group_id: null
+                      node_group_name: null
+                      instance:
+                        id: 2058
+                        name: example-c1-bastion-0
+                        status: ACTIVE
+                        fixed_ip: 203.0.113.205
+                        floating_ip: 198.51.100.27
+                        floating_ip_status: ATTACHED
+                        contract_id: null
+                        image_id: 2058
+                      role: bastion
+                      status: ACTIVE
+                      status_reason: Node is reconciled
+                      is_bastion: true
+                      requires_public_ip: true
+                      created_at: '2026-05-06T14:32:11Z'
+                      updated_at: '2026-05-06T14:32:11Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Retrieves detailed information about the nodes of a specified Kubernetes cluster. Each node entry includes its ID, role (worker or master), flavor, and current status.
+    post:
+      tags:
+      - Clusters
+      summary: Create Node
+      operationId: Create_Node
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClusterNodeFields'
+        required: true
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterNodesListResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    status: false
+                    errors:
+                      flavor_name:
+                      - Unknown field.
+              example:
+                status: false
+                errors:
+                  flavor_name:
+                  - Unknown field.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Creates one or more nodes and adds them to an existing Kubernetes cluster. Specify the Kubernetes cluster ID in the path and include the node `count` and `role` in the request body. **Worker** and **master** nodes can be added dynamically to a cluster. Optionally, specify the `node_group` name to add the nodes to a node group other than the `default` one.
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/{cluster_id}/nodes/delete:
+    post:
+      tags:
+      - Clusters
+      summary: Delete multiple cluster nodes
+      operationId: Delete_Cluster_Nodes
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteClusterNodesFields'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+      description: 'Deletes one or more nodes (worker or master) from a specific Kubernetes cluster. Provide the target `cluster_id` in the path and an array of node `ids` in the request body.
+
+
+        **Minimum node requirements:** Each node group must retain at least one worker node, and each cluster must retain at least two master nodes. Deletion requests that would violate either of these minimums are rejected.'
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/{cluster_id}/nodes/{node_id}:
+    delete:
+      tags:
+      - Clusters
+      summary: Delete cluster node
+      operationId: Delete_Cluster_Node
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      - name: node_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the node.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+      description: Removes a node from a specified Kubernetes cluster. Provide the **cluster ID** and **node ID** in the path to delete the specified node. You can obtain the `node_id` by calling the [**Get cluster nodes**](https://docs.hyperstack.cloud/docs/api-reference/get-cluster-nodes). Before deleting a node using the Hyperstack API, drain it from Kubernetes (`kubectl drain` then `kubectl delete node`) to prevent orphaned resources. Any data stored on a deleted node is permanently lost.
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/{cluster_id}/reconcile:
+    post:
+      tags:
+      - Clusters
+      summary: Reconcile a cluster
+      operationId: Reconcile_cluster
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManualReconciliationModel'
+              example:
+                status: true
+                message: Cluster 1617 is being reconciled
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Cluster 1617 is being reconciled
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: 'Triggers reconciliation manually for a specific Kubernetes cluster. This operation checks and restores the desired state of the cluster, resolving drift between expected and actual configuration. Use this when your cluster is in an `ERROR` state or experiencing issues such as stalled provisioning or unresponsive components.
+
+
+        If reconciliation does not resolve the issue, [**delete the cluster**](https://docs.hyperstack.cloud/docs/api-reference/delete-cluster) and [**create a new one**](https://docs.hyperstack.cloud/docs/api-reference/create-cluster) rather than retrying. Repeated reconciliation attempts are unlikely to fix underlying infrastructure or configuration problems.
+
+
+        **Cluster status and reconciliation:** Manual reconciliation is disabled while a cluster is already in the `RECONCILING` state. For what each cluster status means, see the [**cluster statuses guide**](https://docs.hyperstack.cloud/docs/kubernetes/kubernetes-ui#cluster-statuses).'
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/clusters/{id}:
+    get:
+      tags:
+      - Clusters
+      summary: Get cluster details
+      operationId: Getting_Cluster_Detail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResponse'
+              example:
+                status: true
+                message: Getting cluster detail success
+                cluster:
+                  id: 2058
+                  name: example-c1
+                  environment_name: example-environment
+                  environment_region: NORWAY-1
+                  kubernetes_version: 1.35.1
+                  api_address: https://api.example-c1-8a1cf2.example-environment.hyperstackcustomers.cloud:6443
+                  kube_config: YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VSQ1ZFTkRRV1V5WjBGM1NVSkJaMGxKU0ZWVmFubzVTbEYwYmtsM1JGRlpTa3R2V2tsb2RtTk9RVkZGVEVKUlFYZEdWRVZVVFVKRlIwRXhWVVVLUVhoTlMyRXpWbWxhV0VwMVdsaFNiR042UVdWR2R6QjVUbXBCTVUxRVkzaE9lbFY1VFZSQ1lVWjNNSHBPYWtFeFRVUlJlRTU2VlROTlZFSmhUVUpWZUFwRmVrRlNRbWRPVmtKQlRWUkRiWFF4V1cxV2VXSnRWakJhV0UxM1oyZEZhVTFCTUVkRFUzRkhVMGxpTTBSUlJVSkJVVlZCUVRSSlFrUjNRWGRuWjBWTENrRnZTVUpCVVVNM1JVdFNlamRsTjNSaUsxTjZWa2RoT1c1R1RrSklXR2hHSzFka2VYQkRiMGd6WjB4blpWQnZRbTlpZUM4d1RsWjZkSHBLYTJJMWJUUUtZbUl6ZGtSbE5VTmtiSFVyYkhWcFMzRllXbWhQV0hwV05taEdWR05aYTNwTGFrUlZjMlZRU0ZaWk5XZG5Na1pDTURsdFkwVk5iMnhzUkhaV1owWldSQXBWTjJ0YVNIaDZUVGwzWjBWeGVqQkRiM2RCYUZGcFJXaFdRVVpJVHpVNU16bEpjRnBtZVdkaFVXVmlZbGx5ZUdadmMyVldZaTlHT1hOdVZ6SXdVRE01Q2pWTVluUXJPR3hNVEdKRFFrTXdNMG93V0dGU1NVUlVRbXRYZURSWlZWbDRTM05QY0dOU01tbENhVkpKYWsxamJrdHdNVTkwV21sQ2EycHdUV3RxYkcwS2EzaDVZbk13ZFRkblFucElObHBZYVZoMVJYUTVSMVJPTHpVMmRrTTNZelZxY0c5TVIyWjFRbmhsV1RoUlltWlVTRUpVYW0xWVpXUk1keXRJTlRrelNRcEllRXAwTW1oSVJqRkJiRVk0UlUxUVMwZGpNR2h6ZEdoSldtdHFRV2ROUWtGQlIycFhWRUpZVFVFMFIwRXhWV1JFZDBWQ0wzZFJSVUYzU1VOd1JFRlFDa0puVGxaSVVrMUNRV1k0UlVKVVFVUkJVVWd2VFVJd1IwRXhWV1JFWjFGWFFrSlVMM0ZKT1doYWRDdFdOMVZXTWtORWEyRk1XRXBWT1VOM1JteEVRVllLUW1kT1ZraFNSVVZFYWtGTloyZHdjbVJYU214amJUVnNaRWRXZWsxQk1FZERVM0ZIVTBsaU0wUlJSVUpEZDFWQlFUUkpRa0ZSUVU1Q1puSTBUa2xYUndwa00xRjZVa04yUzJsd2VIQkxUemRXT1VwMldsUnBSRFZDUVZoUWVHbFpObVp2YUdGSlpFeFZRVGNyWVVGSk9USlpUbnBpTVVWTlFUaDVlbll3Yml0TkNteDBkR2xNYzFaU2VGaFdSVFVyU1dRNFFUSklORXN3ZVhoR2RVNTZNRmd4VlVONE5sRm9WM2xaTlZGamRreHVVbUYzUjB0a1VIVnZXRkpJTkdOWFRGY0tRV1ZuUjFSRk1Fa3hWV3d5ZG1wd1FsQnZWR0ZWY1RScmFqSmpSRGc1S3pkWFpGTlpSRmN5VXpoMWNIaFBaVkpQWjJkQ00wOXRZMVJ6VFROcWRYQjRXUXBhVkVKQlNpdEJVRmswTUU5Q05raFNRVWc1TnpORGIyOW9iSEpZZDFOVFJESlZWbkV4ZG5kTWIwczNhbkJKUm01R1psTXlVVUZNWVd0WmIycGpZVkJNQ2xFM2JYTk5ka1JqZDFWV01HTTBXRXhNYVZSNWFEZHhZa2RzYlU5YVIwY3lhVFp3TjNKTVlUSlJNVzFLSzNkTWRVVlBNVkJLV1VOQk16RXdOMDk1UkZrS2NFRkZVMDg0YzFSa1kwZEVDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIHNlcnZlcjogaHR0cHM6Ly9hcGkuYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIuYXBpdGVzdC01NTJmODI2YS1lbnYuaHlwZXJzdGFja2N1c3RvbWVycy5jbG91ZDo2NDQzCiAgbmFtZTogYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIKY29udGV4dHM6Ci0gY29udGV4dDoKICAgIGNsdXN0ZXI6IGFwaXRlc3QtNTUyZjgyNmEtYzEtOGExY2YyCiAgICB1c2VyOiBrdWJlcm5ldGVzLWFkbWluCiAgbmFtZToga3ViZXJuZXRlcy1hZG1pbkBhcGl0ZXN0LTU1MmY4MjZhLWMxLThhMWNmMgpjdXJyZW50LWNvbnRleHQ6IGt1YmVybmV0ZXMtYWRtaW5AYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIKa2luZDogQ29uZmlnCnVzZXJzOgotIG5hbWU6IGt1YmVybmV0ZXMtYWRtaW4KICB1c2VyOgogICAgY2xpZW50LWNlcnRpZmljYXRlLWRhdGE6IExTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVVJMVkVORFFXaEhaMEYzU1VKQlowbEpXV05zY1d4b1dUUlFaR2QzUkZGWlNrdHZXa2xvZG1OT1FWRkZURUpSUVhkR1ZFVlVUVUpGUjBFeFZVVUtRWGhOUzJFelZtbGFXRXAxV2xoU2JHTjZRV1ZHZHpCNVRtcEJNVTFFWTNoT2VsVjVUVlJDWVVaM01IbE9la0V4VFVSamVFNTZWVE5OVkVKaFRVUjNlQXBJZWtGa1FtZE9Wa0pCYjFSR2JYUXhXVzFXYUZwSE1EWlpNbmd4WXpOU2JHTnBNV2hhUnpGd1ltNU5lRWRVUVZoQ1owNVdRa0ZOVkVWSGRERlpiVlo1Q21KdFZqQmFXRTEwV1ZkU2RHRlhOSGRuWjBWcFRVRXdSME5UY1VkVFNXSXpSRkZGUWtGUlZVRkJORWxDUkhkQmQyZG5SVXRCYjBsQ1FWRkRkbWw2YUZVS1ZrMTNSMGx5UzBoTlRHeHJVVkp5S3psNGRIWlVXVWR5TW1WSWJqTTNXRU5MT1V0UlFUTlVTbVUyTUVzeE1VOURNMWR4YW1GblVHOVBkRlJNUzJGbmFncFNVVW9yYURKNVJFTktXbVExYmxKU2JGYzBRMmhIT0dacU1qZFZTMk5CZG0xdFduWklkVGRPVm5SaFQxVXJWM0E1ZEhScVNIQllOMFpwWTFSTVpUSXZDbnBaVHpSRVJYbHdVMDlIYTJkb1QxQjNUM05RY0VGU2MwdFpaVTlXWWxoM1RXVnlVbVZCUTNNM1dqVnJWVE4wV1hJd1kybzVVVkZqYmxGUFUwaE5TSFVLTld4clNtTjFSbmhpZWtwNWVWQllXVTlsTVM5cGNtdFliVmx3VVV0aGJGUlJSMVV6UmpsS05XcFFUR3hTTVhsMVNEZExWVkJWVW1aRVowa3hSRloxZHdwTFVsaGFUak5GYm14Q2NFcHpVR2Q2ZUV0NGJ5c3ZSa0p2TTAxd2FrOXZNRXRHY2tVcmVXSXdiVzQwT0hwS2MyUlhjbTFUU1VNeWVYRkZPRUpOZWxaMENqWkdlVzU2YUZwV01scFZPR3czVlZwQlowMUNRVUZIYWxacVFsVk5RVFJIUVRGVlpFUjNSVUl2ZDFGRlFYZEpSbTlFUVZSQ1owNVdTRk5WUlVSRVFVc0tRbWRuY2tKblJVWkNVV05FUVdwQlRVSm5UbFpJVWsxQ1FXWTRSVUZxUVVGTlFqaEhRVEZWWkVsM1VWbE5RbUZCUmxBcmIyb3lSbTB6TlZoMFVsaFpTUXBQVW05MFkyeFVNRXhCVjFWTlFUQkhRMU54UjFOSllqTkVVVVZDUTNkVlFVRTBTVUpCVVVFMVYyUnRTMVpLVm1SUWVHbHJSMEprVkZFclVXNUxaek0zQ2pSc1NUQjFkV1JrYkRFeWNqRjJPSGh5WldaR1YzRktXRXB2VFd0cU1XZ3hZazE1YjB4c2IzTkdTa2hSWmtSMWJsRnpUR1ExYkV4Skx6WjZORXhoYUdvS2R6ZzBjbGxSTmtwa05IRmFhVmhGWkU1WGNYbHpXRTFWY1hFME5uQlRVazVHV0doT1JEZ3ZZamhRWW04NE5XWTRVbTVuVG5FME0yMVRlR1pNZEdKRVRncElTblE1UlRseFMwSndXV3gwY25SU1VFRnhNMGt6TW5sTGJFUnZVR3hzTWswelNFOXhjRmRUT1V0QlNVZzFWVzAxWm1KRmJWbExNVk50VlhnMWFtOHhDakJKZW1aTGRrRnVabmRrYzB4WVJVY3dLM0o2VFRRelFuVXJUbEE1VlZFNVJVeEliRlZpY1hBeFYwdG5lbXN5ZUZoWU5ubFFhM05HY0d4Q09HMDVNUzhLUWxGSmNVWmlhbEJ0Wm5SQ1ZFWk1UbEpwVlVVM2RHeENjVGx2TTBwRWVEWkJiRkZhZEZOSlYzaDJOWHBTU0hVemQxTXlTMVY0UkZCTmNIcFhDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIGNsaWVudC1rZXktZGF0YTogTFMwdExTMUNSVWRKVGlCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRcE5TVWxGY0VGSlFrRkJTME5CVVVWQmNqUnpORlpHVkUxQ2FVdDVhSHBETlZwRlJXRXZkbU5pWWpBeVFuRTVibWcxT1NzeGQybDJVMnRCVGpCNVdIVjBDa04wWkZSbmRERnhiekp2UkRaRWNsVjVlVzF2U1RCVlEyWnZaSE5uZDJsWFdHVmFNRlZhVm5WQmIxSjJTRFE1ZFRGRGJrRk1OWEJ0WW5nM2RYcFdZbGNLYW14UWJIRm1ZbUpaZURaV0szaFpia1Y1TTNSMk9ESkVkVUY0VFhGVmFtaHdTVWxVYWpoRWNrUTJVVVZpUTIxSWFteFhNVGhFU0hFd1dHZEJjazh5WlFwYVJrNDNWMHM1U0VrdlZVVklTakJFYTJoNlFqZDFXbHBEV0V4b1kxYzRlV056YWpFeVJHNTBaalJ4TlVZMWJVdFZRMjF3VlRCQ2JFNTRabE5sV1hwNUNqVlZaR055YUN0NWJFUXhSVmgzTkVOT1VURmljME5yVmpKVVpIaEtOVkZoVTJKRU5FMDRVM05oVUhaNFVXRk9la3RaZW5GT1EyaGhlRkJ6YlRsS2NDc0tVRTE1WWtoV2NUVnJhVUYwYzNGb1VFRlVUVEZpWldoamNEZzBWMVprYlZaUVNtVXhSMUZKUkVGUlFVSkJiMGxDUVVGbmNtRkpSekJQU2t0SmFIUndNd293UVdvd1duSmpOamxPU0c1UU5FOXdOMnBQUjFjNFZXWnRVSE5QZW1nMllWaFBSa2RUUTB0ekx6QjBMMjlhVEhKUFowRkRabXR4TVRaWWJrNHZObFJTQ21Zek16ZFFZWEZYVlRkd1YxRXpNbkZvVkZCdGFGbFZlRzlHWWtocU9FZExjWGN5VVhCbU1sVXJXSHBTWWxwV2VqUkliWEZDTkdsSWJtWjFkM2gwYVZNS1FtSTFUVTR6UkZoUU5XeEpkblJRZURCMFkzazRabUYwZGtGdWJtZG5WbUkzV1ZkRU4wRnJSM00zVEZKb2F6aE5WRk53VFhBNGVWTlhWRzV4UjJ0M2JncEtkR3BITTJkT1dqZDRRMDlrTW5aUFNWVXlaalpYV0dkSWFuQjRTVmd2WkhOSVJrTTBNR3RCTUhZclpXY3lNVUpwUWpBNVQyVjFPQ3RwUVcxNVlsSk1DalpXUjBWcFlsTkZUMVpXWWxNemExbGxOVlpETWs5emEwTlJNbkphTkVzeUsxQk5RbTlxZGxkYWR6WktOV0V5Tm5wME5HVjJabk5LTkVVeGMydEpTV1FLTHpNM1RXWjNSVU5uV1VWQmR6bFNRV1l6WkZOdk1VNTBVVmMzYmxkSGJWRTVla2h3YW5OalQyTjRaMEZQWW5FMlUwaDRiV1pTYlVWSFltWlJabVpTYVFwV1NFSTRjQ3MyTmtWUk5VczJlR3R0UjBsMVRrRjVOM2hNWjBoWE0wTlhkelJKTnprNFFuQkVTelo2VG5ZMFlsY3ZkbTVXV1dOdVlXTllUazFIYms1bkNrSmlUbnBFU1ZKU1dHNXhRMVJsWlZkclkzQmtablZoTjNweWNESmlWVXR0WmpJM2VqRlBNME5TWWpoNVJXRTJibHBGYjFFeVUydERaMWxGUVRWWWRGa0tZMDlTT1VkelF6QnVZWE15TTNrdmFqWlBaWFpoYURCWFdFMVhkM1kzUzA5Wk1WcDBMMUZJWTNaUGFYSlRkVlExVmpObVZYUkdkbGRFYzJoVldWQTVlQXBGVTI1NFFqSnpTRkJKVkZnNU1pdENVbkUzV1ZGM2VGZHJVRU1yU2s1NlpVNVpkMmxtYkVoeFlWTnBjV3ROVjBwMFUyMTJVVkpFTUhKd1pXNVFOWFpWQ25nNWNESjFiVkJyVm5kdWVHeE9TM05WVFVOamRFSTBaMGRtTUhaUWNUSjZWVXAxVTFOdVJVTm5XVUppZWpkc2JHbFpXQ3NyVUVGNVV6RkxMMmx6TjJrS1pHczBkMGRJWkZnd2NISlpaR2RyT0ZSellXMVNSRFZCTmtsTmFHRnRRbTVuYXpKUVZtdGtOa1UxT1dkV1pYZGpaV1ZFYXpaNU9EaERURk0xYUdod1JncFVaMVZWWlhSMVprMUhaRTlOYlU4clN6RmxNV1o2VDJoSFVrNUlSeko1WW1ZMlUyazJOalZUWnpGR2QxRlFTRUUzU1Zkc1NqTjRTakJtV1ZGQ056SlVDalZYYzBGSE0wTkllbkp2YTNaRFVGTjVlamRYT0ZGTFFtZFJRMGw1Tmxac04zQTJlRUYxZW05RVJHTjVhR3czU3paTmJVWmlVRGt5YjBKWlJIZENTRzRLU0RRclJGRmpablpEU21WTWJITkZXVXBuVDNrelFXWllWMmMwUzI5R2MzSlRlVUV5VG5SUWFXWkxTWFJEZEdjMldsZElabGhuZVVGaVJFazRNRlJxV2dwSVRXTXpSeXRsY21ScFZuWkdXVXBKWW5sbVkyeHdiakZPWTNaeFVFSTVNRmd3VG14VGMxUkZTMlJhVEhrcldWTlpVemxKYnpacGNFNVhZMnBoZGtrMENtVXZVMUl3VVV0Q1oxRkRRWFkxVlRBMldVb3hUazEyS3paVlkzQkVZVGhhVURjdlVubE5ZblZKWTB4S1pWZDRRVkV6VG05TE1saFZPWFpWVkVRdk5ta0thWFpKYVVrd2IwZFVjRmtySzJ0WWIxSndiMU0yUm1OQmRIZEdOSEJFZWxCSWIwRlBiMjlwVFZaaE5uUTBaVTgxWjJrdlpqUkJkVlZyWldoSlJWQkthQW94TlRaNVJHZFlObVJhT0U0eFJFUk9SR3AwVFd0b2JIZDRTbEprY2pSNFMyaE9SbGNyT1dKdlRsaEdXVTV3VjFJM2NFaGtVbmM5UFFvdExTMHRMVVZPUkNCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRbz0K
+                  status: DELETING
+                  status_reason: K8s is ready
+                  green_status: GREEN
+                  master_flavor:
+                    id: 3287
+                    name: n1-cpu-small
+                    cpu: 4
+                    ram: 4
+                    disk: 100
+                    ephemeral: 0
+                    gpu: ''
+                    gpu_count: 0
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+                  master_count: 0
+                  keypair_name: example-keypair
+                  created_at: '2026-05-07T11:47:30Z'
+                  image:
+                    name: Ubuntu 24.04 LTS Hyperstack Kubernetes v1.35.1
+                  node_groups:
+                  - id: 9876
+                    cluster_id: 8429
+                    name: default
+                    role: worker
+                    flavor:
+                      id: 4501
+                      name: n1-cpu-small
+                      cpu: 4
+                      ram: 4
+                      disk: 100
+                      ephemeral: 0
+                      gpu: ''
+                      gpu_count: 0
+                      labels: []
+                      features:
+                        network_optimised: false
+                        no_reboot: false
+                        no_hibernation: false
+                        no_snapshot: false
+                        local_storage_only: false
+                        api_only: false
+                    count: 0
+                    min_count: 1
+                    max_count: 1
+                    firewall_ids: []
+                  nodes: []
+                  is_reconciling: true
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting cluster detail success
+                    cluster:
+                      id: 2058
+                      name: example-c1
+                      environment_name: example-environment
+                      environment_region: NORWAY-1
+                      kubernetes_version: 1.35.1
+                      api_address: https://api.example-c1-8a1cf2.example-environment.hyperstackcustomers.cloud:6443
+                      kube_config: YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VSQ1ZFTkRRV1V5WjBGM1NVSkJaMGxKU0ZWVmFubzVTbEYwYmtsM1JGRlpTa3R2V2tsb2RtTk9RVkZGVEVKUlFYZEdWRVZVVFVKRlIwRXhWVVVLUVhoTlMyRXpWbWxhV0VwMVdsaFNiR042UVdWR2R6QjVUbXBCTVUxRVkzaE9lbFY1VFZSQ1lVWjNNSHBPYWtFeFRVUlJlRTU2VlROTlZFSmhUVUpWZUFwRmVrRlNRbWRPVmtKQlRWUkRiWFF4V1cxV2VXSnRWakJhV0UxM1oyZEZhVTFCTUVkRFUzRkhVMGxpTTBSUlJVSkJVVlZCUVRSSlFrUjNRWGRuWjBWTENrRnZTVUpCVVVNM1JVdFNlamRsTjNSaUsxTjZWa2RoT1c1R1RrSklXR2hHSzFka2VYQkRiMGd6WjB4blpWQnZRbTlpZUM4d1RsWjZkSHBLYTJJMWJUUUtZbUl6ZGtSbE5VTmtiSFVyYkhWcFMzRllXbWhQV0hwV05taEdWR05aYTNwTGFrUlZjMlZRU0ZaWk5XZG5Na1pDTURsdFkwVk5iMnhzUkhaV1owWldSQXBWTjJ0YVNIaDZUVGwzWjBWeGVqQkRiM2RCYUZGcFJXaFdRVVpJVHpVNU16bEpjRnBtZVdkaFVXVmlZbGx5ZUdadmMyVldZaTlHT1hOdVZ6SXdVRE01Q2pWTVluUXJPR3hNVEdKRFFrTXdNMG93V0dGU1NVUlVRbXRYZURSWlZWbDRTM05QY0dOU01tbENhVkpKYWsxamJrdHdNVTkwV21sQ2EycHdUV3RxYkcwS2EzaDVZbk13ZFRkblFucElObHBZYVZoMVJYUTVSMVJPTHpVMmRrTTNZelZxY0c5TVIyWjFRbmhsV1RoUlltWlVTRUpVYW0xWVpXUk1keXRJTlRrelNRcEllRXAwTW1oSVJqRkJiRVk0UlUxUVMwZGpNR2h6ZEdoSldtdHFRV2ROUWtGQlIycFhWRUpZVFVFMFIwRXhWV1JFZDBWQ0wzZFJSVUYzU1VOd1JFRlFDa0puVGxaSVVrMUNRV1k0UlVKVVFVUkJVVWd2VFVJd1IwRXhWV1JFWjFGWFFrSlVMM0ZKT1doYWRDdFdOMVZXTWtORWEyRk1XRXBWT1VOM1JteEVRVllLUW1kT1ZraFNSVVZFYWtGTloyZHdjbVJYU214amJUVnNaRWRXZWsxQk1FZERVM0ZIVTBsaU0wUlJSVUpEZDFWQlFUUkpRa0ZSUVU1Q1puSTBUa2xYUndwa00xRjZVa04yUzJsd2VIQkxUemRXT1VwMldsUnBSRFZDUVZoUWVHbFpObVp2YUdGSlpFeFZRVGNyWVVGSk9USlpUbnBpTVVWTlFUaDVlbll3Yml0TkNteDBkR2xNYzFaU2VGaFdSVFVyU1dRNFFUSklORXN3ZVhoR2RVNTZNRmd4VlVONE5sRm9WM2xaTlZGamRreHVVbUYzUjB0a1VIVnZXRkpJTkdOWFRGY0tRV1ZuUjFSRk1Fa3hWV3d5ZG1wd1FsQnZWR0ZWY1RScmFqSmpSRGc1S3pkWFpGTlpSRmN5VXpoMWNIaFBaVkpQWjJkQ00wOXRZMVJ6VFROcWRYQjRXUXBhVkVKQlNpdEJVRmswTUU5Q05raFNRVWc1TnpORGIyOW9iSEpZZDFOVFJESlZWbkV4ZG5kTWIwczNhbkJKUm01R1psTXlVVUZNWVd0WmIycGpZVkJNQ2xFM2JYTk5ka1JqZDFWV01HTTBXRXhNYVZSNWFEZHhZa2RzYlU5YVIwY3lhVFp3TjNKTVlUSlJNVzFLSzNkTWRVVlBNVkJLV1VOQk16RXdOMDk1UkZrS2NFRkZVMDg0YzFSa1kwZEVDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIHNlcnZlcjogaHR0cHM6Ly9hcGkuYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIuYXBpdGVzdC01NTJmODI2YS1lbnYuaHlwZXJzdGFja2N1c3RvbWVycy5jbG91ZDo2NDQzCiAgbmFtZTogYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIKY29udGV4dHM6Ci0gY29udGV4dDoKICAgIGNsdXN0ZXI6IGFwaXRlc3QtNTUyZjgyNmEtYzEtOGExY2YyCiAgICB1c2VyOiBrdWJlcm5ldGVzLWFkbWluCiAgbmFtZToga3ViZXJuZXRlcy1hZG1pbkBhcGl0ZXN0LTU1MmY4MjZhLWMxLThhMWNmMgpjdXJyZW50LWNvbnRleHQ6IGt1YmVybmV0ZXMtYWRtaW5AYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIKa2luZDogQ29uZmlnCnVzZXJzOgotIG5hbWU6IGt1YmVybmV0ZXMtYWRtaW4KICB1c2VyOgogICAgY2xpZW50LWNlcnRpZmljYXRlLWRhdGE6IExTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVVJMVkVORFFXaEhaMEYzU1VKQlowbEpXV05zY1d4b1dUUlFaR2QzUkZGWlNrdHZXa2xvZG1OT1FWRkZURUpSUVhkR1ZFVlVUVUpGUjBFeFZVVUtRWGhOUzJFelZtbGFXRXAxV2xoU2JHTjZRV1ZHZHpCNVRtcEJNVTFFWTNoT2VsVjVUVlJDWVVaM01IbE9la0V4VFVSamVFNTZWVE5OVkVKaFRVUjNlQXBJZWtGa1FtZE9Wa0pCYjFSR2JYUXhXVzFXYUZwSE1EWlpNbmd4WXpOU2JHTnBNV2hhUnpGd1ltNU5lRWRVUVZoQ1owNVdRa0ZOVkVWSGRERlpiVlo1Q21KdFZqQmFXRTEwV1ZkU2RHRlhOSGRuWjBWcFRVRXdSME5UY1VkVFNXSXpSRkZGUWtGUlZVRkJORWxDUkhkQmQyZG5SVXRCYjBsQ1FWRkRkbWw2YUZVS1ZrMTNSMGx5UzBoTlRHeHJVVkp5S3psNGRIWlVXVWR5TW1WSWJqTTNXRU5MT1V0UlFUTlVTbVUyTUVzeE1VOURNMWR4YW1GblVHOVBkRlJNUzJGbmFncFNVVW9yYURKNVJFTktXbVExYmxKU2JGYzBRMmhIT0dacU1qZFZTMk5CZG0xdFduWklkVGRPVm5SaFQxVXJWM0E1ZEhScVNIQllOMFpwWTFSTVpUSXZDbnBaVHpSRVJYbHdVMDlIYTJkb1QxQjNUM05RY0VGU2MwdFpaVTlXWWxoM1RXVnlVbVZCUTNNM1dqVnJWVE4wV1hJd1kybzVVVkZqYmxGUFUwaE5TSFVLTld4clNtTjFSbmhpZWtwNWVWQllXVTlsTVM5cGNtdFliVmx3VVV0aGJGUlJSMVV6UmpsS05XcFFUR3hTTVhsMVNEZExWVkJWVW1aRVowa3hSRloxZHdwTFVsaGFUak5GYm14Q2NFcHpVR2Q2ZUV0NGJ5c3ZSa0p2TTAxd2FrOXZNRXRHY2tVcmVXSXdiVzQwT0hwS2MyUlhjbTFUU1VNeWVYRkZPRUpOZWxaMENqWkdlVzU2YUZwV01scFZPR3czVlZwQlowMUNRVUZIYWxacVFsVk5RVFJIUVRGVlpFUjNSVUl2ZDFGRlFYZEpSbTlFUVZSQ1owNVdTRk5WUlVSRVFVc0tRbWRuY2tKblJVWkNVV05FUVdwQlRVSm5UbFpJVWsxQ1FXWTRSVUZxUVVGTlFqaEhRVEZWWkVsM1VWbE5RbUZCUmxBcmIyb3lSbTB6TlZoMFVsaFpTUXBQVW05MFkyeFVNRXhCVjFWTlFUQkhRMU54UjFOSllqTkVVVVZDUTNkVlFVRTBTVUpCVVVFMVYyUnRTMVpLVm1SUWVHbHJSMEprVkZFclVXNUxaek0zQ2pSc1NUQjFkV1JrYkRFeWNqRjJPSGh5WldaR1YzRktXRXB2VFd0cU1XZ3hZazE1YjB4c2IzTkdTa2hSWmtSMWJsRnpUR1ExYkV4Skx6WjZORXhoYUdvS2R6ZzBjbGxSTmtwa05IRmFhVmhGWkU1WGNYbHpXRTFWY1hFME5uQlRVazVHV0doT1JEZ3ZZamhRWW04NE5XWTRVbTVuVG5FME0yMVRlR1pNZEdKRVRncElTblE1UlRseFMwSndXV3gwY25SU1VFRnhNMGt6TW5sTGJFUnZVR3hzTWswelNFOXhjRmRUT1V0QlNVZzFWVzAxWm1KRmJWbExNVk50VlhnMWFtOHhDakJKZW1aTGRrRnVabmRrYzB4WVJVY3dLM0o2VFRRelFuVXJUbEE1VlZFNVJVeEliRlZpY1hBeFYwdG5lbXN5ZUZoWU5ubFFhM05HY0d4Q09HMDVNUzhLUWxGSmNVWmlhbEJ0Wm5SQ1ZFWk1UbEpwVlVVM2RHeENjVGx2TTBwRWVEWkJiRkZhZEZOSlYzaDJOWHBTU0hVemQxTXlTMVY0UkZCTmNIcFhDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIGNsaWVudC1rZXktZGF0YTogTFMwdExTMUNSVWRKVGlCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRcE5TVWxGY0VGSlFrRkJTME5CVVVWQmNqUnpORlpHVkUxQ2FVdDVhSHBETlZwRlJXRXZkbU5pWWpBeVFuRTVibWcxT1NzeGQybDJVMnRCVGpCNVdIVjBDa04wWkZSbmRERnhiekp2UkRaRWNsVjVlVzF2U1RCVlEyWnZaSE5uZDJsWFdHVmFNRlZhVm5WQmIxSjJTRFE1ZFRGRGJrRk1OWEJ0WW5nM2RYcFdZbGNLYW14UWJIRm1ZbUpaZURaV0szaFpia1Y1TTNSMk9ESkVkVUY0VFhGVmFtaHdTVWxVYWpoRWNrUTJVVVZpUTIxSWFteFhNVGhFU0hFd1dHZEJjazh5WlFwYVJrNDNWMHM1U0VrdlZVVklTakJFYTJoNlFqZDFXbHBEV0V4b1kxYzRlV056YWpFeVJHNTBaalJ4TlVZMWJVdFZRMjF3VlRCQ2JFNTRabE5sV1hwNUNqVlZaR055YUN0NWJFUXhSVmgzTkVOT1VURmljME5yVmpKVVpIaEtOVkZoVTJKRU5FMDRVM05oVUhaNFVXRk9la3RaZW5GT1EyaGhlRkJ6YlRsS2NDc0tVRTE1WWtoV2NUVnJhVUYwYzNGb1VFRlVUVEZpWldoamNEZzBWMVprYlZaUVNtVXhSMUZKUkVGUlFVSkJiMGxDUVVGbmNtRkpSekJQU2t0SmFIUndNd293UVdvd1duSmpOamxPU0c1UU5FOXdOMnBQUjFjNFZXWnRVSE5QZW1nMllWaFBSa2RUUTB0ekx6QjBMMjlhVEhKUFowRkRabXR4TVRaWWJrNHZObFJTQ21Zek16ZFFZWEZYVlRkd1YxRXpNbkZvVkZCdGFGbFZlRzlHWWtocU9FZExjWGN5VVhCbU1sVXJXSHBTWWxwV2VqUkliWEZDTkdsSWJtWjFkM2gwYVZNS1FtSTFUVTR6UkZoUU5XeEpkblJRZURCMFkzazRabUYwZGtGdWJtZG5WbUkzV1ZkRU4wRnJSM00zVEZKb2F6aE5WRk53VFhBNGVWTlhWRzV4UjJ0M2JncEtkR3BITTJkT1dqZDRRMDlrTW5aUFNWVXlaalpYV0dkSWFuQjRTVmd2WkhOSVJrTTBNR3RCTUhZclpXY3lNVUpwUWpBNVQyVjFPQ3RwUVcxNVlsSk1DalpXUjBWcFlsTkZUMVpXWWxNemExbGxOVlpETWs5emEwTlJNbkphTkVzeUsxQk5RbTlxZGxkYWR6WktOV0V5Tm5wME5HVjJabk5LTkVVeGMydEpTV1FLTHpNM1RXWjNSVU5uV1VWQmR6bFNRV1l6WkZOdk1VNTBVVmMzYmxkSGJWRTVla2h3YW5OalQyTjRaMEZQWW5FMlUwaDRiV1pTYlVWSFltWlJabVpTYVFwV1NFSTRjQ3MyTmtWUk5VczJlR3R0UjBsMVRrRjVOM2hNWjBoWE0wTlhkelJKTnprNFFuQkVTelo2VG5ZMFlsY3ZkbTVXV1dOdVlXTllUazFIYms1bkNrSmlUbnBFU1ZKU1dHNXhRMVJsWlZkclkzQmtablZoTjNweWNESmlWVXR0WmpJM2VqRlBNME5TWWpoNVJXRTJibHBGYjFFeVUydERaMWxGUVRWWWRGa0tZMDlTT1VkelF6QnVZWE15TTNrdmFqWlBaWFpoYURCWFdFMVhkM1kzUzA5Wk1WcDBMMUZJWTNaUGFYSlRkVlExVmpObVZYUkdkbGRFYzJoVldWQTVlQXBGVTI1NFFqSnpTRkJKVkZnNU1pdENVbkUzV1ZGM2VGZHJVRU1yU2s1NlpVNVpkMmxtYkVoeFlWTnBjV3ROVjBwMFUyMTJVVkpFTUhKd1pXNVFOWFpWQ25nNWNESjFiVkJyVm5kdWVHeE9TM05WVFVOamRFSTBaMGRtTUhaUWNUSjZWVXAxVTFOdVJVTm5XVUppZWpkc2JHbFpXQ3NyVUVGNVV6RkxMMmx6TjJrS1pHczBkMGRJWkZnd2NISlpaR2RyT0ZSellXMVNSRFZCTmtsTmFHRnRRbTVuYXpKUVZtdGtOa1UxT1dkV1pYZGpaV1ZFYXpaNU9EaERURk0xYUdod1JncFVaMVZWWlhSMVprMUhaRTlOYlU4clN6RmxNV1o2VDJoSFVrNUlSeko1WW1ZMlUyazJOalZUWnpGR2QxRlFTRUUzU1Zkc1NqTjRTakJtV1ZGQ056SlVDalZYYzBGSE0wTkllbkp2YTNaRFVGTjVlamRYT0ZGTFFtZFJRMGw1Tmxac04zQTJlRUYxZW05RVJHTjVhR3czU3paTmJVWmlVRGt5YjBKWlJIZENTRzRLU0RRclJGRmpablpEU21WTWJITkZXVXBuVDNrelFXWllWMmMwUzI5R2MzSlRlVUV5VG5SUWFXWkxTWFJEZEdjMldsZElabGhuZVVGaVJFazRNRlJxV2dwSVRXTXpSeXRsY21ScFZuWkdXVXBKWW5sbVkyeHdiakZPWTNaeFVFSTVNRmd3VG14VGMxUkZTMlJhVEhrcldWTlpVemxKYnpacGNFNVhZMnBoZGtrMENtVXZVMUl3VVV0Q1oxRkRRWFkxVlRBMldVb3hUazEyS3paVlkzQkVZVGhhVURjdlVubE5ZblZKWTB4S1pWZDRRVkV6VG05TE1saFZPWFpWVkVRdk5ta0thWFpKYVVrd2IwZFVjRmtySzJ0WWIxSndiMU0yUm1OQmRIZEdOSEJFZWxCSWIwRlBiMjlwVFZaaE5uUTBaVTgxWjJrdlpqUkJkVlZyWldoSlJWQkthQW94TlRaNVJHZFlObVJhT0U0eFJFUk9SR3AwVFd0b2JIZDRTbEprY2pSNFMyaE9SbGNyT1dKdlRsaEdXVTV3VjFJM2NFaGtVbmM5UFFvdExTMHRMVVZPUkNCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRbz0K
+                      status: DELETING
+                      status_reason: K8s is ready
+                      green_status: GREEN
+                      master_flavor:
+                        id: 3287
+                        name: n1-cpu-small
+                        cpu: 4
+                        ram: 4
+                        disk: 100
+                        ephemeral: 0
+                        gpu: ''
+                        gpu_count: 0
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+                      master_count: 0
+                      keypair_name: example-keypair
+                      created_at: '2026-05-07T11:47:30Z'
+                      image:
+                        name: Ubuntu 24.04 LTS Hyperstack Kubernetes v1.35.1
+                      node_groups:
+                      - id: 9876
+                        cluster_id: 8429
+                        name: default
+                        role: worker
+                        flavor:
+                          id: 4501
+                          name: n1-cpu-small
+                          cpu: 4
+                          ram: 4
+                          disk: 100
+                          ephemeral: 0
+                          gpu: ''
+                          gpu_count: 0
+                          labels: []
+                          features:
+                            network_optimised: false
+                            no_reboot: false
+                            no_hibernation: false
+                            no_snapshot: false
+                            local_storage_only: false
+                            api_only: false
+                        count: 0
+                        min_count: 1
+                        max_count: 1
+                        firewall_ids: []
+                      nodes: []
+                      is_reconciling: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: 'Not Found
+
+
+            Common cause: `error_reason: not_found`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Not Found
+                  value:
+                    status: false
+                    message: Cluster 1617 does not exist.
+                    error_reason: not_found
+              example:
+                status: false
+                message: Cluster 1617 does not exist.
+                error_reason: not_found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Retrieves detailed information about a Kubernetes cluster in Hyperstack, including its name, environment, configuration, and operational status. Provide the cluster ID in the path to fetch its details. To obtain the cluster ID, use the [**List Clusters API**](https://docs.hyperstack.cloud/docs/api-reference/list-clusters).
+    delete:
+      tags:
+      - Clusters
+      summary: Delete a cluster
+      operationId: Delete_cluster
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the cluster.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Cluster example-c1 is being deleted
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Cluster example-c1 is being deleted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Permanently deletes a Kubernetes cluster. Supply the cluster ID in the path to delete the specified cluster.
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    ClusterNodeGroupsCreateResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Cluster 1617 is reconciling
+        node_group:
+          $ref: '#/components/schemas/ClusterNodeGroupFields'
+          description: Worker-node group.
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeFields'
+          description: Nodes currently in the cluster.
+    ManualReconciliationModel:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Cluster 1617 is being reconciled
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: true
+        cluster:
+          $ref: '#/components/schemas/ClusterFields'
+          description: Kubernetes cluster.
+    Create_ClusterNodeGroup_payload:
+      required:
+      - flavor_name
+      - name
+      - role
+      type: object
+      properties:
+        flavor_name:
+          type: string
+          description: Name of the flavor (machine type), see [List flavors](https://docs.hyperstack.cloud/docs/api-reference/list-flavors).
+        name:
+          maxLength: 20
+          type: string
+          description: Name of the cluster node group.
+        role:
+          type: string
+          example: worker
+          default: worker
+          enum:
+          - worker
+          description: Role assigned to the user.
+        count:
+          minimum: 1
+          type: integer
+          description: Number of items returned in the current page.
+        min_count:
+          minimum: 1
+          type: integer
+          description: Minimum number of nodes the group will scale down to.
+        max_count:
+          maximum: 20
+          type: integer
+          description: Maximum number of nodes the group will scale up to.
+        firewall_ids:
+          type: array
+          description: IDs of the firewalls to apply to all nodes in this node group.
+          items:
+            type: integer
+    ClusterListResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting clusters success
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterFields'
+          description: An array of objects containing details about your clusters.
+    ClusterNodeGroupsGetResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Node group 987 retrieved successfully
+        node_group:
+          $ref: '#/components/schemas/ClusterNodeGroupFields'
+          description: Worker-node group.
+    ClusterNodeGroupFirewallFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        name:
+          type: string
+          description: Name of the firewall.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    region:
+      type: object
+    DeleteClusterNodesFields:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+          description: An array of one or more node IDs (worker or master) to be deleted from the specified Kubernetes cluster. Only nodes with the roles `worker` or `master` may be deleted.
+    ClusterEvents:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Successfully retrived events for Cluster example-c1
+        cluster_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterEventsFields'
+          description: An array of objects each containing details about an event for the specified cluster.
+    ClusterEventsFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 6190
+        cluster_id:
+          type: integer
+          description: Identifier of the Kubernetes cluster.
+          example: 5341
+        user_id:
+          type: integer
+          description: Identifier of the user.
+          example: 1402
+        org_id:
+          type: integer
+          description: Identifier of the organization that owns the resource.
+          example: 9876
+        time:
+          type: string
+          format: date-time
+          example: '2026-05-06T14:32:11Z'
+          description: The timestamp when the event occurred.
+        type:
+          type: string
+          description: Type of the cluster event.
+          example: normal
+        reason:
+          type: string
+          description: Human-readable reason the operation was rejected.
+          example: ClusterCreationRequest
+        object:
+          type: string
+          example: example-c1
+          description: The name of the cluster related to the event.
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Cluster example-c1 Creation Request Sent.
+    ClusterNodeFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 3287
+        role:
+          type: string
+          description: Role assigned to the user.
+          example: bastion
+        node_group_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier of the node group.
+        node_group_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the node group the node belongs to.
+        instance:
+          $ref: '#/components/schemas/ClusterNodeInstanceFields'
+          description: Virtual machine the entry refers to.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: CREATING
+        status_reason:
+          type: string
+          example: VM is creating
+          description: Human-readable explanation of the current node status.
+        is_bastion:
+          type: boolean
+          example: true
+          description: Whether the node acts as the bastion server for the cluster (true) or not (false).
+        requires_public_ip:
+          type: boolean
+          example: true
+          description: Whether the node requires a public IP address (true) or not (false).
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T16:04:09Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was last modified.
+          example: '2026-05-06T16:04:09Z'
+    ClusterResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Cluster created successfully
+        cluster:
+          $ref: '#/components/schemas/ClusterFields'
+          description: Kubernetes cluster.
+    ClusterVersion:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 9876
+        version:
+          type: string
+          description: API or schema version.
+          example: 1.35.1
+        region:
+          $ref: '#/components/schemas/region'
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+        image:
+          $ref: '#/components/schemas/image'
+          description: Operating system image installed on the VM.
+        created_at:
+          type: string
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          format: date-time
+          example: '2026-05-07T09:21:55Z'
+        updated_at:
+          type:
+          - string
+          - 'null'
+          description: ISO 8601 UTC timestamp marking when the resource was last modified.
+          format: date-time
+    ClusterNodeInstanceFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 7613
+        name:
+          type: string
+          description: Name of the cluster node virtual machine.
+          example: example-c1-bastion-0
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: CREATING
+        fixed_ip:
+          type:
+          - string
+          - 'null'
+          description: Fixed (private) IP address assigned to the VM in its environment.
+          example: 192.0.2.42
+        floating_ip:
+          type:
+          - string
+          - 'null'
+          description: Floating (public) IP address attached to the VM, or `null` if none.
+          example: 192.0.2.91
+        floating_ip_status:
+          type:
+          - string
+          - 'null'
+          description: State of the floating-IP attachment.
+          example: ATTACHING
+        contract_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier of the customer contract under which the resource is billed.
+        image_id:
+          type: integer
+          description: Identifier of the OS image to install, see [List images](https://docs.hyperstack.cloud/docs/api-reference/list-images).
+          example: 7613
+    ClusterFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 1402
+        name:
+          type: string
+          description: Name of the Kubernetes cluster.
+          example: example-c1
+        environment_name:
+          type: string
+          description: Name of the environment containing the resource.
+          example: example-environment
+        kubernetes_version:
+          type: string
+          description: Kubernetes version installed on the cluster.
+          example: 1.35.1
+        api_address:
+          type:
+          - string
+          - 'null'
+          example: https://api.example-c1-8a1cf2.example-environment.hyperstackcustomers.cloud:6443
+          description: URL used to access the cluster Kubernetes API server.
+        kube_config:
+          type:
+          - string
+          - 'null'
+          example: YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VSQ1ZFTkRRV1V5WjBGM1NVSkJaMGxKU0ZWVmFubzVTbEYwYmtsM1JGRlpTa3R2V2tsb2RtTk9RVkZGVEVKUlFYZEdWRVZVVFVKRlIwRXhWVVVLUVhoTlMyRXpWbWxhV0VwMVdsaFNiR042UVdWR2R6QjVUbXBCTVUxRVkzaE9lbFY1VFZSQ1lVWjNNSHBPYWtFeFRVUlJlRTU2VlROTlZFSmhUVUpWZUFwRmVrRlNRbWRPVmtKQlRWUkRiWFF4V1cxV2VXSnRWakJhV0UxM1oyZEZhVTFCTUVkRFUzRkhVMGxpTTBSUlJVSkJVVlZCUVRSSlFrUjNRWGRuWjBWTENrRnZTVUpCVVVNM1JVdFNlamRsTjNSaUsxTjZWa2RoT1c1R1RrSklXR2hHSzFka2VYQkRiMGd6WjB4blpWQnZRbTlpZUM4d1RsWjZkSHBLYTJJMWJUUUtZbUl6ZGtSbE5VTmtiSFVyYkhWcFMzRllXbWhQV0hwV05taEdWR05aYTNwTGFrUlZjMlZRU0ZaWk5XZG5Na1pDTURsdFkwVk5iMnhzUkhaV1owWldSQXBWTjJ0YVNIaDZUVGwzWjBWeGVqQkRiM2RCYUZGcFJXaFdRVVpJVHpVNU16bEpjRnBtZVdkaFVXVmlZbGx5ZUdadmMyVldZaTlHT1hOdVZ6SXdVRE01Q2pWTVluUXJPR3hNVEdKRFFrTXdNMG93V0dGU1NVUlVRbXRYZURSWlZWbDRTM05QY0dOU01tbENhVkpKYWsxamJrdHdNVTkwV21sQ2EycHdUV3RxYkcwS2EzaDVZbk13ZFRkblFucElObHBZYVZoMVJYUTVSMVJPTHpVMmRrTTNZelZxY0c5TVIyWjFRbmhsV1RoUlltWlVTRUpVYW0xWVpXUk1keXRJTlRrelNRcEllRXAwTW1oSVJqRkJiRVk0UlUxUVMwZGpNR2h6ZEdoSldtdHFRV2ROUWtGQlIycFhWRUpZVFVFMFIwRXhWV1JFZDBWQ0wzZFJSVUYzU1VOd1JFRlFDa0puVGxaSVVrMUNRV1k0UlVKVVFVUkJVVWd2VFVJd1IwRXhWV1JFWjFGWFFrSlVMM0ZKT1doYWRDdFdOMVZXTWtORWEyRk1XRXBWT1VOM1JteEVRVllLUW1kT1ZraFNSVVZFYWtGTloyZHdjbVJYU214amJUVnNaRWRXZWsxQk1FZERVM0ZIVTBsaU0wUlJSVUpEZDFWQlFUUkpRa0ZSUVU1Q1puSTBUa2xYUndwa00xRjZVa04yUzJsd2VIQkxUemRXT1VwMldsUnBSRFZDUVZoUWVHbFpObVp2YUdGSlpFeFZRVGNyWVVGSk9USlpUbnBpTVVWTlFUaDVlbll3Yml0TkNteDBkR2xNYzFaU2VGaFdSVFVyU1dRNFFUSklORXN3ZVhoR2RVNTZNRmd4VlVONE5sRm9WM2xaTlZGamRreHVVbUYzUjB0a1VIVnZXRkpJTkdOWFRGY0tRV1ZuUjFSRk1Fa3hWV3d5ZG1wd1FsQnZWR0ZWY1RScmFqSmpSRGc1S3pkWFpGTlpSRmN5VXpoMWNIaFBaVkpQWjJkQ00wOXRZMVJ6VFROcWRYQjRXUXBhVkVKQlNpdEJVRmswTUU5Q05raFNRVWc1TnpORGIyOW9iSEpZZDFOVFJESlZWbkV4ZG5kTWIwczNhbkJKUm01R1psTXlVVUZNWVd0WmIycGpZVkJNQ2xFM2JYTk5ka1JqZDFWV01HTTBXRXhNYVZSNWFEZHhZa2RzYlU5YVIwY3lhVFp3TjNKTVlUSlJNVzFLSzNkTWRVVlBNVkJLV1VOQk16RXdOMDk1UkZrS2NFRkZVMDg0YzFSa1kwZEVDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIHNlcnZlcjogaHR0cHM6Ly9hcGkuYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIuYXBpdGVzdC01NTJmODI2YS1lbnYuaHlwZXJzdGFja2N1c3RvbWVycy5jbG91ZDo2NDQzCiAgbmFtZTogYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIKY29udGV4dHM6Ci0gY29udGV4dDoKICAgIGNsdXN0ZXI6IGFwaXRlc3QtNTUyZjgyNmEtYzEtOGExY2YyCiAgICB1c2VyOiBrdWJlcm5ldGVzLWFkbWluCiAgbmFtZToga3ViZXJuZXRlcy1hZG1pbkBhcGl0ZXN0LTU1MmY4MjZhLWMxLThhMWNmMgpjdXJyZW50LWNvbnRleHQ6IGt1YmVybmV0ZXMtYWRtaW5AYXBpdGVzdC01NTJmODI2YS1jMS04YTFjZjIKa2luZDogQ29uZmlnCnVzZXJzOgotIG5hbWU6IGt1YmVybmV0ZXMtYWRtaW4KICB1c2VyOgogICAgY2xpZW50LWNlcnRpZmljYXRlLWRhdGE6IExTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVVJMVkVORFFXaEhaMEYzU1VKQlowbEpXV05zY1d4b1dUUlFaR2QzUkZGWlNrdHZXa2xvZG1OT1FWRkZURUpSUVhkR1ZFVlVUVUpGUjBFeFZVVUtRWGhOUzJFelZtbGFXRXAxV2xoU2JHTjZRV1ZHZHpCNVRtcEJNVTFFWTNoT2VsVjVUVlJDWVVaM01IbE9la0V4VFVSamVFNTZWVE5OVkVKaFRVUjNlQXBJZWtGa1FtZE9Wa0pCYjFSR2JYUXhXVzFXYUZwSE1EWlpNbmd4WXpOU2JHTnBNV2hhUnpGd1ltNU5lRWRVUVZoQ1owNVdRa0ZOVkVWSGRERlpiVlo1Q21KdFZqQmFXRTEwV1ZkU2RHRlhOSGRuWjBWcFRVRXdSME5UY1VkVFNXSXpSRkZGUWtGUlZVRkJORWxDUkhkQmQyZG5SVXRCYjBsQ1FWRkRkbWw2YUZVS1ZrMTNSMGx5UzBoTlRHeHJVVkp5S3psNGRIWlVXVWR5TW1WSWJqTTNXRU5MT1V0UlFUTlVTbVUyTUVzeE1VOURNMWR4YW1GblVHOVBkRlJNUzJGbmFncFNVVW9yYURKNVJFTktXbVExYmxKU2JGYzBRMmhIT0dacU1qZFZTMk5CZG0xdFduWklkVGRPVm5SaFQxVXJWM0E1ZEhScVNIQllOMFpwWTFSTVpUSXZDbnBaVHpSRVJYbHdVMDlIYTJkb1QxQjNUM05RY0VGU2MwdFpaVTlXWWxoM1RXVnlVbVZCUTNNM1dqVnJWVE4wV1hJd1kybzVVVkZqYmxGUFUwaE5TSFVLTld4clNtTjFSbmhpZWtwNWVWQllXVTlsTVM5cGNtdFliVmx3VVV0aGJGUlJSMVV6UmpsS05XcFFUR3hTTVhsMVNEZExWVkJWVW1aRVowa3hSRloxZHdwTFVsaGFUak5GYm14Q2NFcHpVR2Q2ZUV0NGJ5c3ZSa0p2TTAxd2FrOXZNRXRHY2tVcmVXSXdiVzQwT0hwS2MyUlhjbTFUU1VNeWVYRkZPRUpOZWxaMENqWkdlVzU2YUZwV01scFZPR3czVlZwQlowMUNRVUZIYWxacVFsVk5RVFJIUVRGVlpFUjNSVUl2ZDFGRlFYZEpSbTlFUVZSQ1owNVdTRk5WUlVSRVFVc0tRbWRuY2tKblJVWkNVV05FUVdwQlRVSm5UbFpJVWsxQ1FXWTRSVUZxUVVGTlFqaEhRVEZWWkVsM1VWbE5RbUZCUmxBcmIyb3lSbTB6TlZoMFVsaFpTUXBQVW05MFkyeFVNRXhCVjFWTlFUQkhRMU54UjFOSllqTkVVVVZDUTNkVlFVRTBTVUpCVVVFMVYyUnRTMVpLVm1SUWVHbHJSMEprVkZFclVXNUxaek0zQ2pSc1NUQjFkV1JrYkRFeWNqRjJPSGh5WldaR1YzRktXRXB2VFd0cU1XZ3hZazE1YjB4c2IzTkdTa2hSWmtSMWJsRnpUR1ExYkV4Skx6WjZORXhoYUdvS2R6ZzBjbGxSTmtwa05IRmFhVmhGWkU1WGNYbHpXRTFWY1hFME5uQlRVazVHV0doT1JEZ3ZZamhRWW04NE5XWTRVbTVuVG5FME0yMVRlR1pNZEdKRVRncElTblE1UlRseFMwSndXV3gwY25SU1VFRnhNMGt6TW5sTGJFUnZVR3hzTWswelNFOXhjRmRUT1V0QlNVZzFWVzAxWm1KRmJWbExNVk50VlhnMWFtOHhDakJKZW1aTGRrRnVabmRrYzB4WVJVY3dLM0o2VFRRelFuVXJUbEE1VlZFNVJVeEliRlZpY1hBeFYwdG5lbXN5ZUZoWU5ubFFhM05HY0d4Q09HMDVNUzhLUWxGSmNVWmlhbEJ0Wm5SQ1ZFWk1UbEpwVlVVM2RHeENjVGx2TTBwRWVEWkJiRkZhZEZOSlYzaDJOWHBTU0hVemQxTXlTMVY0UkZCTmNIcFhDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIGNsaWVudC1rZXktZGF0YTogTFMwdExTMUNSVWRKVGlCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRcE5TVWxGY0VGSlFrRkJTME5CVVVWQmNqUnpORlpHVkUxQ2FVdDVhSHBETlZwRlJXRXZkbU5pWWpBeVFuRTVibWcxT1NzeGQybDJVMnRCVGpCNVdIVjBDa04wWkZSbmRERnhiekp2UkRaRWNsVjVlVzF2U1RCVlEyWnZaSE5uZDJsWFdHVmFNRlZhVm5WQmIxSjJTRFE1ZFRGRGJrRk1OWEJ0WW5nM2RYcFdZbGNLYW14UWJIRm1ZbUpaZURaV0szaFpia1Y1TTNSMk9ESkVkVUY0VFhGVmFtaHdTVWxVYWpoRWNrUTJVVVZpUTIxSWFteFhNVGhFU0hFd1dHZEJjazh5WlFwYVJrNDNWMHM1U0VrdlZVVklTakJFYTJoNlFqZDFXbHBEV0V4b1kxYzRlV056YWpFeVJHNTBaalJ4TlVZMWJVdFZRMjF3VlRCQ2JFNTRabE5sV1hwNUNqVlZaR055YUN0NWJFUXhSVmgzTkVOT1VURmljME5yVmpKVVpIaEtOVkZoVTJKRU5FMDRVM05oVUhaNFVXRk9la3RaZW5GT1EyaGhlRkJ6YlRsS2NDc0tVRTE1WWtoV2NUVnJhVUYwYzNGb1VFRlVUVEZpWldoamNEZzBWMVprYlZaUVNtVXhSMUZKUkVGUlFVSkJiMGxDUVVGbmNtRkpSekJQU2t0SmFIUndNd293UVdvd1duSmpOamxPU0c1UU5FOXdOMnBQUjFjNFZXWnRVSE5QZW1nMllWaFBSa2RUUTB0ekx6QjBMMjlhVEhKUFowRkRabXR4TVRaWWJrNHZObFJTQ21Zek16ZFFZWEZYVlRkd1YxRXpNbkZvVkZCdGFGbFZlRzlHWWtocU9FZExjWGN5VVhCbU1sVXJXSHBTWWxwV2VqUkliWEZDTkdsSWJtWjFkM2gwYVZNS1FtSTFUVTR6UkZoUU5XeEpkblJRZURCMFkzazRabUYwZGtGdWJtZG5WbUkzV1ZkRU4wRnJSM00zVEZKb2F6aE5WRk53VFhBNGVWTlhWRzV4UjJ0M2JncEtkR3BITTJkT1dqZDRRMDlrTW5aUFNWVXlaalpYV0dkSWFuQjRTVmd2WkhOSVJrTTBNR3RCTUhZclpXY3lNVUpwUWpBNVQyVjFPQ3RwUVcxNVlsSk1DalpXUjBWcFlsTkZUMVpXWWxNemExbGxOVlpETWs5emEwTlJNbkphTkVzeUsxQk5RbTlxZGxkYWR6WktOV0V5Tm5wME5HVjJabk5LTkVVeGMydEpTV1FLTHpNM1RXWjNSVU5uV1VWQmR6bFNRV1l6WkZOdk1VNTBVVmMzYmxkSGJWRTVla2h3YW5OalQyTjRaMEZQWW5FMlUwaDRiV1pTYlVWSFltWlJabVpTYVFwV1NFSTRjQ3MyTmtWUk5VczJlR3R0UjBsMVRrRjVOM2hNWjBoWE0wTlhkelJKTnprNFFuQkVTelo2VG5ZMFlsY3ZkbTVXV1dOdVlXTllUazFIYms1bkNrSmlUbnBFU1ZKU1dHNXhRMVJsWlZkclkzQmtablZoTjNweWNESmlWVXR0WmpJM2VqRlBNME5TWWpoNVJXRTJibHBGYjFFeVUydERaMWxGUVRWWWRGa0tZMDlTT1VkelF6QnVZWE15TTNrdmFqWlBaWFpoYURCWFdFMVhkM1kzUzA5Wk1WcDBMMUZJWTNaUGFYSlRkVlExVmpObVZYUkdkbGRFYzJoVldWQTVlQXBGVTI1NFFqSnpTRkJKVkZnNU1pdENVbkUzV1ZGM2VGZHJVRU1yU2s1NlpVNVpkMmxtYkVoeFlWTnBjV3ROVjBwMFUyMTJVVkpFTUhKd1pXNVFOWFpWQ25nNWNESjFiVkJyVm5kdWVHeE9TM05WVFVOamRFSTBaMGRtTUhaUWNUSjZWVXAxVTFOdVJVTm5XVUppZWpkc2JHbFpXQ3NyVUVGNVV6RkxMMmx6TjJrS1pHczBkMGRJWkZnd2NISlpaR2RyT0ZSellXMVNSRFZCTmtsTmFHRnRRbTVuYXpKUVZtdGtOa1UxT1dkV1pYZGpaV1ZFYXpaNU9EaERURk0xYUdod1JncFVaMVZWWlhSMVprMUhaRTlOYlU4clN6RmxNV1o2VDJoSFVrNUlSeko1WW1ZMlUyazJOalZUWnpGR2QxRlFTRUUzU1Zkc1NqTjRTakJtV1ZGQ056SlVDalZYYzBGSE0wTkllbkp2YTNaRFVGTjVlamRYT0ZGTFFtZFJRMGw1Tmxac04zQTJlRUYxZW05RVJHTjVhR3czU3paTmJVWmlVRGt5YjBKWlJIZENTRzRLU0RRclJGRmpablpEU21WTWJITkZXVXBuVDNrelFXWllWMmMwUzI5R2MzSlRlVUV5VG5SUWFXWkxTWFJEZEdjMldsZElabGhuZVVGaVJFazRNRlJxV2dwSVRXTXpSeXRsY21ScFZuWkdXVXBKWW5sbVkyeHdiakZPWTNaeFVFSTVNRmd3VG14VGMxUkZTMlJhVEhrcldWTlpVemxKYnpacGNFNVhZMnBoZGtrMENtVXZVMUl3VVV0Q1oxRkRRWFkxVlRBMldVb3hUazEyS3paVlkzQkVZVGhhVURjdlVubE5ZblZKWTB4S1pWZDRRVkV6VG05TE1saFZPWFpWVkVRdk5ta0thWFpKYVVrd2IwZFVjRmtySzJ0WWIxSndiMU0yUm1OQmRIZEdOSEJFZWxCSWIwRlBiMjlwVFZaaE5uUTBaVTgxWjJrdlpqUkJkVlZyWldoSlJWQkthQW94TlRaNVJHZFlObVJhT0U0eFJFUk9SR3AwVFd0b2JIZDRTbEprY2pSNFMyaE9SbGNyT1dKdlRsaEdXVTV3VjFJM2NFaGtVbmM5UFFvdExTMHRMVVZPUkNCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRbz0K
+          description: Kubeconfig file contents used to authenticate against the cluster.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: CREATING
+        status_reason:
+          type:
+          - string
+          - 'null'
+          example: Bastion is ready
+          description: Human-readable explanation of the current cluster status.
+        node_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeGroupFields'
+          description: Worker-node groups in the cluster.
+        master_flavor:
+          $ref: '#/components/schemas/Cluster_Flavor_Fields'
+          description: Flavor used for the cluster master node.
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeFields'
+          description: Nodes currently in the cluster.
+        keypair_name:
+          type: string
+          description: Name of the SSH keypair attached to the VM.
+          example: example-keypair
+        is_reconciling:
+          type: boolean
+          example: true
+          description: Whether the cluster is currently reconciling its desired state (true) or stable (false).
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T16:04:09Z'
+    Create_Cluster_Payload:
+      required:
+      - environment_name
+      - keypair_name
+      - kubernetes_version
+      - master_flavor_name
+      - name
+      type: object
+      properties:
+        environment_name:
+          type: string
+          description: Name of the environment containing the resource.
+        keypair_name:
+          type: string
+          description: Name of the SSH keypair attached to the VM.
+        kubernetes_version:
+          type: string
+          description: Kubernetes version installed on the cluster.
+        master_flavor_name:
+          type: string
+          description: Flavor used for the master nodes.
+        name:
+          type: string
+          maxLength: 20
+          description: Name of the Kubernetes cluster.
+        master_count:
+          maximum: 3
+          minimum: 2
+          type: integer
+          description: Minimum master count is 2; 1 is rejected.
+        node_count:
+          type: integer
+          description: Total number of worker nodes in the cluster.
+        node_flavor_name:
+          type: string
+          description: Flavor used for the worker nodes.
+        deployment_mode:
+          type: string
+          example: full
+          default: full
+          enum:
+          - full
+          - standard
+          description: Cluster deployment mode (single-node, HA, etc.).
+        node_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Create_ClusterNodeGroup_payload'
+          description: Worker-node groups in the cluster.
+    ClusterNodeGroupsListResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Node groups retrieved successfully
+        node_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeGroupFields'
+          description: Worker-node groups in the cluster.
+    ClusterNodesListResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Cluster nodes retrieved successfully
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeFields'
+          description: Nodes currently in the cluster.
+    image:
+      type: object
+    LableResonse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        label:
+          type: string
+          description: The label name (e.g. `k8s`).
+    CreateClusterNodeFields:
+      type: object
+      properties:
+        role:
+          type: string
+          example: worker
+          enum:
+          - worker
+          - master
+          description: Role assigned to the user.
+        node_group:
+          type: string
+          description: Worker-node group.
+        count:
+          minimum: 1
+          type: integer
+          description: Number of items returned in the current page.
+      required:
+      - role
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Resource name to check for availability.
+          example: example-availability-check
+        available:
+          type: boolean
+          description: Whether stock is currently available.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Name must not exceed 20 characters
+    Update_ClusterNodeGroup_payload:
+      type: object
+      properties:
+        min_count:
+          minimum: 1
+          type: integer
+          description: Minimum number of worker nodes the node group can scale down to during autoscaling. Defaults to the number of worker nodes initially deployed in the node group.
+        max_count:
+          maximum: 20
+          type: integer
+          description: Maximum number of worker nodes the node group can scale up to during autoscaling. Defaults to the number of worker nodes initially deployed in the node group.
+        firewall_ids:
+          type: array
+          description: IDs of the firewalls to apply to all nodes in this node group.
+          items:
+            type: integer
+    Cluster_Flavor_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 4501
+        name:
+          type: string
+          description: Name of the cluster flavor.
+          example: n1-cpu-small
+        cpu:
+          type: integer
+          description: Number of vCPU cores.
+          example: 4
+        ram:
+          type: number
+          description: Memory allocated to the flavor, in GB.
+          example: 4
+        disk:
+          type: integer
+          description: Root disk capacity, in GB.
+          example: 100
+        ephemeral:
+          type: integer
+          description: Ephemeral disk capacity, in GB. Cleared when the VM is deleted.
+          example: 0
+        gpu:
+          type: string
+          description: GPU model name. Empty string if the flavor has no GPU.
+          example: ''
+        gpu_count:
+          type: integer
+          description: Number of GPUs attached to the flavor.
+          example: 0
+        features:
+          type: object
+          properties: {}
+          description: Optional feature flags applicable to the resource.
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LableResonse'
+          description: Optional user-supplied tags for grouping or filtering.
+    ClusterNodeGroupFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 4501
+        name:
+          type: string
+          description: Name of the cluster node group.
+          example: default
+        role:
+          type: string
+          description: Role assigned to the user.
+          example: worker
+        flavor:
+          $ref: '#/components/schemas/Cluster_Flavor_Fields'
+          description: GPU and CPU configuration of the virtual machine.
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 1
+        min_count:
+          type: integer
+          description: Minimum number of nodes the group will scale down to.
+          example: 1
+        max_count:
+          type: integer
+          description: Maximum number of nodes the group will scale up to.
+          example: 1
+        firewall_ids:
+          type: array
+          items:
+            type: integer
+          description: Identifiers of the firewalls attached to the node group.
+        firewalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeGroupFirewallFields'
+          description: Firewalls attached to the VM.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T09:21:55Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was last modified.
+          example: '2026-05-07T09:21:55Z'
+    ClusterVersions:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Cluster versions retrieved successfully
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterVersion'
+          description: An array of version objects.
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    MasterFlavorsResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Flavors retrieved successfully
+        flavors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cluster_Flavor_Fields'
+          description: An array of CPU-only flavor objects available for use as master nodes.
+    ClusterNodeGroupsCreateResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        node_group:
+          $ref: '#/components/schemas/ClusterNodeGroupFields_2'
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeFields_2'
+    ManualReconciliationModel_2:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: string
+        cluster:
+          $ref: '#/components/schemas/ClusterFields_2'
+    Create_ClusterNodeGroup_payload_2:
+      required:
+      - flavor_name
+      - name
+      - role
+      type: object
+      properties:
+        name:
+          maxLength: 20
+          type: string
+        flavor_name:
+          type: string
+        count:
+          minimum: 1
+          type: integer
+        role:
+          type: string
+          example: worker
+          default: worker
+          enum:
+          - worker
+        min_count:
+          minimum: 1
+          type: integer
+        max_count:
+          maximum: 20
+          type: integer
+        firewall_ids:
+          type: array
+          description: IDs of the firewalls to apply to all nodes in this node group
+          items:
+            type: integer
+    ClusterListResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterFields_2'
+    ClusterNodeGroupsGetResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        node_group:
+          $ref: '#/components/schemas/ClusterNodeGroupFields_2'
+    ClusterNodeGroupFirewallFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    DeleteClusterNodesFields_2:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+    ClusterNodeFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        role:
+          type: string
+        node_group_id:
+          type: integer
+        node_group_name:
+          type: string
+        instance:
+          $ref: '#/components/schemas/ClusterNodeInstanceFields_2'
+        status:
+          type: string
+        status_reason:
+          type: string
+        is_bastion:
+          type: boolean
+        requires_public_ip:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ClusterResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        cluster:
+          $ref: '#/components/schemas/ClusterFields_2'
+    ClusterVersion_2:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+        version:
+          type: string
+          description: ''
+        region:
+          $ref: '#/components/schemas/region'
+        image:
+          $ref: '#/components/schemas/image'
+        created_at:
+          type: string
+          description: ''
+          format: date-time
+        updated_at:
+          type: string
+          description: ''
+          format: date-time
+    ClusterNodeInstanceFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+        fixed_ip:
+          type: string
+        floating_ip:
+          type: string
+        floating_ip_status:
+          type: string
+        contract_id:
+          type: integer
+        image_id:
+          type: integer
+    ClusterFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        environment_name:
+          type: string
+        kubernetes_version:
+          type: string
+        api_address:
+          type: string
+        kube_config:
+          type: string
+        status:
+          type: string
+        status_reason:
+          type: string
+        node_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeGroupFields_2'
+        master_flavor:
+          $ref: '#/components/schemas/Cluster_Flavor_Fields_2'
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeFields_2'
+        keypair_name:
+          type: string
+        is_reconciling:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    Create_Cluster_Payload_2:
+      required:
+      - environment_name
+      - keypair_name
+      - kubernetes_version
+      - master_flavor_name
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        environment_name:
+          type: string
+        kubernetes_version:
+          type: string
+        master_count:
+          maximum: 3
+          minimum: 2
+          type: integer
+        master_flavor_name:
+          type: string
+        node_count:
+          type: integer
+        node_flavor_name:
+          type: string
+        keypair_name:
+          type: string
+        deployment_mode:
+          type: string
+          example: full
+          default: full
+          enum:
+          - full
+          - standard
+        node_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Create_ClusterNodeGroup_payload_2'
+    ClusterNodeGroupsListResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        node_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeGroupFields_2'
+    ClusterNodesListResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeFields_2'
+    LableResonse_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+    CreateClusterNodeFields_2:
+      type: object
+      properties:
+        node_group:
+          type: string
+        role:
+          type: string
+          example: worker
+          enum:
+          - worker
+          - master
+        count:
+          minimum: 1
+          type: integer
+    NameAvailableModel_2:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    Update_ClusterNodeGroup_payload_2:
+      type: object
+      properties:
+        min_count:
+          minimum: 1
+          type: integer
+        max_count:
+          maximum: 20
+          type: integer
+        firewall_ids:
+          type: array
+          description: IDs of the firewalls to apply to all nodes in this node group
+          items:
+            type: integer
+    Cluster_Flavor_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        cpu:
+          type: integer
+        ram:
+          type: number
+        disk:
+          type: integer
+        ephemeral:
+          type: integer
+        gpu:
+          type: string
+        gpu_count:
+          type: integer
+        features:
+          type: object
+          properties: {}
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LableResonse_2'
+    ClusterNodeGroupFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        role:
+          type: string
+        flavor:
+          $ref: '#/components/schemas/Cluster_Flavor_Fields_2'
+        count:
+          type: integer
+        min_count:
+          type: integer
+        max_count:
+          type: integer
+        firewall_ids:
+          type: array
+          items:
+            type: integer
+        firewalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeGroupFirewallFields_2'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ClusterVersions_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterVersion_2'
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    MasterFlavorsResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        flavors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cluster_Flavor_Fields_2'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

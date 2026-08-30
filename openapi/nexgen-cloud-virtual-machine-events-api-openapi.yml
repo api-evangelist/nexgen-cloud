@@ -1,0 +1,113 @@
+openapi: 3.2.0
+info:
+  title: Infrahub virtual machine events API
+  version: '1.0'
+  description: Virtual Machine Event APIs
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: virtual machine events
+  description: Virtual Machine Event APIs
+paths:
+  /core/virtual-machines/{vm_id}/events:
+    get:
+      tags:
+      - virtual machine events
+      summary: List virtual machine events
+      description: Retrieves a list of all events in a virtual machine's history, which records actions performed on the specified virtual machine. Include the virtual machine ID in the path to retrieve the history of events. For more details on virtual machine events history, [**click here**](https://docs.hyperstack.cloud/docs/virtual-machines/vm-performance-metrics-and-events-history#events-history).
+      operationId: List_VM_events
+      parameters:
+      - name: vm_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Virtual machines event list successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstanceEvents'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+components:
+  schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    InstanceEvents:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        instance_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstanceEventsFields'
+    InstanceEventsFields:
+      type: object
+      properties:
+        instance_id:
+          type: integer
+        user_id:
+          type: integer
+        org_id:
+          type: integer
+        time:
+          type: string
+          format: date-time
+        type:
+          type: string
+        reason:
+          type: string
+        object:
+          type: string
+        message:
+          type: string
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

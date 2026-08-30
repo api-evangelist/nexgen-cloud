@@ -1,0 +1,407 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Flavor API
+  version: '1.0'
+  description: 'Operations tagged Flavor across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Flavor
+  description: A flavor is a machine type, its CPU count, memory, and GPU configuration. Flavors are region-specific. List flavors before deploying a virtual machine to find one available in your target region with the GPU and resource shape you need.
+paths:
+  /core/flavors:
+    get:
+      tags:
+      - Flavor
+      summary: List Flavors
+      description: 'Returns a list of available GPU/CPU virtual machine hardware configurations, comprising combinations of GPUs, CPUs, RAM, and system disk. These virtual machine configurations are referred to as [**flavors**](https://docs.hyperstack.cloud/docs/hardware/flavors). Optionally, include a `region` query parameter to return only the flavors available in the specified region; by default a list of flavors in all regions will be returned.
+
+
+        In addition to the flavors visible in the UI, Hyperstack offers [**Large Root Disk Flavors**](https://docs.hyperstack.cloud/docs/hardware/large-root-disk-flavors) with a larger persistent root disk instead of ephemeral storage. These API-only flavors do not support snapshotting or hibernation and are ideal for high-I/O, containerized, or short-lived workloads.'
+      operationId: List_Flavors
+      parameters:
+      - name: region
+        in: query
+        description: Filter results to the specified region.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of flavors list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Flavor_List_Response'
+              example:
+                status: true
+                message: Getting flavors successful
+                data:
+                - gpu: ''
+                  region_name: NORWAY-1
+                  flavors:
+                  - id: 9876
+                    name: n1-cpu-small
+                    display_name: null
+                    region_name: NORWAY-1
+                    cpu: 4
+                    ram: 4
+                    disk: 100
+                    ephemeral: 0
+                    gpu: ''
+                    gpu_count: 0
+                    stock_available: true
+                    created_at: '2026-05-07T09:21:55Z'
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+                  - id: 2058
+                    name: n1-cpu-medium
+                    display_name: n1-cpu-medium
+                    region_name: NORWAY-1
+                    cpu: 8
+                    ram: 8
+                    disk: 100
+                    ephemeral: null
+                    gpu: ''
+                    gpu_count: 0
+                    stock_available: true
+                    created_at: '2026-05-07T11:47:30Z'
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+                  - id: 5341
+                    name: n1-cpu-large
+                    display_name: n1-cpu-large
+                    region_name: NORWAY-1
+                    cpu: 16
+                    ram: 16
+                    disk: 100
+                    ephemeral: 0
+                    gpu: ''
+                    gpu_count: 0
+                    stock_available: true
+                    created_at: '2026-05-06T14:32:11Z'
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting flavors successful
+                    data:
+                    - gpu: ''
+                      region_name: NORWAY-1
+                      flavors:
+                      - id: 9876
+                        name: n1-cpu-small
+                        display_name: null
+                        region_name: NORWAY-1
+                        cpu: 4
+                        ram: 4
+                        disk: 100
+                        ephemeral: 0
+                        gpu: ''
+                        gpu_count: 0
+                        stock_available: true
+                        created_at: '2026-05-07T09:21:55Z'
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+                      - id: 2058
+                        name: n1-cpu-medium
+                        display_name: n1-cpu-medium
+                        region_name: NORWAY-1
+                        cpu: 8
+                        ram: 8
+                        disk: 100
+                        ephemeral: null
+                        gpu: ''
+                        gpu_count: 0
+                        stock_available: true
+                        created_at: '2026-05-07T11:47:30Z'
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+                      - id: 5341
+                        name: n1-cpu-large
+                        display_name: n1-cpu-large
+                        region_name: NORWAY-1
+                        cpu: 16
+                        ram: 16
+                        disk: 100
+                        ephemeral: 0
+                        gpu: ''
+                        gpu_count: 0
+                        stock_available: true
+                        created_at: '2026-05-06T14:32:11Z'
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    Flavor_List_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting flavors successful
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Flavor_Item_Get_Response'
+          description: List of available flavors grouped by region.
+    LableResonse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        label:
+          type: string
+          description: The label name (e.g. `k8s`).
+    Flavor_Item_Get_Response:
+      type: object
+      properties:
+        gpu:
+          type: string
+          description: GPU model name. Empty string if the flavor has no GPU.
+          example: ''
+        region_name:
+          type: string
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+          example: NORWAY-1
+        flavors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Flavor_Fields'
+          description: An array of CPU-only flavor objects available for use as master nodes.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Flavor_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 3287
+        name:
+          type: string
+          description: Name of the flavor.
+          example: n1-cpu-small
+        display_name:
+          type:
+          - string
+          - 'null'
+          description: Human-readable display name. Falls back to `name` if not set.
+        region_name:
+          type: string
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+          example: NORWAY-1
+        cpu:
+          type: integer
+          description: Number of vCPU cores.
+          example: 4
+        ram:
+          type: integer
+          description: Memory allocated to the flavor, in GB.
+          example: 4
+        disk:
+          type: integer
+          description: Root disk capacity, in GB.
+          example: 100
+        ephemeral:
+          type: integer
+          description: Ephemeral disk capacity, in GB. Cleared when the VM is deleted.
+          example: 0
+        gpu:
+          type: string
+          description: GPU model name. Empty string if the flavor has no GPU.
+          example: ''
+        gpu_count:
+          type: integer
+          description: Number of GPUs attached to the flavor.
+          example: 0
+        stock_available:
+          type: boolean
+          description: Whether stock is currently available for this flavor in the region.
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T16:04:09Z'
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LableResonse'
+          description: Optional user-supplied tags for grouping or filtering.
+        features:
+          type: object
+          properties: {}
+          description: Optional feature flags applicable to the resource.
+    Flavor_List_Response_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Flavor_Item_Get_Response_2'
+    LableResonse_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+    Flavor_Item_Get_Response_2:
+      type: object
+      properties:
+        gpu:
+          type: string
+        region_name:
+          type: string
+        flavors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Flavor_Fields_2'
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Flavor_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        display_name:
+          type: string
+        region_name:
+          type: string
+        cpu:
+          type: integer
+        ram:
+          type: integer
+        disk:
+          type: integer
+        ephemeral:
+          type: integer
+        gpu:
+          type: string
+        gpu_count:
+          type: integer
+        stock_available:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LableResonse_2'
+        features:
+          type: object
+          properties: {}
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

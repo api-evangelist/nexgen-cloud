@@ -1,0 +1,333 @@
+openapi: 3.2.0
+info:
+  title: Infrahub Auto Topup API
+  version: '1.0'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: auto-topup
+paths:
+  /billing/auto-topup:
+    get:
+      tags:
+      - auto-topup
+      summary: Retrieve the current auto top up configuration and transaction history
+      operationId: Get_Auto_Top_Up
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAutoTopupResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+    put:
+      tags:
+      - auto-topup
+      summary: Update an existing active auto top up configuration
+      operationId: Update_Auto_Top_Up
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAutoTopupPayload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateAutoTopupResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+      x-codegen-request-body-name: payload
+    post:
+      tags:
+      - auto-topup
+      summary: Create an auto top up configuration and initiate Stripe setup
+      operationId: Create_Auto_Top_Up
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAutoTopupPayload'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAutoTopupResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+      x-codegen-request-body-name: payload
+    delete:
+      tags:
+      - auto-topup
+      summary: Disable auto top up, preventing any future automatic charges
+      operationId: Disable_Auto_Top_Up
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisableAutoTopupResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+  /billing/auto-topup/status:
+    get:
+      tags:
+      - auto-topup
+      summary: Get auto top-up status and configuration
+      description: Retrieves the current auto top-up configuration and status for your organization. Returns the status (active, disabled, pending_setup, or null if never configured), along with the threshold and top-up amounts. For additional information, [**click here**](None/docs/api-reference/billing-resources/).
+      operationId: Get_auto_top-up_status
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupStatusSchema'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoTopupErrorResponse'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+components:
+  schemas:
+    UpdateAutoTopupPayload:
+      required:
+      - threshold_amount
+      - topup_amount
+      type: object
+      properties:
+        threshold_amount:
+          type: number
+          description: ''
+        topup_amount:
+          type: number
+          description: ''
+    GetAutoTopupResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        auto_topup:
+          $ref: '#/components/schemas/auto_topup'
+    CreateAutoTopupResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        auto_topup:
+          $ref: '#/components/schemas/auto_topup'
+    AutoTopupErrorResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        error_reason:
+          type: string
+          description: ''
+    AutoTopupStatusSchema:
+      type: object
+      properties:
+        status:
+          type: string
+          description: 'Auto top-up status: active, disabled, pending_setup, cancelled, or null'
+        threshold_amount:
+          type: number
+          description: Balance threshold that triggers auto top-up
+        topup_amount:
+          type: number
+          description: Amount to top up when threshold is reached
+    DisableAutoTopupResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        auto_topup:
+          $ref: '#/components/schemas/auto_topup'
+    UpdateAutoTopupResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        auto_topup:
+          $ref: '#/components/schemas/auto_topup'
+    auto_topup:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+        status:
+          type: string
+          description: ''
+        threshold_amount:
+          type: number
+          description: ''
+        topup_amount:
+          type: number
+          description: ''
+        updated_at:
+          type: string
+          description: ''
+    CreateAutoTopupPayload:
+      required:
+      - threshold_amount
+      - topup_amount
+      type: object
+      properties:
+        threshold_amount:
+          type: number
+          description: ''
+        topup_amount:
+          type: number
+          description: ''
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

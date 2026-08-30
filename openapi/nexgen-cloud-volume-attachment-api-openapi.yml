@@ -1,0 +1,520 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Volume Attachment API
+  version: '1.0'
+  description: 'Operations tagged Volume Attachment across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Volume Attachment
+  description: Volume attachment endpoints manage the binding between a volume and a virtual machine. A volume can be attached to one VM at a time. Detach a volume before attaching it elsewhere; the data persists on the volume across attachments.
+paths:
+  /core/virtual-machines/{vm_id}/attach-volumes:
+    post:
+      tags:
+      - Volume Attachment
+      summary: Attach volumes to virtual machine
+      description: 'Attaches one or more volumes to an existing virtual machine, expanding its storage capacity. Include the virtual machine ID in the path and the volume IDs in the request body to attach the specified volumes to the designated virtual machine. For additional details on volumes, see [Shared storage volumes](https://docs.hyperstack.cloud/docs/storage/volumes/shared-storage-volumes). **Attachment limit:** each virtual machine can have a maximum of **10 volumes** attached at any given time.
+
+
+        > **State requirement:** This operation requires the VM to be in the `ACTIVE` or `SHUTOFF` state. Volumes referenced in the request body must themselves be in the `available` state.'
+      operationId: Attach_volumes_to_VM
+      parameters:
+      - name: vm_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the vm.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attach_Volumes_Payload'
+              example:
+                volume_ids:
+                - 38192
+              properties: {}
+            example:
+              volume_ids:
+              - 38192
+        required: true
+      responses:
+        '200':
+          description: Volumes have been successfully attached to the virtual machine.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attach_Volumes'
+              example:
+                status: true
+                message: Volumes attaching now.
+                volume_attachments:
+                - id: 3287
+                  instance_id: 5341
+                  volume_id: 7613
+                  device: /dev/disk/by-id/virtio-2e2fb02e-68e0-4ae7-8
+                  status: ATTACHING
+                  protected: false
+                  created_at: '2026-05-06T16:04:09Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Volumes attaching now.
+                    volume_attachments:
+                    - id: 3287
+                      instance_id: 5341
+                      volume_id: 7613
+                      device: /dev/disk/by-id/virtio-2e2fb02e-68e0-4ae7-8
+                      status: ATTACHING
+                      protected: false
+                      created_at: '2026-05-06T16:04:09Z'
+        '400':
+          description: 'Bad Request
+
+
+            Common cause: `error_reason: bad_request`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    status: false
+                    message: There are already attached Volumes
+                    error_reason: bad_request
+              example:
+                status: false
+                message: There are already attached Volumes
+                error_reason: bad_request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/virtual-machines/{vm_id}/detach-volumes:
+    post:
+      tags:
+      - Volume Attachment
+      summary: Detach volumes from virtual machine
+      description: 'Detaches one or more volumes currently attached to a virtual machine. Include the virtual machine ID in the path and the volume IDs in the request body to detach the specified volumes from the designated virtual machine.
+
+
+        > **State requirement:** This operation requires the VM to be in the `ACTIVE` or `SHUTOFF` state.'
+      operationId: Detach_volumes_from_VM
+      parameters:
+      - name: vm_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the vm.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detach_Volumes_Payload'
+              example:
+                volume_ids:
+                - 38192
+              properties: {}
+            example:
+              volume_ids:
+              - 38192
+        required: true
+      responses:
+        '200':
+          description: Volumes have been successfully detached from the virtual machine.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detach_Volumes'
+              example:
+                status: true
+                message: Volumes detaching now.
+                volume_attachments:
+                - id: 3287
+                  instance_id: 5341
+                  volume_id: 7613
+                  device: /dev/disk/by-id/virtio-2e2fb02e-68e0-4ae7-8
+                  status: DETACHING
+                  protected: false
+                  created_at: '2026-05-06T16:04:09Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Volumes detaching now.
+                    volume_attachments:
+                    - id: 3287
+                      instance_id: 5341
+                      volume_id: 7613
+                      device: /dev/disk/by-id/virtio-2e2fb02e-68e0-4ae7-8
+                      status: DETACHING
+                      protected: false
+                      created_at: '2026-05-06T16:04:09Z'
+        '400':
+          description: 'Bad Request
+
+
+            Common cause: `error_reason: bad_request`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    status: false
+                    message: Some volumes are not attached with the given VM.
+                    error_reason: bad_request
+              example:
+                status: false
+                message: Some volumes are not attached with the given VM.
+                error_reason: bad_request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/volume-attachments/{volume_attachment_id}:
+    patch:
+      tags:
+      - Volume Attachment
+      summary: Update a volume attachment
+      operationId: Update_volume_attachment
+      parameters:
+      - name: volume_attachment_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the volume attachment.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Update_Volume_Attachment_Payload'
+              example:
+                protected: false
+              properties: {}
+            example:
+              protected: false
+        required: true
+      responses:
+        '200':
+          description: Volume attachment has been updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attach_Volumes'
+              example:
+                status: true
+                message: Volume attachment 68654 has been updated
+                attachment:
+                  id: 4501
+                  instance_id: 3287
+                  volume_id: 8429
+                  device: /dev/disk/by-id/virtio-2e2fb02e-68e0-4ae7-8
+                  status: ATTACHING
+                  protected: false
+                  created_at: '2026-05-07T11:47:30Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Volume attachment 68654 has been updated
+                    attachment:
+                      id: 4501
+                      instance_id: 3287
+                      volume_id: 8429
+                      device: /dev/disk/by-id/virtio-2e2fb02e-68e0-4ae7-8
+                      status: ATTACHING
+                      protected: false
+                      created_at: '2026-05-07T11:47:30Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Updates an existing volume attachment by modifying its attributes such as the `protected` status, which prevents detachment of critical system volumes. This is useful for enforcing safeguards on production-critical storage devices. Retrieve the `volume_attachment_id` by calling the [**List volumes**](https://docs.hyperstack.cloud/docs/api-reference/list-volumes) endpoint and inspecting the `attachments` field of each volume object.
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    Detach_Volumes:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: We can process with only in_use volumes.
+        volume_attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attach_Volume_Fields'
+          description: Volumes currently attached to the VM.
+    Attach_Volumes_Payload:
+      type: object
+      properties:
+        volume_ids:
+          type: array
+          items:
+            type: integer
+          description: Specify one or more IDs of the volumes to be attached to the virtual machine.
+        protected:
+          type: boolean
+          default: false
+          description: When `true`, the resource cannot be deleted while protection is enabled.
+    Attach_Volume_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 9876
+        instance_id:
+          type: integer
+          description: Identifier of the virtual machine.
+          example: 1129
+        volume_id:
+          type: integer
+          description: Identifier of the volume.
+          example: 1402
+        device:
+          type: string
+          description: Device path the volume is attached at on the VM (for example, `/dev/sdb`).
+          example: /dev/disk/by-id/virtio-a66fd1a8-e198-4eb4-a
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: ATTACHING
+        protected:
+          type: boolean
+          description: When `true`, the resource cannot be deleted while protection is enabled.
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T09:21:55Z'
+    Attach_Volumes:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: We can process with only available volumes.
+        volume_attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attach_Volume_Fields'
+          description: Volumes currently attached to the VM.
+    Detach_Volumes_Payload:
+      type: object
+      properties:
+        volume_ids:
+          type: array
+          items:
+            type: integer
+          description: Specify one or more IDs of the volumes to be attached to the virtual machine.
+    Update_Volume_Attachment_Payload:
+      type: object
+      properties:
+        protected:
+          type: boolean
+          description: When set to `true`, the volume attachment is marked as protected, preventing accidental or manual detachment from the VM.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Detach_Volumes_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume_attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attach_Volume_Fields_2'
+    Attach_Volumes_Payload_2:
+      type: object
+      properties:
+        volume_ids:
+          type: array
+          items:
+            type: integer
+        protected:
+          type: boolean
+          default: false
+    Attach_Volume_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        instance_id:
+          type: integer
+        volume_id:
+          type: integer
+        device:
+          type: string
+        status:
+          type: string
+        protected:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    Attach_Volumes_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume_attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attach_Volume_Fields_2'
+    Detach_Volumes_Payload_2:
+      type: object
+      properties:
+        volume_ids:
+          type: array
+          items:
+            type: integer
+    Update_Volume_Attachment_Payload_2:
+      type: object
+      properties:
+        protected:
+          type: boolean
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

@@ -1,0 +1,722 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud User Consent API
+  version: '1.0'
+  description: 'Operations tagged User Consent across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: User Consent
+  description: User Consent endpoints record each user's grant or revoke decision for a given consent type (e.g. marketing communications, data-sharing terms). Use these endpoints to read what consent has been granted, fetch current consent templates, and update consent state programmatically.
+paths:
+  /auth/user-consent:
+    get:
+      tags:
+      - User Consent
+      summary: List consents
+      description: Return every consent decision on your account with its current granted or revoked status.
+      operationId: Get_All_Consents_for_a_User
+      parameters:
+      - name: consent_type
+        in: query
+        description: Filter by consent type
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserConsentsResponse'
+              example:
+                consents:
+                - id: 2
+                  user_id: 12345
+                  org_id: 6789
+                  consent_type: auto_top_up
+                  action: revoked
+                  ip_address: 203.0.113.10
+                  consent_method: web_checkbox
+                  created_at: '2026-04-20T13:09:42'
+                  updated_at: '2026-04-20T17:05:18'
+                  latest_consent_version: auto_top_up_v1
+                  is_version_current: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    post:
+      tags:
+      - User Consent
+      summary: Record a consent
+      description: Submit a consent decision for a consent type, such as authorizing automatic top-ups.
+      operationId: Add_a_new_consent_for_a_User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordConsentRequest'
+            example:
+              consent_type: auto_top_up
+              action: granted
+              consent_method: api
+              metadata:
+                threshold_amount: 50
+                topup_amount: 50
+                payment_method_ref: pm_1QexampleRef00
+        required: true
+      responses:
+        '201':
+          description: Example response.
+          content:
+            application/json:
+              example:
+                message: Consent recorded
+                consent:
+                  id: 28
+                  user_id: 12345
+                  org_id: 6789
+                  consent_type: auto_top_up
+                  action: granted
+                  ip_address: 203.0.113.10
+                  consent_method: api
+                  created_at: '2026-06-12T19:15:30'
+                  updated_at: '2026-06-12T19:15:30'
+              schema:
+                $ref: '#/components/schemas/ConsentActionResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              example:
+                status: false
+                message: Metadata is required for auto_top_up
+                error_reason: bad_request
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/user-consent/templates:
+    get:
+      tags:
+      - User Consent
+      summary: List consent templates
+      description: Return the current consent statement for every consent type, including its version and displayed text.
+      operationId: Get_all_consent_templates
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentTemplatesResponse'
+              example:
+                templates:
+                  auto_top_up:
+                    version: auto_top_up_v1
+                    blocks:
+                    - type: text
+                      text: By confirming, when your remaining balance falls below ${threshold_amount}, your account will be automatically credited by ${topup_amount}. You authorize automatic charges to your payment method.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/user-consent/{consent_type}:
+    patch:
+      tags:
+      - User Consent
+      summary: Update a consent
+      description: Grant or revoke your consent for a given consent type.
+      operationId: Update_a_consent_action_by_type
+      parameters:
+      - name: consent_type
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The category of consent to act on, such as `auto_top_up`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateConsentRequest'
+            example:
+              action: revoked
+              metadata:
+                threshold_amount: 50
+                topup_amount: 50
+                payment_method_ref: pm_1QexampleRef00
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentUpdateResponse'
+              example:
+                message: Consent already revoked
+                consent:
+                  id: 14
+                  user_id: 12345
+                  org_id: 6789
+                  consent_type: auto_top_up
+                  action: revoked
+                  ip_address: 203.0.113.10
+                  consent_method: web_checkbox
+                  created_at: '2026-04-23T15:24:42'
+                  updated_at: '2026-05-08T18:01:19'
+                changed: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/user-consent/templates/{consent_type}:
+    get:
+      tags:
+      - User Consent
+      summary: Retrieve a consent template
+      description: Return the current consent statement for a single consent type.
+      operationId: Get_consent_template_by_type
+      parameters:
+      - name: consent_type
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The category of consent to act on, such as `auto_top_up`.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentTemplate'
+              example:
+                version: auto_top_up_v1
+                blocks:
+                - type: text
+                  text: By confirming, when your remaining balance falls below ${threshold_amount}, your account will be automatically credited by ${topup_amount}. You authorize automatic charges to your payment method.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/user-consent-events/{consent_type}/events:
+    get:
+      tags:
+      - User Consent
+      summary: List consent history
+      description: Return the timeline of grant and revoke events for a consent type.
+      operationId: Get_consent_audit_events
+      parameters:
+      - name: consent_type
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The category of consent to act on, such as `auto_top_up`.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentEventsResponse'
+              example:
+                consent:
+                  id: 2
+                  user_id: 12345
+                  org_id: 6789
+                  consent_type: auto_top_up
+                  action: revoked
+                  ip_address: 203.0.113.10
+                  consent_method: web_checkbox
+                  created_at: '2026-04-20T13:09:42'
+                  updated_at: '2026-04-20T17:05:18'
+                events:
+                - id: 5
+                  consent_id: 2
+                  user_id: 12345
+                  action: revoked
+                  ip_address: 203.0.113.10
+                  consent_method: web_checkbox
+                  created_at: '2026-04-20T17:05:18'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    UserConsentEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier of the consent event.
+        consent_id:
+          type: integer
+          description: Identifier of the consent record this event belongs to.
+        user_id:
+          type: integer
+          description: Identifier of the user who triggered the event.
+        action:
+          type: string
+          description: The consent decision recorded by this event, either `granted` or `revoked`.
+        ip_address:
+          type: string
+          description: IP address from which the event was recorded.
+        consent_method:
+          type: string
+          description: How the consent decision was captured, such as `web_checkbox` or `api`.
+        created_at:
+          type: string
+          description: Timestamp when the event was recorded.
+    ConsentUpdateResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Human-readable message describing the result of the request.
+        consent:
+          $ref: '#/components/schemas/UserConsent'
+          description: The consent record that was updated.
+        changed:
+          type: boolean
+          description: Whether this request changed the consent state. `false` if the consent was already in the requested state.
+    UserConsentListItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier of the consent record.
+        user_id:
+          type: integer
+          description: Identifier of the user the consent belongs to.
+        org_id:
+          type: integer
+          description: Identifier of the organization the consent applies to.
+        consent_type:
+          type: string
+          description: The category of consent this record applies to, such as `auto_top_up`.
+        action:
+          type: string
+          description: The current consent decision, either `granted` or `revoked`.
+        ip_address:
+          type: string
+          description: IP address from which the consent decision was recorded.
+        consent_method:
+          type: string
+          description: How the consent decision was captured, such as `web_checkbox` or `api`.
+        created_at:
+          type: string
+          description: Timestamp when the consent record was created.
+        updated_at:
+          type: string
+          description: Timestamp when the consent record was last updated.
+        latest_consent_version:
+          type: string
+          description: The most recent template version available for this consent type.
+        is_version_current:
+          type: boolean
+          description: Whether this consent was recorded against the latest template version.
+    ConsentActionResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Human-readable message describing the result of the request.
+        consent:
+          $ref: '#/components/schemas/UserConsent'
+          description: The consent record that was created or updated.
+    ConsentEventsResponse:
+      type: object
+      properties:
+        consent:
+          $ref: '#/components/schemas/UserConsent'
+          description: The consent record the events belong to.
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserConsentEvent'
+          description: List of grant and revoke events for the consent record, most recent first.
+    UserConsent:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier of the consent record.
+        user_id:
+          type: integer
+          description: Identifier of the user the consent belongs to.
+        org_id:
+          type: integer
+          description: Identifier of the organization the consent applies to.
+        consent_type:
+          type: string
+          description: The category of consent this record applies to, such as `auto_top_up`.
+        action:
+          type: string
+          description: The current consent decision, either `granted` or `revoked`.
+        ip_address:
+          type: string
+          description: IP address from which the consent decision was recorded.
+        consent_method:
+          type: string
+          description: How the consent decision was captured, such as `web_checkbox` or `api`.
+        created_at:
+          type: string
+          description: Timestamp when the consent record was created.
+        updated_at:
+          type: string
+          description: Timestamp when the consent record was last updated.
+    UpdateConsentRequest:
+      required:
+      - action
+      type: object
+      properties:
+        action:
+          type: string
+          example: granted
+          enum:
+          - granted
+          - revoked
+          description: The consent decision to apply, either `granted` or `revoked`.
+        consent_method:
+          type: string
+          example: web_checkbox
+          default: web_checkbox
+          enum:
+          - web_checkbox
+          - api
+          - admin_override
+          description: How the consent decision is being captured, such as `api`.
+        consent_version:
+          type: string
+          description: Version identifier. Defaults to the current version for the consent type
+        metadata:
+          type: object
+          properties: {}
+          description: Consent-type-specific metadata. For `auto_top_up`, this is required and must include `threshold_amount`, `topup_amount`, and `payment_method_ref`.
+    ConsentTemplatesResponse:
+      type: object
+      properties:
+        templates:
+          type: object
+          description: Consent templates keyed by consent type, such as `auto_top_up`.
+          additionalProperties:
+            $ref: '#/components/schemas/ConsentTemplate'
+    UserConsentsResponse:
+      type: object
+      properties:
+        consents:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserConsentListItem'
+          description: List of consent records on the account.
+    ConsentTemplate:
+      type: object
+      properties:
+        version:
+          type: string
+          description: Template version identifier
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentBlock'
+          description: Ordered content blocks that make up the consent statement shown before agreement.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    RecordConsentRequest:
+      required:
+      - action
+      - consent_type
+      type: object
+      properties:
+        consent_type:
+          type: string
+          example: auto_top_up
+          enum:
+          - auto_top_up
+          description: The category of consent to record a decision for, such as `auto_top_up`.
+        action:
+          type: string
+          example: granted
+          enum:
+          - granted
+          - revoked
+          description: The consent decision to record, either `granted` or `revoked`.
+        consent_method:
+          type: string
+          example: web_checkbox
+          default: web_checkbox
+          enum:
+          - web_checkbox
+          - api
+          - admin_override
+          description: How the consent decision is being captured, such as `api`.
+        consent_version:
+          type: string
+          description: Version identifier. Defaults to the current version for the consent type
+        metadata:
+          type: object
+          properties: {}
+          description: Consent-type-specific metadata. For `auto_top_up`, this is required and must include `threshold_amount`, `topup_amount`, and `payment_method_ref`.
+    ConsentBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The kind of content block, such as `text` or `warning`.
+          example: text
+          enum:
+          - text
+          - warning
+          - info
+          - success
+          - failure
+        text:
+          type: string
+          description: Block text, may contain ${variable} placeholders
+    ConsentActionResponse_2:
+      type: object
+      properties:
+        message:
+          type: string
+        consent:
+          $ref: '#/components/schemas/UserConsent_2'
+    UserConsent_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        org_id:
+          type: integer
+        consent_type:
+          type: string
+        action:
+          type: string
+        ip_address:
+          type: string
+        consent_method:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+    UpdateConsentRequest_2:
+      required:
+      - action
+      type: object
+      properties:
+        action:
+          type: string
+          example: granted
+          enum:
+          - granted
+          - revoked
+        consent_method:
+          type: string
+          example: web_checkbox
+          default: web_checkbox
+          enum:
+          - web_checkbox
+          - api
+          - admin_override
+        consent_version:
+          type: string
+          description: Version identifier. Defaults to the current version for the consent type
+        metadata:
+          type: object
+          properties: {}
+          description: Consent-type-specific metadata
+    ConsentTemplatesResponse_2:
+      type: object
+      properties:
+        templates:
+          type: object
+          properties: {}
+          description: Templates keyed by consent type
+    UserConsentsResponse_2:
+      type: object
+      properties:
+        consents:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserConsent_2'
+    ConsentTemplate_2:
+      type: object
+      properties:
+        version:
+          type: string
+          description: Template version identifier
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentBlock_2'
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    RecordConsentRequest_2:
+      required:
+      - action
+      - consent_type
+      type: object
+      properties:
+        consent_type:
+          type: string
+          example: auto_top_up
+          enum:
+          - auto_top_up
+        action:
+          type: string
+          example: granted
+          enum:
+          - granted
+          - revoked
+        consent_method:
+          type: string
+          example: web_checkbox
+          default: web_checkbox
+          enum:
+          - web_checkbox
+          - api
+          - admin_override
+        consent_version:
+          type: string
+          description: Version identifier. Defaults to the current version for the consent type
+        metadata:
+          type: object
+          properties: {}
+          description: Consent-type-specific metadata
+    ConsentBlock_2:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Block display type
+          example: text
+          enum:
+          - text
+          - warning
+          - info
+          - success
+          - failure
+        text:
+          type: string
+          description: Block text, may contain ${variable} placeholders
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

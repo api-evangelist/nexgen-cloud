@@ -1,0 +1,953 @@
+openapi: 3.2.0
+info:
+  title: AI Studio Conversations API
+  version: '0.1'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
+
+
+    ## Base URL
+
+
+    All requests are sent to:
+
+
+    ```
+
+    https://console.hyperstack.cloud/ai/api/v1
+
+    ```
+
+
+    ## Authentication
+
+
+    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
+
+
+    ## Request and response format
+
+
+    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+servers:
+- url: https://console.hyperstack.cloud/ai/api/v1
+security:
+- apiKey: []
+tags:
+- name: Conversations
+  description: Conversation threads and message history for AI Studio chat sessions. These endpoints let you create conversations, send messages, retrieve message history, and delete conversation threads.
+paths:
+  /conversations:
+    get:
+      description: Returns all conversation threads for the authenticated user. Conversations are persistent chat sessions, created in the AI Studio Playground or via the Send message API, that retain message history, model selection, and parameter settings across sessions.
+      operationId: getConversations
+      parameters:
+      - in: query
+        name: page
+        required: false
+        description: Page number to retrieve. Defaults to 1.
+        schema:
+          type: integer
+          default: 1
+      - in: query
+        name: per_page
+        required: false
+        description: Number of conversations per page. Defaults to 20.
+        schema:
+          type: integer
+          default: 20
+      - in: query
+        name: search
+        required: false
+        description: Filter conversations by title (case-insensitive).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A paginated list of your conversations.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversations:
+                    type: array
+                    description: The conversations on this page, ordered by most recent activity.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique conversation ID.
+                        title:
+                          type: string
+                          description: Conversation title, generated automatically from the first message and editable via the rename endpoint.
+                        model_name:
+                          type: string
+                          description: The model used in the conversation.
+                        base_model_id:
+                          type: integer
+                          description: ID of the base model used in the conversation.
+                        message_count:
+                          type: integer
+                          description: Number of messages in the conversation.
+                        last_message_preview:
+                          type: string
+                          description: A short preview of the most recent message.
+                        settings:
+                          type: object
+                          description: Inference settings applied to the conversation, such as temperature or top_p.
+                        system_prompt_id:
+                          type: integer
+                          nullable: true
+                          description: ID of the saved system prompt applied to the conversation, or null if none.
+                        created_at:
+                          type: string
+                          description: When the conversation was created.
+                        modified_at:
+                          type: string
+                          nullable: true
+                          description: When the conversation was last updated, or null if it has not changed since creation.
+                        is_deleted:
+                          type: boolean
+                          description: Whether the conversation has been soft-deleted.
+                        deleted_at:
+                          type: string
+                          nullable: true
+                          description: When the conversation was deleted, or null if it has not been deleted.
+                        user_id:
+                          type: integer
+                          description: ID of the user who owns the conversation.
+                        organization_id:
+                          type: integer
+                          description: ID of the organization that owns the conversation.
+                        lorax_model_id:
+                          type: integer
+                          nullable: true
+                          description: ID of the LoRA-served fine-tuned model used for the conversation, or null if not applicable.
+                  page:
+                    type: integer
+                    description: The current page number.
+                  pages:
+                    type: integer
+                    description: Total number of pages.
+                  per_page:
+                    type: integer
+                    description: Number of conversations per page.
+                  total:
+                    type: integer
+                    description: Total number of conversations.
+                example:
+                  conversations:
+                  - id: 1001
+                    title: Describe the attached image
+                    model_name: Qwen/Qwen3-VL-8B-Instruct
+                    base_model_id: 1001
+                    message_count: 1
+                    last_message_preview: This image is a stylized, pixel-art depiction of a sunset over mountains.
+                    settings: {}
+                    system_prompt_id: null
+                    created_at: Wed, 15 Jan 2025 10:30:00 GMT
+                    modified_at: Wed, 15 Jan 2025 10:31:00 GMT
+                    is_deleted: false
+                    deleted_at: null
+                    user_id: 1001
+                    organization_id: 1001
+                    lorax_model_id: null
+                  page: 1
+                  pages: 1
+                  per_page: 20
+                  total: 1
+              example:
+                conversations:
+                - id: 1001
+                  title: Describe the attached image
+                  model_name: Qwen/Qwen3-VL-8B-Instruct
+                  base_model_id: 1001
+                  message_count: 1
+                  last_message_preview: This image is a stylized, pixel-art depiction of a sunset over mountains.
+                  settings: {}
+                  system_prompt_id: null
+                  created_at: Wed, 15 Jan 2025 10:30:00 GMT
+                  modified_at: Wed, 15 Jan 2025 10:31:00 GMT
+                  is_deleted: false
+                  deleted_at: null
+                  user_id: 1001
+                  organization_id: 1001
+                  lorax_model_id: null
+                page: 1
+                pages: 1
+                per_page: 20
+                total: 1
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+      summary: List conversations
+      tags:
+      - Conversations
+  /conversations/send_message:
+    post:
+      description: Sends a message to a conversation thread and returns the model's response. If `conversation_id` is omitted or null, a new conversation thread is created. Supports both streaming and non-streaming response modes via the `stream` flag. An optional `system_prompt_id` attaches a saved system prompt template to the request.
+      operationId: sendMessage
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversationSendMessageRequestSchema'
+              example:
+                message: What is in this image?
+                model: Qwen/Qwen3-VL-8B-Instruct
+                image_attachments:
+                - a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                stream: false
+            example:
+              message: What is in this image?
+              model: Qwen/Qwen3-VL-8B-Instruct
+              image_attachments:
+              - a1b2c3d4-e5f6-7890-abcd-ef1234567890
+              stream: false
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                choices:
+                - finish_reason: stop
+                  index: 0
+                  message:
+                    content: 'This image is a stylized, pixel-art depiction of a sunset or sunrise over mountains.
+
+
+                      Here''s a breakdown of what''s in the image:
+
+
+                      - **The Sun:** A large, pale yellow/cream-colored circle sits just above the mountain ridge, appearing to be setting or rising.
+
+                      - **The Mountains:** Two dark purple, jagged peaks form the foreground. The silhouette suggests a simple, stylized mountain range.
+
+                      - **The Sky:** The background sky features a gradient of colors, transitioning from deep purple at the top to a warm orange/pink near the horizon where the sun is located.
+
+
+                      The overall aesthetic is minimalist and retro, reminiscent of early video game graphics or digital art with a pixelated style. It evokes a sense of calm and natural beauty through its simple composition.'
+                    role: assistant
+                conversation:
+                  id: 1001
+                  title: Image content unknown.
+                created: 1736932200
+                id: a1b2c3d4e5f6789012345678901234ab
+                model: qwen/qwen3-vl-8b-instruct
+                object: chat.completion
+                system_fingerprint: ''
+                usage:
+                  completion_tokens: 159
+                  completion_tokens_details:
+                    accepted_prediction_tokens: 0
+                    audio_tokens: 0
+                    image_tokens: 0
+                    reasoning_tokens: 0
+                    rejected_prediction_tokens: 0
+                    text_tokens: 159
+                    video_tokens: 0
+                  prompt_tokens: 93
+                  prompt_tokens_details:
+                    audio_tokens: 0
+                    cache_creation_input_tokens: 0
+                    cache_read_input_tokens: 0
+                    cached_tokens: 0
+                    image_tokens: 79
+                    text_tokens: 14
+                    video_tokens: 0
+                  total_tokens: 252
+              schema:
+                type: object
+                properties:
+                  choices:
+                    type: array
+                    description: Array of completion choices (typically one).
+                    items:
+                      type: object
+                      properties:
+                        finish_reason:
+                          type: string
+                          description: Reason the model stopped generating tokens (e.g. `stop`, `length`).
+                        index:
+                          type: integer
+                          description: Index of this choice in the array.
+                        message:
+                          type: object
+                          description: The generated assistant message.
+                          properties:
+                            role:
+                              type: string
+                              description: Always `"assistant"`.
+                            content:
+                              type: string
+                              description: The text content of the generated response.
+                  conversation:
+                    type: object
+                    description: The conversation this message belongs to.
+                    properties:
+                      id:
+                        type: integer
+                        description: Unique conversation ID.
+                      title:
+                        type: string
+                        description: Conversation title, generated automatically from the first message and editable via the rename endpoint.
+                  created:
+                    type: integer
+                    description: Unix timestamp of when the completion was created.
+                  model:
+                    type: string
+                    description: Model used for this completion.
+                  usage:
+                    type: object
+                    description: Token usage statistics for this completion.
+                    properties:
+                      prompt_tokens:
+                        type: integer
+                        description: Tokens in the prompt.
+                      completion_tokens:
+                        type: integer
+                        description: Tokens in the generated response.
+                      total_tokens:
+                        type: integer
+                        description: Total tokens consumed.
+                      completion_tokens_details:
+                        type: object
+                        description: Breakdown of the completion (output) token count by category.
+                        properties:
+                          accepted_prediction_tokens:
+                            type: integer
+                            description: Tokens from accepted predictions.
+                          audio_tokens:
+                            type: integer
+                            description: Audio tokens in the completion.
+                          image_tokens:
+                            type: integer
+                            description: Image tokens in the completion.
+                          reasoning_tokens:
+                            type: integer
+                            description: Tokens used for reasoning.
+                          rejected_prediction_tokens:
+                            type: integer
+                            description: Tokens from rejected predictions.
+                          text_tokens:
+                            type: integer
+                            description: Text tokens in the completion.
+                          video_tokens:
+                            type: integer
+                            description: Video tokens in the completion.
+                      prompt_tokens_details:
+                        type: object
+                        description: Breakdown of the prompt (input) token count by category.
+                        properties:
+                          audio_tokens:
+                            type: integer
+                            description: Audio tokens in the prompt.
+                          cache_creation_input_tokens:
+                            type: integer
+                            description: Input tokens used to create a cache entry.
+                          cache_read_input_tokens:
+                            type: integer
+                            description: Input tokens read from the cache.
+                          cached_tokens:
+                            type: integer
+                            description: Cached tokens in the prompt.
+                          image_tokens:
+                            type: integer
+                            description: Image tokens in the prompt.
+                          text_tokens:
+                            type: integer
+                            description: Text tokens in the prompt.
+                          video_tokens:
+                            type: integer
+                            description: Video tokens in the prompt.
+                  id:
+                    type: string
+                    description: Unique identifier for the chat completion.
+                  object:
+                    type: string
+                    description: The object type. Always `chat.completion`.
+                  system_fingerprint:
+                    type: string
+                    description: Backend configuration fingerprint for the model serving the request. May be an empty string.
+                example:
+                  choices:
+                  - finish_reason: stop
+                    index: 0
+                    message:
+                      content: 'This image is a stylized, pixel-art depiction of a sunset or sunrise over mountains.
+
+
+                        Here''s a breakdown of what''s in the image:
+
+
+                        - **The Sun:** A large, pale yellow/cream-colored circle sits just above the mountain ridge, appearing to be setting or rising.
+
+                        - **The Mountains:** Two dark purple, jagged peaks form the foreground. The silhouette suggests a simple, stylized mountain range.
+
+                        - **The Sky:** The background sky features a gradient of colors, transitioning from deep purple at the top to a warm orange/pink near the horizon where the sun is located.
+
+
+                        The overall aesthetic is minimalist and retro, reminiscent of early video game graphics or digital art with a pixelated style. It evokes a sense of calm and natural beauty through its simple composition.'
+                      role: assistant
+                  conversation:
+                    id: 1001
+                    title: Image content unknown.
+                  created: 1736932200
+                  id: a1b2c3d4e5f6789012345678901234ab
+                  model: qwen/qwen3-vl-8b-instruct
+                  object: chat.completion
+                  system_fingerprint: ''
+                  usage:
+                    completion_tokens: 159
+                    completion_tokens_details:
+                      accepted_prediction_tokens: 0
+                      audio_tokens: 0
+                      image_tokens: 0
+                      reasoning_tokens: 0
+                      rejected_prediction_tokens: 0
+                      text_tokens: 159
+                      video_tokens: 0
+                    prompt_tokens: 93
+                    prompt_tokens_details:
+                      audio_tokens: 0
+                      cache_creation_input_tokens: 0
+                      cache_read_input_tokens: 0
+                      cached_tokens: 0
+                      image_tokens: 79
+                      text_tokens: 14
+                      video_tokens: 0
+                    total_tokens: 252
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+      summary: Send message
+      tags:
+      - Conversations
+  /conversations/{conversation_id}:
+    delete:
+      description: Permanently deletes a conversation thread and all of its messages. This action is irreversible and cannot be undone.
+      operationId: deleteConversation
+      parameters:
+      - in: path
+        name: conversation_id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        description: Unique identifier of the conversation to delete. Use the `id` from [List conversations](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-conversations).
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                message: Conversation deleted successfully
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation that the conversation was deleted.
+                example:
+                  message: Conversation deleted successfully
+          description: Conversation deleted successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+      summary: Delete conversation
+      tags:
+      - Conversations
+    patch:
+      tags:
+      - Conversations
+      operationId: renameConversation
+      summary: Rename conversation
+      description: Rename a conversation that you own. Provide the new title in the request body. Returns the updated conversation.
+      parameters:
+      - in: path
+        name: conversation_id
+        required: true
+        description: Unique identifier of the conversation to rename. Use the `id` from [List conversations](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-conversations).
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversationRenameSchema'
+              example:
+                title: Describe the attached image
+            example:
+              title: Describe the attached image
+      responses:
+        '200':
+          description: The conversation was renamed. Returns the updated conversation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversation:
+                    type: object
+                    description: The updated conversation.
+                    properties:
+                      id:
+                        type: integer
+                        description: Unique conversation ID.
+                      title:
+                        type: string
+                        description: Conversation title, generated automatically from the first message and editable via the rename endpoint.
+                      base_model_id:
+                        type: integer
+                        description: ID of the base model used in the conversation.
+                      user_id:
+                        type: integer
+                        description: ID of the user who owns the conversation.
+                      organization_id:
+                        type: integer
+                        description: ID of the organization that owns the conversation.
+                      settings:
+                        type: object
+                        description: Inference settings applied to the conversation, such as temperature or top_p.
+                      system_prompt_id:
+                        type: integer
+                        nullable: true
+                        description: ID of the saved system prompt applied to the conversation, or null if none.
+                      created_at:
+                        type: string
+                        description: When the conversation was created.
+                      modified_at:
+                        type: string
+                        nullable: true
+                        description: When the conversation was last updated, or null if it has not changed since creation.
+                      is_deleted:
+                        type: boolean
+                        description: Whether the conversation has been soft-deleted.
+                      deleted_at:
+                        type: string
+                        nullable: true
+                        description: When the conversation was deleted, or null if it has not been deleted.
+                      lorax_model_id:
+                        type: integer
+                        nullable: true
+                        description: ID of the LoRA-served fine-tuned model used for the conversation, or null if not applicable.
+                example:
+                  conversation:
+                    id: 1001
+                    title: Describe the attached image
+                    base_model_id: 1001
+                    user_id: 1001
+                    organization_id: 1001
+                    settings: {}
+                    system_prompt_id: null
+                    created_at: Wed, 15 Jan 2025 10:30:00 GMT
+                    modified_at: Wed, 15 Jan 2025 10:31:00 GMT
+                    is_deleted: false
+                    deleted_at: null
+                    lorax_model_id: null
+              example:
+                conversation:
+                  id: 1001
+                  title: Describe the attached image
+                  base_model_id: 1001
+                  user_id: 1001
+                  organization_id: 1001
+                  settings: {}
+                  system_prompt_id: null
+                  created_at: Wed, 15 Jan 2025 10:30:00 GMT
+                  modified_at: Wed, 15 Jan 2025 10:31:00 GMT
+                  is_deleted: false
+                  deleted_at: null
+                  lorax_model_id: null
+        '400':
+          description: The request was invalid, for example an empty title.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '404':
+          description: The conversation was not found or is not owned by you.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+  /conversations/{conversation_id}/messages:
+    get:
+      description: Returns the complete message history for the specified conversation thread, ordered chronologically. Each message includes its role, content, and metadata.
+      operationId: getConversationMessages
+      parameters:
+      - in: path
+        name: conversation_id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        description: Unique identifier of the conversation whose messages to retrieve. Use the `id` from [List conversations](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-conversations).
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                messages:
+                - content: What is in this image?
+                  image_attachment:
+                    file_reference: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                    url: https://your-bucket.s3.amazonaws.com/<file_reference>?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Expires=3600&X-Amz-Signature=...
+                  role: user
+                usage:
+                  completion_tokens: 159
+                  completion_tokens_details:
+                    accepted_prediction_tokens: 0
+                    audio_tokens: 0
+                    image_tokens: 0
+                    reasoning_tokens: 0
+                    rejected_prediction_tokens: 0
+                    text_tokens: 159
+                    video_tokens: 0
+                  prompt_tokens: 93
+                  prompt_tokens_details:
+                    audio_tokens: 0
+                    cache_creation_input_tokens: 0
+                    cache_read_input_tokens: 0
+                    cached_tokens: 0
+                    image_tokens: 79
+                    text_tokens: 14
+                    video_tokens: 0
+                  total_tokens: 252
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    description: Ordered message history for this conversation.
+                    items:
+                      type: object
+                      properties:
+                        content:
+                          type: string
+                          description: Text content of the message.
+                        role:
+                          type: string
+                          description: 'Message author role: `user` or `assistant`.'
+                        image_attachment:
+                          type: object
+                          nullable: true
+                          description: Present on a `user` message that was sent with an image, absent otherwise.
+                          properties:
+                            file_reference:
+                              type: string
+                              description: Reference for the attached image, as returned by [Request an image upload URL](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/upload-image).
+                            url:
+                              type: string
+                              description: A short-lived URL for downloading the attached image.
+                  usage:
+                    type: object
+                    description: Aggregate token usage across the conversation.
+                    properties:
+                      prompt_tokens:
+                        type: integer
+                      completion_tokens:
+                        type: integer
+                      total_tokens:
+                        type: integer
+                      completion_tokens_details:
+                        type: object
+                        description: Breakdown of the completion (output) token count by category.
+                        properties:
+                          accepted_prediction_tokens:
+                            type: integer
+                            description: Tokens from accepted predictions.
+                          audio_tokens:
+                            type: integer
+                            description: Audio tokens in the completion.
+                          image_tokens:
+                            type: integer
+                            description: Image tokens in the completion.
+                          reasoning_tokens:
+                            type: integer
+                            description: Tokens used for reasoning.
+                          rejected_prediction_tokens:
+                            type: integer
+                            description: Tokens from rejected predictions.
+                          text_tokens:
+                            type: integer
+                            description: Text tokens in the completion.
+                          video_tokens:
+                            type: integer
+                            description: Video tokens in the completion.
+                      prompt_tokens_details:
+                        type: object
+                        description: Breakdown of the prompt (input) token count by category.
+                        properties:
+                          audio_tokens:
+                            type: integer
+                            description: Audio tokens in the prompt.
+                          cache_creation_input_tokens:
+                            type: integer
+                            description: Input tokens used to create a cache entry.
+                          cache_read_input_tokens:
+                            type: integer
+                            description: Input tokens read from the cache.
+                          cached_tokens:
+                            type: integer
+                            description: Cached tokens in the prompt.
+                          image_tokens:
+                            type: integer
+                            description: Image tokens in the prompt.
+                          text_tokens:
+                            type: integer
+                            description: Text tokens in the prompt.
+                          video_tokens:
+                            type: integer
+                            description: Video tokens in the prompt.
+                example:
+                  messages:
+                  - content: What is in this image?
+                    image_attachment:
+                      file_reference: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                      url: https://your-bucket.s3.amazonaws.com/<file_reference>?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Expires=3600&X-Amz-Signature=...
+                    role: user
+                  usage:
+                    completion_tokens: 159
+                    completion_tokens_details:
+                      accepted_prediction_tokens: 0
+                      audio_tokens: 0
+                      image_tokens: 0
+                      reasoning_tokens: 0
+                      rejected_prediction_tokens: 0
+                      text_tokens: 159
+                      video_tokens: 0
+                    prompt_tokens: 93
+                    prompt_tokens_details:
+                      audio_tokens: 0
+                      cache_creation_input_tokens: 0
+                      cache_read_input_tokens: 0
+                      cached_tokens: 0
+                      image_tokens: 79
+                      text_tokens: 14
+                      video_tokens: 0
+                    total_tokens: 252
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+      summary: List conversation messages
+      tags:
+      - Conversations
+  /conversations/upload_image:
+    get:
+      tags:
+      - Conversations
+      operationId: uploadImage
+      summary: Request an image upload URL
+      description: Request a presigned URL for uploading an image attachment. Upload the image bytes to the returned `signed_url` with an HTTP PUT, then include the returned `file_reference` in a message's `image_attachments`.
+      parameters:
+      - in: query
+        name: content_type
+        required: true
+        description: 'The MIME type of the image you will upload. Supported types: `image/jpeg`, `image/png`, `image/webp`, `image/gif`.'
+        schema:
+          type: string
+          enum:
+          - image/jpeg
+          - image/png
+          - image/webp
+          - image/gif
+      responses:
+        '201':
+          description: Presigned upload details were created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationImageUploadResponseSchema'
+                example:
+                  file_reference: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                  signed_url: https://your-bucket.s3.amazonaws.com/<file_reference>?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Expires=3600&X-Amz-Signature=...
+              example:
+                file_reference: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                signed_url: https://your-bucket.s3.amazonaws.com/<file_reference>?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Expires=3600&X-Amz-Signature=...
+        '400':
+          description: The request was invalid, for example a missing or unsupported content type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+components:
+  schemas:
+    ConversationSendMessageRequestSchema:
+      properties:
+        message:
+          type: string
+          example: What can you help me with today?
+          description: The user's message text to send to the model.
+        model:
+          type: string
+          example: Llama-3.3-70B-Instruct
+          description: Model to use for this message. Use the `model_name` from [List base models](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-base-models) for base models, or the `model_name` from [List owned models](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-owned-models) for a deployed fine-tuned model.
+        conversation_id:
+          type: integer
+          default: null
+          example: 1001
+          description: ID of an existing conversation thread to continue. If null or omitted, a new conversation thread is created and its ID is returned in the response.
+        settings:
+          title: Settings
+          type: object
+          description: Additional inference settings to override for this message (e.g. temperature, top_p).
+        stream:
+          default: false
+          type: boolean
+          example: false
+          description: When `true`, returns the response as a stream of server-sent events.
+        stream_options:
+          title: Stream Options
+          type: object
+          description: Options that control streaming behaviour, such as whether to include usage statistics in the final stream chunk.
+        system_prompt_id:
+          type: integer
+          default: null
+          description: ID of a saved system prompt template to apply to this message. Create and manage system prompts via [Create system prompt](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/create-system-prompt).
+        image_attachments:
+          items:
+            type: string
+          maxItems: 1
+          type: array
+          default: null
+          nullable: true
+          description: Optional image attachment for the message. Use the `file_reference` from [Request an image upload URL](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/upload-image). A maximum of one image is supported per message.
+        knowledge_base_id:
+          type:
+          - integer
+          - 'null'
+          default: null
+          description: Optional. ID of a knowledge base to ground the response in. When set, relevant passages are retrieved and passed to the model, and the response includes a `citations` array naming the sources used.
+      required:
+      - model
+      - message
+      title: ConversationSendMessageRequestSchema
+      type: object
+      example:
+        model: Llama-3.3-70B-Instruct
+        message: What did I just say?
+        conversation_id: 1001
+        stream: false
+    ConversationImageUploadResponseSchema:
+      properties:
+        file_reference:
+          type: string
+          description: A reference to the uploaded image. Include this in a message's `image_attachments` when calling [Send message](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/send-message).
+        signed_url:
+          type: string
+          description: A short-lived URL. Upload the image bytes to it with an HTTP PUT before sending the message.
+      required:
+      - signed_url
+      - file_reference
+      type: object
+      description: Presigned upload details for an image attachment.
+    ConversationRenameSchema:
+      properties:
+        title:
+          maxLength: 255
+          type: string
+          description: The new conversation title. Maximum 255 characters.
+      required:
+      - title
+      type: object
+      description: Request body for renaming a conversation.
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'

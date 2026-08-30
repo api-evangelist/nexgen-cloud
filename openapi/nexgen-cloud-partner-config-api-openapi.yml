@@ -1,0 +1,170 @@
+openapi: 3.2.0
+info:
+  title: Infrahub Partner Config API
+  version: '1.0'
+  description: Partner config fetch endpoint
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: partner-config
+  description: Partner config fetch endpoint
+paths:
+  /auth/partner-config:
+    get:
+      tags:
+      - partner-config
+      summary: Get partner config
+      description: Fetch the customised customer configuration for Hyperstack.
+      operationId: Get_partner_config
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerConfig'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+  /auth/partner-config/docs:
+    get:
+      tags:
+      - partner-config
+      description: Fetch the partner config for a given domain.
+      operationId: Get_partner_config_by_domain
+      parameters:
+      - name: domain
+        in: query
+        description: The domain to look up the partner config for.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerConfig'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+components:
+  schemas:
+    URIs:
+      type: object
+      properties:
+        auth:
+          type: string
+        doc:
+          type: string
+        api_doc:
+          type: string
+        console:
+          type: string
+        api_uri:
+          type: string
+        landing_page:
+          type: string
+        contact_us:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    PartnerConfig:
+      required:
+      - name
+      - user_type
+      type: object
+      properties:
+        name:
+          type: string
+        uris:
+          $ref: '#/components/schemas/URIs'
+        user_type:
+          type: string
+        support_email:
+          type: string
+        logos:
+          $ref: '#/components/schemas/Logos'
+        background_image_url:
+          type: string
+        colors:
+          $ref: '#/components/schemas/Colors'
+    SecondaryColor:
+      type: object
+      properties:
+        light:
+          type: string
+        dark:
+          type: string
+    PrimaryColor:
+      type: object
+      properties:
+        light:
+          type: string
+        dark:
+          type: string
+    Logos:
+      type: object
+      properties:
+        light:
+          type: string
+        dark:
+          type: string
+        email:
+          type: string
+        favicon:
+          type: string
+    Colors:
+      type: object
+      properties:
+        primary:
+          $ref: '#/components/schemas/PrimaryColor'
+        secondary:
+          $ref: '#/components/schemas/SecondaryColor'
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

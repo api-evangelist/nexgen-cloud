@@ -1,0 +1,81 @@
+openapi: 3.2.0
+info:
+  title: Infrahub Security Rules API
+  version: '1.0'
+  description: Security Rule APIs
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: security-rules
+  description: Security Rule APIs
+paths:
+  /core/sg-rules-protocols:
+    get:
+      tags:
+      - security-rules
+      summary: List firewall rule protocols
+      description: Returns a list of all available protocols that can be used in the creation of firewall rules for your virtual machines.
+      operationId: List_firewall_rule_protocols
+      responses:
+        '200':
+          description: Protocols list successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Security_Rules_Protocol_Fields'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+components:
+  schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Security_Rules_Protocol_Fields:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        protocols:
+          type: array
+          items:
+            type: string
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

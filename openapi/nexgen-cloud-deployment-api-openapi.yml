@@ -1,0 +1,441 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Deployment API
+  version: '1.0'
+  description: 'Operations tagged Deployment across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Deployment
+  description: Deployment endpoints manage scripts that run during virtual machine boot to install dependencies, configure services, or prepare GPU workloads. Attach a deployment script to a VM at launch; the script runs once on first boot and is logged for review.
+paths:
+  /core/marketplace/deployments:
+    get:
+      tags:
+      - Deployment
+      summary: List Deployments
+      operationId: List_Deployments
+      responses:
+        '200':
+          description: Getting deployments success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deployments'
+              example:
+                status: true
+                message: Getting deployments success
+                deployments: []
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting deployments success
+                    deployments: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Lists every marketplace deployment in your environment. Each entry includes the source template, deployment state, and the IDs of any VMs the deployment has provisioned.
+    post:
+      tags:
+      - Deployment
+      summary: Start Deployment
+      operationId: Start_Deployment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Start_Deployment_Payload'
+        required: true
+      responses:
+        '200':
+          description: Deployment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Start_Deployment'
+        '400':
+          description: 'Bad Request
+
+
+            Common cause: `error_reason: bad_request`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    status: false
+                    message: Bad request
+                    error_reason: bad_request
+              example:
+                status: false
+                message: Bad request
+                error_reason: bad_request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      description: Starts a new deployment from a marketplace template. The request body specifies the template, the target environment, and any template parameter overrides.
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/marketplace/deployments/{id}:
+    get:
+      tags:
+      - Deployment
+      summary: Details of deployment by ID
+      operationId: Get_deployment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the deployment.
+      responses:
+        '200':
+          description: Getting deployment detail success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Start_Deployment'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+      description: Returns the deployment's metadata, current lifecycle state, and the IDs of any VMs it has provisioned.
+    delete:
+      tags:
+      - Deployment
+      summary: Delete Deployment
+      operationId: Delete_Deployment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the deployment.
+      responses:
+        '202':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+      description: Deletes the deployment record. VMs created by the deployment are not removed automatically, terminate them via the Virtual Machines API.
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    Start_Deployment:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Bad request
+        deployment:
+          $ref: '#/components/schemas/Deployment_Fields_for_start_deployments'
+          description: Details of the deployment that was started.
+    Deployment_Fields_for_start_deployments:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        name:
+          type: string
+          description: Name of the deployment.
+        description:
+          type: string
+          description: Human-readable description of the resource.
+        template:
+          type: string
+          description: Marketplace template used to deploy the resource.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+        variables:
+          type: string
+          description: Key-value variables applied to the deployment template.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+    Start_Deployment_Payload:
+      required:
+      - description
+      - name
+      - template_id
+      type: object
+      properties:
+        description:
+          type: string
+          description: Human-readable description of the resource.
+        name:
+          type: string
+          description: Name of the deployment.
+        template_id:
+          type: integer
+          description: Identifier of the template to deploy from.
+        variables:
+          type: object
+          additionalProperties:
+            type: string
+          description: Key-value variables substituted into the template at deployment time.
+    Deployments:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting deployments success
+        deployments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deployment_Fields'
+          description: List of deployments belonging to the user.
+    Deployment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        name:
+          type: string
+          description: Name of the deployment.
+        description:
+          type: string
+          description: Human-readable description of the resource.
+        template:
+          type: string
+          description: Marketplace template used to deploy the resource.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Start_Deployment_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        deployment:
+          $ref: '#/components/schemas/Deployment_Fields_for_start_deployments_2'
+    Deployment_Fields_for_start_deployments_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        status:
+          type: string
+        variables:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Start_Deployment_Payload_2:
+      required:
+      - description
+      - name
+      - template_id
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        template_id:
+          type: integer
+        variables:
+          type: object
+          additionalProperties:
+            type: string
+    Deployments_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        deployments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deployment_Fields_2'
+    Deployment_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

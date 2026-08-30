@@ -1,0 +1,690 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Image API
+  version: '1.0'
+  description: 'Operations tagged Image across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Image
+  description: An image is the operating system disk a virtual machine boots from. Images include Ubuntu, Rocky Linux, and other distributions, with optional pre-installed CUDA or AI/ML frameworks. Images are region-scoped, list images per region to find what's available before deploying.
+paths:
+  /core/image/name-availability/{name}:
+    get:
+      tags:
+      - Image
+      summary: Fetch name availability for Images
+      description: Check if an Image name is available.
+      operationId: Fetch_Image_name_availability
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the image.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NameAvailableModel'
+              example:
+                name: example-availability-check
+                available: true
+                message: This name is available
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    name: example-availability-check
+                    available: true
+                    message: This name is available
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/images:
+    get:
+      tags:
+      - Image
+      summary: List Images
+      description: Retrieves a grouped list of all available operating system (OS) images across regions and types. The results include system-defined images as well as [**custom images**](https://docs.hyperstack.cloud/docs/virtual-machines/custom-images) created from snapshots. Image metadata such as type, version, region, and storage size is returned. Optional parameters allow you to filter by region, paginate results, or search by image name or ID. For an overview of available images in Hyperstack, see [**Images**](https://docs.hyperstack.cloud/docs/virtual-machines/images).
+      operationId: List_Images
+      parameters:
+      - name: region
+        in: query
+        description: Filter results to the specified region.
+        schema:
+          type: string
+      - name: include_public
+        in: query
+        description: When `true`, public images are included in the response alongside organization images.
+        schema:
+          type: boolean
+          default: true
+      - name: search
+        in: query
+        description: Search query to filter images by name
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of Images per page
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Retrieval of images list successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Images'
+              example:
+                status: true
+                message: Getting images successful
+                images:
+                - region_name: US-1
+                  green_status: NOT_GREEN
+                  type: Ubuntu
+                  logo: https://api.nexgencloud.com:8080/hyperstack-os-logos/ubuntu.svg
+                  images:
+                  - id: 8429
+                    name: Ubuntu Server 22.04 LTS R535 CUDA 12.2 with Docker
+                    region_name: US-1
+                    type: Ubuntu
+                    version: Server 22.04 LTS R535 CUDA 12.2 with Docker
+                    size: 107374182400
+                    display_size: 100 GiB
+                    description: ''
+                    snapshot: null
+                    is_public: true
+                    created_at: '2026-05-07T09:21:55Z'
+                    labels: []
+                    flavor_restrictions:
+                      has_flavor_restrictions: false
+                      restriction_type: null
+                      compatible_flavors: []
+                  - id: 4501
+                    name: Ubuntu Server 24.04 LTS R570 CUDA 12.8 with Docker
+                    region_name: US-1
+                    type: Ubuntu
+                    version: Server 24.04 LTS R570 CUDA 12.8 with Docker
+                    size: 107374182400
+                    display_size: 100 GiB
+                    description: ''
+                    snapshot: null
+                    is_public: true
+                    created_at: '2026-05-07T11:47:30Z'
+                    labels: []
+                    flavor_restrictions:
+                      has_flavor_restrictions: false
+                      restriction_type: null
+                      compatible_flavors: []
+                  - id: 6190
+                    name: Ubuntu Server 24.04 LTS R570 CUDA 12.8
+                    region_name: US-1
+                    type: Ubuntu
+                    version: Server 24.04 LTS R570 CUDA 12.8
+                    size: 107374182400
+                    display_size: 100 GiB
+                    description: ''
+                    snapshot: null
+                    is_public: true
+                    created_at: '2026-05-06T14:32:11Z'
+                    labels: []
+                    flavor_restrictions:
+                      has_flavor_restrictions: false
+                      restriction_type: null
+                      compatible_flavors: []
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting images successful
+                    images:
+                    - region_name: US-1
+                      green_status: NOT_GREEN
+                      type: Ubuntu
+                      logo: https://api.nexgencloud.com:8080/hyperstack-os-logos/ubuntu.svg
+                      images:
+                      - id: 8429
+                        name: Ubuntu Server 22.04 LTS R535 CUDA 12.2 with Docker
+                        region_name: US-1
+                        type: Ubuntu
+                        version: Server 22.04 LTS R535 CUDA 12.2 with Docker
+                        size: 107374182400
+                        display_size: 100 GiB
+                        description: ''
+                        snapshot: null
+                        is_public: true
+                        created_at: '2026-05-07T09:21:55Z'
+                        labels: []
+                        flavor_restrictions:
+                          has_flavor_restrictions: false
+                          restriction_type: null
+                          compatible_flavors: []
+                      - id: 4501
+                        name: Ubuntu Server 24.04 LTS R570 CUDA 12.8 with Docker
+                        region_name: US-1
+                        type: Ubuntu
+                        version: Server 24.04 LTS R570 CUDA 12.8 with Docker
+                        size: 107374182400
+                        display_size: 100 GiB
+                        description: ''
+                        snapshot: null
+                        is_public: true
+                        created_at: '2026-05-07T11:47:30Z'
+                        labels: []
+                        flavor_restrictions:
+                          has_flavor_restrictions: false
+                          restriction_type: null
+                          compatible_flavors: []
+                      - id: 6190
+                        name: Ubuntu Server 24.04 LTS R570 CUDA 12.8
+                        region_name: US-1
+                        type: Ubuntu
+                        version: Server 24.04 LTS R570 CUDA 12.8
+                        size: 107374182400
+                        display_size: 100 GiB
+                        description: ''
+                        snapshot: null
+                        is_public: true
+                        created_at: '2026-05-06T14:32:11Z'
+                        labels: []
+                        flavor_restrictions:
+                          has_flavor_restrictions: false
+                          restriction_type: null
+                          compatible_flavors: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/images/{id}:
+    get:
+      tags:
+      - Image
+      summary: Get private image details
+      description: Retrieves detailed information about a specific image by its unique ID. To obtain the image ID, use the [**List Images API**](https://docs.hyperstack.cloud/docs/api-reference/list-images).
+      operationId: Get_Image
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the image.
+      - name: include_related_vms
+        in: query
+        schema:
+          type: boolean
+        description: When `true`, include the list of virtual machines currently using this image in the response.
+      responses:
+        '200':
+          description: Image details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: 'Not Found
+
+
+            Common cause: `error_reason: not_found`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Not Found
+                  value:
+                    status: false
+                    message: Image with ID 300 not found.
+                    error_reason: not_found
+              example:
+                status: false
+                message: Image with ID 300 not found.
+                error_reason: not_found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    delete:
+      tags:
+      - Image
+      summary: Delete an image
+      description: Permanently deletes a custom image. Supply the image ID in the path to delete the specified image.
+      operationId: Delete_image
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the image.
+      responses:
+        '200':
+          description: Image successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Resource name to check for availability.
+          example: example-availability-check
+        available:
+          type: boolean
+          description: Whether stock is currently available.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Name must not exceed 20 characters
+    Images:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting images successful
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image_Get_Response'
+          description: OS images available for VM deployment.
+    CompatibleFlavor:
+      type: object
+      properties:
+        flavor_id:
+          type: integer
+          description: Identifier of the flavor, see [List flavors](https://docs.hyperstack.cloud/docs/api-reference/list-flavors).
+        flavor_name:
+          type: string
+          description: Name of the flavor (machine type), see [List flavors](https://docs.hyperstack.cloud/docs/api-reference/list-flavors).
+        link_type:
+          type: string
+          description: Either 'hard' or 'soft'.
+        constraints:
+          type: object
+          properties: {}
+          description: JSON constraints object.
+        reason:
+          type: string
+          description: Human-readable reason the operation was rejected.
+    Image_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 1402
+        name:
+          type: string
+          description: Name of the image.
+          example: Ubuntu Server 22.04 LTS R535 CUDA 12.2 with Docker
+        region_name:
+          type: string
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+          example: US-1
+        type:
+          type: string
+          description: Type of the image.
+          example: Ubuntu
+        version:
+          type: string
+          description: API or schema version.
+          example: Server 22.04 LTS R535 CUDA 12.2 with Docker
+        size:
+          type: integer
+          description: Volume capacity in GB.
+          example: 107374182400
+        display_size:
+          type: string
+          example: 100 GiB
+          description: Human-readable image size (e.g. `100.0 GB`).
+        description:
+          type: string
+          description: Human-readable description of the resource.
+          example: ''
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LableResonse'
+          description: Optional user-supplied tags for grouping or filtering.
+        is_public:
+          type: boolean
+          description: Whether the resource is visible to other users in the organization.
+          example: true
+        flavor_restrictions:
+          type: object
+          description: Flavor compatibility restrictions for this image.
+          allOf:
+          - $ref: '#/components/schemas/FlavorRestrictions'
+    LableResonse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        label:
+          type: string
+          description: The label name (e.g. `k8s`).
+    FlavorRestrictions:
+      type: object
+      properties:
+        has_flavor_restrictions:
+          type: boolean
+          description: Whether the image has any flavor restrictions.
+        restriction_type:
+          type: string
+          description: Either 'hard', 'soft', or null if no restrictions.
+        compatible_flavors:
+          type: array
+          description: List of compatible flavors with their link metadata.
+          items:
+            $ref: '#/components/schemas/CompatibleFlavor'
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Image:
+      type: object
+      properties:
+        image:
+          $ref: '#/components/schemas/Image_Fields'
+          description: Operating system image installed on the VM.
+    Image_Get_Response:
+      type: object
+      properties:
+        region_name:
+          type: string
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+          example: US-1
+        type:
+          type: string
+          description: Type of the image.
+          example: Ubuntu
+        logo:
+          type: string
+          example: https://api.nexgencloud.com:8080/hyperstack-os-logos/ubuntu.svg
+          description: URL to a logo representing the image type.
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image_Fields'
+          description: OS images available for VM deployment.
+    NameAvailableModel_2:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    Images_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image_Get_Response_2'
+    CompatibleFlavor_2:
+      type: object
+      properties:
+        flavor_id:
+          type: integer
+        flavor_name:
+          type: string
+        link_type:
+          type: string
+          description: Either 'hard' or 'soft'
+        constraints:
+          type: object
+          properties: {}
+          description: JSON constraints object
+        reason:
+          type: string
+    Image_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        region_name:
+          type: string
+        type:
+          type: string
+        version:
+          type: string
+        size:
+          type: integer
+        display_size:
+          type: string
+        description:
+          type: string
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LableResonse_2'
+        is_public:
+          type: boolean
+        flavor_restrictions:
+          type: object
+          description: Flavor compatibility restrictions for this image
+          allOf:
+          - $ref: '#/components/schemas/FlavorRestrictions_2'
+    LableResonse_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+    FlavorRestrictions_2:
+      type: object
+      properties:
+        has_flavor_restrictions:
+          type: boolean
+          description: Whether the image has any flavor restrictions
+        restriction_type:
+          type: string
+          description: Either 'hard', 'soft', or null if no restrictions
+        compatible_flavors:
+          type: array
+          description: List of compatible flavors with their link metadata
+          items:
+            $ref: '#/components/schemas/CompatibleFlavor_2'
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Image_2:
+      type: object
+      properties:
+        image:
+          $ref: '#/components/schemas/Image_Fields_2'
+    Image_Get_Response_2:
+      type: object
+      properties:
+        region_name:
+          type: string
+        type:
+          type: string
+        logo:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image_Fields_2'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

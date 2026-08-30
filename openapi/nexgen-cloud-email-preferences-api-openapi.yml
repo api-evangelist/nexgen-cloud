@@ -1,0 +1,324 @@
+openapi: 3.2.0
+info:
+  title: Hyperstack Email Preferences API
+  version: '1.0'
+  description: 'The Hyperstack API is a REST API for deploying and managing GPU infrastructure on the Hyperstack cloud, provision virtual machines, manage volumes, configure networking, and access billing data programmatically.
+
+
+    ## Base URL
+
+
+    All requests are sent to:
+
+
+    ```
+
+    https://infrahub-api.nexgencloud.com/v1
+
+    ```
+
+
+    ## Request and response format
+
+
+    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`). Request bodies are `application/json` unless noted otherwise on the endpoint. Responses are `application/json` and follow a consistent envelope of `{status, message, .}`, see the [Pagination](https://docs.hyperstack.cloud/docs/api-reference/pagination) primer for the small set of exceptions.
+
+
+    ## Authentication
+
+
+    Every request requires an API key. Pass it as the `api_key` request header (`api_key: YOUR_API_KEY`). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys); see [Authentication](https://docs.hyperstack.cloud/docs/api-reference/authentication) for header formats and rotation guidance.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- apiKey: []
+tags:
+- name: Email Preferences
+  description: Email preference endpoints control which optional email notifications Hyperstack sends to your account. Use them to read your current preferences and change them, individually or all at once. See the [**Email Notification Preferences guide**](https://docs.hyperstack.cloud/docs/resource-management/email-notifications) for the full feature walkthrough.
+paths:
+  /auth/email/opt-out:
+    get:
+      tags:
+      - Email Preferences
+      summary: List email preferences
+      description: 'Returns every email category on your account together with your current opt-in status.
+
+
+        Categories are returned as a tree. Each parent category carries a `childs` array holding the individual notifications it groups, and a category with no children returns an empty `childs` array. Pass a category''s `slug` to the [**Update an email preference**](https://docs.hyperstack.cloud/docs/api-reference/update-email-preference) API to change it.
+
+
+        Categories marked `required: true` cover critical system, contract, and payment notifications. You cannot opt out of them. A category you have never changed defaults to `opted_in: true`.'
+      operationId: List_email_preferences
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailPreferencesResponse'
+              example:
+                email_categories:
+                - slug: system-alerts
+                  display_name: System Alerts
+                  description: Critical notifications about system-wide issues or maintenance.
+                  required: true
+                  position: 10
+                  icon: shield-exclamation
+                  opted_in: true
+                  childs: []
+                - slug: payment-and-billing
+                  display_name: Payment & Billing
+                  description: Invoices, payment confirmations, and billing updates.
+                  required: false
+                  position: 30
+                  icon: credit-card
+                  opted_in: true
+                  childs:
+                  - email_category_id: 8
+                    slug: payment-confirmation
+                    display_name: Payment confirmation
+                    description: Receive an email when a payment is processed.
+                    required: true
+                    position: 31
+                    icon: null
+                    opted_in: true
+                  - email_category_id: 9
+                    slug: credit-usage-alert-6h
+                    display_name: Credit usage alert - 6 hours remaining
+                    description: Get notified when your credit has 6 hours remaining.
+                    required: false
+                    position: 32
+                    icon: null
+                    opted_in: true
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              example:
+                status: false
+                message: Unauthorized
+                error_reason: unauthorized
+        '500':
+          description: Internal Server Error
+          content: {}
+    put:
+      tags:
+      - Email Preferences
+      summary: Toggle all optional email preferences
+      description: 'Sets the same opt-in value for every optional email category on your account.
+
+
+        Send `opted_in: false` to pause every optional notification at once, or `opted_in: true` to resume them. Required categories are not affected and stay opted in. This is the API equivalent of the **All Optional Notifications** switch in the console.'
+      operationId: Toggle_all_email_preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEmailPreferenceInput'
+            example:
+              opted_in: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateEmailPreferenceResponse'
+              example:
+                message: Optional email preferences updated successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              example:
+                errors:
+                  opted_in: '''opted_in'' is a required property'
+                message: Input payload validation failed
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              example:
+                status: false
+                message: Unauthorized
+                error_reason: unauthorized
+        '500':
+          description: Internal Server Error
+          content: {}
+  /auth/email/opt-out/{slug}:
+    put:
+      tags:
+      - Email Preferences
+      summary: Update an email preference
+      description: 'Turns a single email category on or off.
+
+
+        If the slug belongs to a parent category, every child notification grouped under it is updated to the same value. If the slug belongs to a child notification, only that notification changes.
+
+
+        You cannot opt out of a required category. Updating one returns `400` with the message `Cannot update a required email category`, whether you send `opted_in: true` or `false`.'
+      operationId: Update_email_preference
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: Slug of the email category. Call the [**List email preferences**](https://docs.hyperstack.cloud/docs/api-reference/list-email-preferences) API to retrieve the `slug` of an existing category.
+        schema:
+          type: string
+        example: credit-usage-alert-48h
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEmailPreferenceInput'
+            example:
+              opted_in: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateEmailPreferenceResponse'
+              example:
+                message: Email preferences updated successfully
+        '400':
+          description: The category is required and cannot be changed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateEmailPreferenceResponse'
+              example:
+                message: Cannot update a required email category
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              example:
+                status: false
+                message: Unauthorized
+                error_reason: unauthorized
+        '404':
+          description: Email category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateEmailPreferenceResponse'
+              example:
+                message: Email category not found
+        '500':
+          description: Internal Server Error
+          content: {}
+components:
+  schemas:
+    UpdateEmailPreferenceResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Human-readable description of the result.
+    EmailCategoryChild:
+      type: object
+      properties:
+        email_category_id:
+          type: integer
+          description: Identifier for the email category. Returned for child notifications only.
+        slug:
+          type: string
+          description: Unique identifier of the category. Pass this value to the update endpoint.
+        display_name:
+          type: string
+          description: Name of the category, as shown in the console.
+        description:
+          type: string
+          description: What the notifications in this category tell you.
+        required:
+          type: boolean
+          description: Whether the category is required. You cannot opt out of a required category.
+        position:
+          type: integer
+          description: Sort order used to display the category in the console.
+        icon:
+          type:
+          - string
+          - 'null'
+          description: Icon used by the console. Returns `null` for child notifications.
+        opted_in:
+          type: boolean
+          description: Whether you currently receive the notifications in this category.
+    EmailPreferencesResponse:
+      type: object
+      properties:
+        email_categories:
+          type: array
+          description: Every email category on your account, with your current opt-in status.
+          items:
+            $ref: '#/components/schemas/EmailCategory'
+    EmailCategory:
+      type: object
+      properties:
+        slug:
+          type: string
+          description: Unique identifier of the category. Pass this value to the update endpoint.
+        display_name:
+          type: string
+          description: Name of the category, as shown in the console.
+        description:
+          type: string
+          description: What the notifications in this category tell you.
+        required:
+          type: boolean
+          description: Whether the category is required. You cannot opt out of a required category.
+        position:
+          type: integer
+          description: Sort order used to display the category in the console.
+        icon:
+          type:
+          - string
+          - 'null'
+          description: Icon used by the console. Returns `null` for child notifications.
+        opted_in:
+          type: boolean
+          description: Whether you currently receive the notifications in this category.
+        childs:
+          type: array
+          description: Individual notifications grouped under this category. Empty when the category has no children.
+          items:
+            $ref: '#/components/schemas/EmailCategoryChild'
+    UpdateEmailPreferenceInput:
+      required:
+      - opted_in
+      type: object
+      properties:
+        opted_in:
+          type: boolean
+          description: Set to `true` to receive the notification, or `false` to turn it off.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'

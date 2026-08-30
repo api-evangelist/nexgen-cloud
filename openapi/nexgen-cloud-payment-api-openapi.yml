@@ -1,0 +1,358 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Payment API
+  version: '1.0'
+  description: 'Operations tagged Payment across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Payment
+  description: Payment endpoints initiate and retrieve payments. Use these to add funds to your account programmatically or to fetch receipts for reconciliation.
+paths:
+  /billing/payment/payment-details:
+    get:
+      tags:
+      - Payment
+      summary: View payment details
+      description: Retrieves a list of all payments made within your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization) and their details, including the amount, payment status, and more.
+      operationId: List_payment_details
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment_Details_Response'
+              example:
+                message: Getting payment info successful
+                status: true
+                data: []
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    message: Getting payment info successful
+                    status: true
+                    data: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /billing/payment/payment-initiate:
+    post:
+      tags:
+      - Payment
+      summary: Initiate payment
+      description: Creates a payment for a specified amount, adding credit to the balance of your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization). Include the `amount` in the body of the request to make a payment for the specified value in dollars. View a history of past payments by calling the [**Retrieve Payment History**](https://docs.hyperstack.cloud/docs/api-reference/list-payment-details) API.
+      operationId: Initiate_Payment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment_Initiate_Payload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment_Initiate_Response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /billing/payment/receipt/{payment_id}:
+    get:
+      tags:
+      - Payment
+      summary: Retrieve payment receipt
+      description: Retrieve the payment receipt from Stripe for a specific payment.
+      operationId: Get_payment_receipt
+      parameters:
+      - name: payment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID of the payment.
+      responses:
+        '200':
+          description: Success
+          content: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    Payment_Details_Response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting payment info successful
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        data:
+          $ref: '#/components/schemas/Payment_Details_Fields'
+          description: Payment details for the account.
+    Payment_Details_Fields:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Charge amount in the response's `currency` units.
+        tax_amount:
+          type: number
+          description: Tax amount applied to the payment.
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+        paid_from:
+          type: string
+          description: The source of the payment.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+        gateway_response:
+          type: string
+          description: The response from the payment gateway.
+        description:
+          type: string
+          description: Human-readable description of the resource.
+        transaction_id:
+          type: string
+          description: The transaction ID associated with the payment.
+        invoice:
+          type: string
+          description: Identifier or URL of the associated invoice.
+        payment_id:
+          type: string
+          description: The unique identifier for the payment.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was last modified.
+    Payment_Initiate_Fields:
+      type: object
+      properties:
+        payment_id:
+          type: string
+          description: The unique identifier for the payment.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Payment_Initiate_Response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Human-readable description of the result.
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        data:
+          $ref: '#/components/schemas/Payment_Initiate_Fields'
+          description: Details of the initiated payment.
+    Payment_Initiate_Payload:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Charge amount in the response's `currency` units.
+    Payment_Details_Response_2:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Payment_Details_Fields_2'
+    Payment_Details_Fields_2:
+      type: object
+      properties:
+        amount:
+          type: number
+        tax_amount:
+          type: number
+        currency:
+          type: string
+        paid_from:
+          type: string
+        status:
+          type: string
+        payment_type:
+          type: string
+        gateway_response:
+          type: string
+        description:
+          type: string
+        transaction_id:
+          type: string
+        invoice:
+          type: string
+        payment_id:
+          type: string
+        auto_topup_id:
+          type: integer
+        attempt_number:
+          type: integer
+        max_attempts:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Payment_Initiate_Fields_2:
+      type: object
+      properties:
+        payment_id:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Payment_Initiate_Response_2:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/Payment_Initiate_Fields_2'
+    Payment_Initiate_Payload_2:
+      type: object
+      properties:
+        amount:
+          type: number
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

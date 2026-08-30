@@ -1,0 +1,201 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Floating IP API
+  version: '1.0'
+  description: 'Operations tagged Floating IP across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Floating IP
+  description: A floating IP is a static public IPv4 address that can be assigned to a virtual machine. Floating IPs persist across VM lifecycle events, detach from one VM and reattach to another to keep the address. Allocating a floating IP without attaching it incurs a small reservation fee.
+paths:
+  /core/virtual-machines/{vm_id}/attach-floatingip:
+    post:
+      tags:
+      - Floating IP
+      summary: Attach public IP to virtual machine
+      description: 'Initiates the creation of a public IP address and attaches it to an existing virtual machine, making it accessible through the internet. Include the virtual machine ID in the path to attach a public IP to the specified VM. For more information on public IP addresses, see [Public IPs](https://docs.hyperstack.cloud/docs/network/public-ip).
+
+
+        > **State requirement:** This operation requires the VM to be in the `ACTIVE` or `SHUTOFF` state.'
+      operationId: Attach_public_IP_to_VM
+      parameters:
+      - name: vm_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the vm.
+      responses:
+        '200':
+          description: Public IP successfully attached to VM.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: A Public IP will be assigned to VM example-vm.
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: A Public IP will be assigned to VM example-vm.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '402':
+          description: Insufficient balance to create the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/virtual-machines/{vm_id}/detach-floatingip:
+    post:
+      tags:
+      - Floating IP
+      summary: Detach public IP from virtual machine
+      description: 'Removes a public IP address from an existing virtual machine, disabling internet accessibility to the VM. Include the virtual machine ID in the path to detach the public IP from the specified VM. For more information on public IP addresses, see [Public IPs](https://docs.hyperstack.cloud/docs/network/public-ip).
+
+
+        > **State requirement:** This operation requires the VM to be in the `ACTIVE` or `SHUTOFF` state.'
+      operationId: Detach_public_IP_from_VM
+      parameters:
+      - name: vm_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the vm.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Public IP will be detached from the VM example-vm.
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Public IP will be detached from the VM example-vm.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

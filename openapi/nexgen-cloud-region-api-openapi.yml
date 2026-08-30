@@ -1,0 +1,195 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Region API
+  version: '1.0'
+  description: 'Operations tagged Region across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Region
+  description: A region is a geographic location where Hyperstack hosts compute and storage. Resources are region-scoped, virtual machines, volumes, snapshots, and firewalls all belong to exactly one region. List regions to discover which are available to your account.
+paths:
+  /core/regions:
+    get:
+      tags:
+      - Region
+      summary: List Regions
+      description: Lists the currently available regions, each representing a distinct geographic location housing a data center. See [Regions](https://docs.hyperstack.cloud/docs/resource-management/regions) for additional information.
+      operationId: List_Regions
+      responses:
+        '200':
+          description: Successful retrieval of regions list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Regions'
+              example:
+                status: true
+                message: Getting regions successful.
+                regions:
+                - id: 3287
+                  name: NORWAY-1
+                  country: 'NO'
+                  description: null
+                  green_status: GREEN
+                  features:
+                    floating_ip: true
+                    volumes: true
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting regions successful.
+                    regions:
+                    - id: 3287
+                      name: NORWAY-1
+                      country: 'NO'
+                      description: null
+                      green_status: GREEN
+                      features:
+                        floating_ip: true
+                        volumes: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Regions:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting regions successful.
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Region_Fields'
+          description: Regions where the resource is available.
+    Region_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 9876
+        name:
+          type: string
+          description: Name of the region.
+          example: NORWAY-1
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code of the region.
+          example: 'NO'
+        description:
+          type:
+          - string
+          - 'null'
+          description: Human-readable description of the resource.
+        green_status:
+          type: string
+          description: Indicator of how much of the region's capacity is running on green energy.
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
+        features:
+          type: object
+          properties: {}
+          description: Optional feature flags applicable to the resource.
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Regions_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Region_Fields_2'
+    Region_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        country:
+          type: string
+        description:
+          type: string
+        green_status:
+          type: string
+          description: Green status
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
+        features:
+          type: object
+          properties: {}
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

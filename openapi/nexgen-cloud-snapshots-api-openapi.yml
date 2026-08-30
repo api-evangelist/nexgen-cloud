@@ -1,0 +1,1975 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Snapshots API
+  version: '1.0'
+  description: 'Operations tagged Snapshots across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Snapshots
+  description: A snapshot is a point-in-time copy of a virtual machine or volume. Snapshots are stored in the same region as the source resource and can be used to clone, restore, or migrate state. Snapshot creation is non-blocking, the source VM remains running while the snapshot completes in the background.
+paths:
+  /core/snapshots:
+    get:
+      tags:
+      - Snapshots
+      summary: Retrieve list of snapshots with pagination
+      description: Retrieves a list of your current snapshots. See [Snapshots](https://docs.hyperstack.cloud/docs/api-reference/snapshots) for more information.
+      operationId: List_snapshots
+      parameters:
+      - name: page
+        in: query
+        description: Page number of results to return.
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        description: Data Per Page
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: Search By Snapshot ID or Name
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snapshots'
+              example:
+                status: true
+                message: Successfully retrieved Snapshots
+                page: null
+                page_size: null
+                count: 3
+                snapshots:
+                - id: 9876
+                  name: example-snapshot
+                  description: Example snapshot
+                  vm_id: 5341
+                  region_id: 1402
+                  status: SUCCESS
+                  is_image: true
+                  size: 4
+                  has_floating_ip: false
+                  labels: []
+                  created_at: '2026-05-07T09:21:55Z'
+                  updated_at: '2026-05-07T09:21:55Z'
+                  region: NORWAY-1
+                  vm_name: example-vm
+                  vm_status: DELETED
+                  vm_environment:
+                    id: 7613
+                    name: example-environment
+                    region: NORWAY-1
+                    created_at: '2026-05-06T15:18:42Z'
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                  vm_flavor:
+                    id: 1129
+                    name: n1-cpu-small
+                    display_name: null
+                    region_name: NORWAY-1
+                    cpu: 4
+                    ram: 4
+                    disk: 100
+                    ephemeral: 0
+                    gpu: ''
+                    gpu_count: 0
+                    created_at: '2026-05-06T15:18:42Z'
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+                  vm_image:
+                    id: 7613
+                    name: Ubuntu Server 24.04 LTS (Noble Numbat)
+                    region_name: NORWAY-1
+                    type: Ubuntu
+                    version: Server 24.04 LTS (Noble Numbat)
+                    size: 26843545600
+                    display_size: 25 GiB
+                    description: ''
+                    snapshot: null
+                    is_public: true
+                    created_at: '2026-05-06T15:18:42Z'
+                    labels: []
+                  vm_keypair:
+                    id: 8429
+                    name: example-keypair
+                    environment:
+                      id: 4501
+                      name: example-environment
+                      features:
+                        network_optimised: false
+                        green_status: GREEN
+                    public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMnm2XM9Vs1RA6mV20c7wGO3/H5eMR+3ReROywj7iyg+ user@example.com
+                    fingerprint: 72:0a:c4:28:24:f8:3e:ab:c4:a5:a6:93:15:15:a9:e8
+                    created_at: '2026-05-07T09:21:55Z'
+                  volume_id: null
+                  volume_name: null
+                  custom_image:
+                    id: 7613
+                    name: example-img-1786
+                    region_name: NORWAY-1
+                    type: Snapshot
+                    version: example-snapshot
+                    size: 4294967296
+                    description: null
+                    is_public: false
+                    created_at: '2026-05-06T15:18:42Z'
+                    labels: []
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Successfully retrieved Snapshots
+                    page: null
+                    page_size: null
+                    count: 3
+                    snapshots:
+                    - id: 9876
+                      name: example-snapshot
+                      description: Example snapshot
+                      vm_id: 5341
+                      region_id: 1402
+                      status: SUCCESS
+                      is_image: true
+                      size: 4
+                      has_floating_ip: false
+                      labels: []
+                      created_at: '2026-05-07T09:21:55Z'
+                      updated_at: '2026-05-07T09:21:55Z'
+                      region: NORWAY-1
+                      vm_name: example-vm
+                      vm_status: DELETED
+                      vm_environment:
+                        id: 7613
+                        name: example-environment
+                        region: NORWAY-1
+                        created_at: '2026-05-06T15:18:42Z'
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                      vm_flavor:
+                        id: 1129
+                        name: n1-cpu-small
+                        display_name: null
+                        region_name: NORWAY-1
+                        cpu: 4
+                        ram: 4
+                        disk: 100
+                        ephemeral: 0
+                        gpu: ''
+                        gpu_count: 0
+                        created_at: '2026-05-06T15:18:42Z'
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+                      vm_image:
+                        id: 7613
+                        name: Ubuntu Server 24.04 LTS (Noble Numbat)
+                        region_name: NORWAY-1
+                        type: Ubuntu
+                        version: Server 24.04 LTS (Noble Numbat)
+                        size: 26843545600
+                        display_size: 25 GiB
+                        description: ''
+                        snapshot: null
+                        is_public: true
+                        created_at: '2026-05-06T15:18:42Z'
+                        labels: []
+                      vm_keypair:
+                        id: 8429
+                        name: example-keypair
+                        environment:
+                          id: 4501
+                          name: example-environment
+                          features:
+                            network_optimised: false
+                            green_status: GREEN
+                        public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMnm2XM9Vs1RA6mV20c7wGO3/H5eMR+3ReROywj7iyg+ user@example.com
+                        fingerprint: 72:0a:c4:28:24:f8:3e:ab:c4:a5:a6:93:15:15:a9:e8
+                        created_at: '2026-05-07T09:21:55Z'
+                      volume_id: null
+                      volume_name: null
+                      custom_image:
+                        id: 7613
+                        name: example-img-1786
+                        region_name: NORWAY-1
+                        type: Snapshot
+                        version: example-snapshot
+                        size: 4294967296
+                        description: null
+                        is_public: false
+                        created_at: '2026-05-06T15:18:42Z'
+                        labels: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/snapshots/name-availability/{name}:
+    get:
+      tags:
+      - Snapshots
+      summary: Fetch snapshot name availability
+      description: Check if a Snapshot name is available.
+      operationId: Fetch_snapshot_name_availability
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the snapshot.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NameAvailableModel'
+              example:
+                name: example-availability-check
+                available: true
+                message: This name is available
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    name: example-availability-check
+                    available: true
+                    message: This name is available
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/snapshots/{id}:
+    get:
+      tags:
+      - Snapshots
+      summary: Retrieve a snapshot
+      description: Retrieve details of a snapshot. See [Snapshots](https://docs.hyperstack.cloud/docs/api-reference/snapshots) for more information.
+      operationId: Get_snapshot
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the snapshot.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnapshotRetrieve'
+              example:
+                status: 200
+                message: Retrieved snapshot 1789
+                snapshot:
+                  id: 2058
+                  name: example-snapshot
+                  description: Example snapshot
+                  vm_id: 7613
+                  region_id: 9876
+                  status: SUCCESS
+                  is_image: true
+                  size: 4
+                  has_floating_ip: false
+                  labels: []
+                  created_at: '2026-05-07T11:47:30Z'
+                  updated_at: '2026-05-07T11:47:30Z'
+                  region: NORWAY-1
+                  vm_name: example-vm
+                  vm_status: SHUTOFF
+                  vm_environment:
+                    id: 3287
+                    name: example-environment
+                    region: NORWAY-1
+                    created_at: '2026-05-06T16:04:09Z'
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                  vm_flavor:
+                    id: 1402
+                    name: n1-cpu-small
+                    display_name: null
+                    region_name: NORWAY-1
+                    cpu: 4
+                    ram: 4
+                    disk: 100
+                    ephemeral: 0
+                    gpu: ''
+                    gpu_count: 0
+                    created_at: '2026-05-06T16:04:09Z'
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+                  vm_image:
+                    id: 3287
+                    name: Ubuntu Server 24.04 LTS (Noble Numbat)
+                    region_name: NORWAY-1
+                    type: Ubuntu
+                    version: Server 24.04 LTS (Noble Numbat)
+                    size: 26843545600
+                    display_size: 25 GiB
+                    description: ''
+                    snapshot: null
+                    is_public: true
+                    created_at: '2026-05-06T16:04:09Z'
+                    labels: []
+                  vm_keypair:
+                    id: 4501
+                    name: example-keypair
+                    environment:
+                      id: 6190
+                      name: example-environment
+                      features:
+                        network_optimised: false
+                        green_status: GREEN
+                    public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJz0qO97NM7sZzUGT0z+eddAXg8BTYr1dz5LD8QyCmg1 user@example.com
+                    fingerprint: ea:85:b4:6e:a8:75:a1:17:10:51:f5:a2:65:7e:1f:c0
+                    created_at: '2026-05-07T11:47:30Z'
+                  volume_id: null
+                  volume_name: null
+                  custom_image:
+                    id: 3287
+                    name: example-img-1789
+                    region_name: NORWAY-1
+                    type: Snapshot
+                    version: example-snapshot
+                    size: 4294967296
+                    description: null
+                    is_public: false
+                    created_at: '2026-05-06T16:04:09Z'
+                    labels: []
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: 200
+                    message: Retrieved snapshot 1789
+                    snapshot:
+                      id: 2058
+                      name: example-snapshot
+                      description: Example snapshot
+                      vm_id: 7613
+                      region_id: 9876
+                      status: SUCCESS
+                      is_image: true
+                      size: 4
+                      has_floating_ip: false
+                      labels: []
+                      created_at: '2026-05-07T11:47:30Z'
+                      updated_at: '2026-05-07T11:47:30Z'
+                      region: NORWAY-1
+                      vm_name: example-vm
+                      vm_status: SHUTOFF
+                      vm_environment:
+                        id: 3287
+                        name: example-environment
+                        region: NORWAY-1
+                        created_at: '2026-05-06T16:04:09Z'
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                      vm_flavor:
+                        id: 1402
+                        name: n1-cpu-small
+                        display_name: null
+                        region_name: NORWAY-1
+                        cpu: 4
+                        ram: 4
+                        disk: 100
+                        ephemeral: 0
+                        gpu: ''
+                        gpu_count: 0
+                        created_at: '2026-05-06T16:04:09Z'
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+                      vm_image:
+                        id: 3287
+                        name: Ubuntu Server 24.04 LTS (Noble Numbat)
+                        region_name: NORWAY-1
+                        type: Ubuntu
+                        version: Server 24.04 LTS (Noble Numbat)
+                        size: 26843545600
+                        display_size: 25 GiB
+                        description: ''
+                        snapshot: null
+                        is_public: true
+                        created_at: '2026-05-06T16:04:09Z'
+                        labels: []
+                      vm_keypair:
+                        id: 4501
+                        name: example-keypair
+                        environment:
+                          id: 6190
+                          name: example-environment
+                          features:
+                            network_optimised: false
+                            green_status: GREEN
+                        public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJz0qO97NM7sZzUGT0z+eddAXg8BTYr1dz5LD8QyCmg1 user@example.com
+                        fingerprint: ea:85:b4:6e:a8:75:a1:17:10:51:f5:a2:65:7e:1f:c0
+                        created_at: '2026-05-07T11:47:30Z'
+                      volume_id: null
+                      volume_name: null
+                      custom_image:
+                        id: 3287
+                        name: example-img-1789
+                        region_name: NORWAY-1
+                        type: Snapshot
+                        version: example-snapshot
+                        size: 4294967296
+                        description: null
+                        is_public: false
+                        created_at: '2026-05-06T16:04:09Z'
+                        labels: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    delete:
+      tags:
+      - Snapshots
+      summary: Delete snapshot
+      description: Delete a snapshot. Provide the snapshot ID in the path to delete the specified snapshot. If the snapshot is connected with an image, that image will also be deleted and the deleted image ID will be returned in the success message response.
+      operationId: Delete_snapshot
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the snapshot.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Snapshot 1789 is being deleted
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Snapshot 1789 is being deleted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/snapshots/{id}/restore:
+    post:
+      tags:
+      - Snapshots
+      summary: Restore a snapshot
+      description: 'Restore a snapshot to a new virtual machine. Supply the snapshot ID in the path to restore the specified snapshot.
+
+
+        > **State requirement:** This operation requires the snapshot to be in the `COMPLETE` state.'
+      operationId: Restore_snapshot
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the snapshot.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnapshotRestoreRequest'
+              example:
+                new_vm_name: example-restored-1789
+              properties: {}
+            example:
+              new_vm_name: example-restored-1789
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instance'
+              example:
+                status: true
+                message: VM is scheduled for creation.
+                instances:
+                - id: 7613
+                  name: example-restored-1789
+                  status: CREATING
+                  environment:
+                    id: 3287
+                    name: example-environment
+                    org_id: 6190
+                    region: NORWAY-1
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                  image: null
+                  flavor:
+                    id: 1402
+                    name: n1-cpu-small
+                    cpu: 4
+                    ram: 4
+                    disk: 100
+                    ephemeral: 0
+                    gpu: ''
+                    gpu_count: 0
+                    labels: []
+                    features:
+                      network_optimised: false
+                      no_reboot: false
+                      no_hibernation: false
+                      no_snapshot: false
+                      local_storage_only: false
+                      api_only: false
+                  os: Ubuntu Server 24.04 LTS (Noble Numbat)
+                  keypair:
+                    name: example-keypair
+                  volume_attachments: []
+                  power_state: null
+                  vm_state: null
+                  fixed_ip: null
+                  floating_ip: null
+                  floating_ip_status: NO FLOATING IP
+                  security_rules: []
+                  callback_url: null
+                  locked: false
+                  contract_id: null
+                  labels: []
+                  created_at: '2026-05-06T15:18:42Z'
+                  features:
+                    network_optimised: false
+                    green_status: GREEN
+                  is_snapshotting: false
+                  cluster_id: null
+                  port_randomization: true
+                  port_randomization_status: NO_FLOATING_IP
+                  requires_public_ip: false
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: VM is scheduled for creation.
+                    instances:
+                    - id: 7613
+                      name: example-restored-1789
+                      status: CREATING
+                      environment:
+                        id: 3287
+                        name: example-environment
+                        org_id: 6190
+                        region: NORWAY-1
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                      image: null
+                      flavor:
+                        id: 1402
+                        name: n1-cpu-small
+                        cpu: 4
+                        ram: 4
+                        disk: 100
+                        ephemeral: 0
+                        gpu: ''
+                        gpu_count: 0
+                        labels: []
+                        features:
+                          network_optimised: false
+                          no_reboot: false
+                          no_hibernation: false
+                          no_snapshot: false
+                          local_storage_only: false
+                          api_only: false
+                      os: Ubuntu Server 24.04 LTS (Noble Numbat)
+                      keypair:
+                        name: example-keypair
+                      volume_attachments: []
+                      power_state: null
+                      vm_state: null
+                      fixed_ip: null
+                      floating_ip: null
+                      floating_ip_status: NO FLOATING IP
+                      security_rules: []
+                      callback_url: null
+                      locked: false
+                      contract_id: null
+                      labels: []
+                      created_at: '2026-05-06T15:18:42Z'
+                      features:
+                        network_optimised: false
+                        green_status: GREEN
+                      is_snapshotting: false
+                      cluster_id: null
+                      port_randomization: true
+                      port_randomization_status: NO_FLOATING_IP
+                      requires_public_ip: false
+        '400':
+          description: 'Bad Request
+
+
+            Common cause: `error_reason: bad_request`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    status: false
+                    message: Snapshot 1785 is not ready to be restored
+                    error_reason: bad_request
+              example:
+                status: false
+                message: Snapshot 1785 is not ready to be restored
+                error_reason: bad_request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/snapshots/{snapshot_id}/events:
+    get:
+      tags:
+      - Snapshots
+      summary: Fetch all events for a snapshot
+      description: Retrieves a list of all events for a Snapshot's history, which records actions performed on the specific snapshot. Requires the snapshot ID in the path.
+      operationId: List_Snapshot_Events
+      parameters:
+      - name: snapshot_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the snapshot.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              example:
+                status: true
+                message: Successfully retrieved events for Snapshot example-snapshot
+                snapshot_events:
+                - id: 2058
+                  snapshot_id: 4501
+                  user_id: 7613
+                  org_id: 3287
+                  time: '2026-05-07T11:47:30Z'
+                  type: normal
+                  reason: SnapshotCreateRequest
+                  object: example-snapshot
+                  message: Snapshot example-snapshot Creation Request from Instance example-vm Sent.
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Successfully retrieved events for Snapshot example-snapshot
+                    snapshot_events:
+                    - id: 2058
+                      snapshot_id: 4501
+                      user_id: 7613
+                      org_id: 3287
+                      time: '2026-05-07T11:47:30Z'
+                      type: normal
+                      reason: SnapshotCreateRequest
+                      object: example-snapshot
+                      message: Snapshot example-snapshot Creation Request from Instance example-vm Sent.
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/snapshots/{snapshot_id}/image:
+    post:
+      tags:
+      - Snapshots
+      summary: Create an image from a snapshot
+      description: Creates a image from a specified snapshot. For more information about images, see [Image](https://docs.hyperstack.cloud/docs/api-reference/image). For more information about snapshots, see [Snapshot](https://docs.hyperstack.cloud/docs/api-reference/snapshots).
+      operationId: Create_custom_image
+      parameters:
+      - name: snapshot_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the snapshot.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateImagePayload'
+              example:
+                name: example-img-1789
+              properties: {}
+            example:
+              name: example-img-1789
+        required: true
+      responses:
+        '200':
+          description: Creation of image successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Create_Image'
+              example:
+                status: true
+                message: Image added successfully.
+                image:
+                  id: 4501
+                  name: example-img-1789
+                  openstack_id: f3a91c44-7b2e-49d7-a16d-5c3e8d9a0b21
+                  region_id: 8429
+                  region_name: NORWAY-1
+                  type: Snapshot
+                  version: example-snapshot
+                  size: 4294967296
+                  display_size: 4 GiB
+                  is_public: false
+                  org_ids:
+                  - 3971
+                  description: null
+                  labels: []
+                  created_at: '2026-05-07T11:47:30Z'
+                  deleted: false
+                  snapshot_id: 2058
+                  unlisted: false
+                  organizations:
+                  - 3971
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Image added successfully.
+                    image:
+                      id: 4501
+                      name: example-img-1789
+                      openstack_id: f3a91c44-7b2e-49d7-a16d-5c3e8d9a0b21
+                      region_id: 8429
+                      region_name: NORWAY-1
+                      type: Snapshot
+                      version: example-snapshot
+                      size: 4294967296
+                      display_size: 4 GiB
+                      is_public: false
+                      org_ids:
+                      - 3971
+                      description: null
+                      labels: []
+                      created_at: '2026-05-07T11:47:30Z'
+                      deleted: false
+                      snapshot_id: 2058
+                      unlisted: false
+                      organizations:
+                      - 3971
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    Environment_Features:
+      type: object
+      properties:
+        network_optimised:
+          type: boolean
+          description: Whether the resource has the network-optimised feature enabled.
+          example: false
+        green_status:
+          type: string
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
+          description: Indicator of how much of the region's capacity is running on green energy.
+    Instance:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting VM detail successful
+        instance:
+          $ref: '#/components/schemas/Instance_Fields'
+          description: Virtual machine the entry refers to.
+    FlavorLabelFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        label:
+          type: string
+          description: The label name (e.g. `k8s`).
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    SnapshotFields:
+      type: object
+      properties:
+        created_at:
+          type: string
+          description: ISO 8601 UTC timestamp indicating when the snapshot was created.
+          format: date-time
+          example: '2026-05-06T16:04:09Z'
+        description:
+          type: string
+          description: Description of the snapshot.
+          example: example
+        id:
+          type: integer
+          description: Unique identifier of the snapshot.
+          example: 1402
+        is_image:
+          type: boolean
+          description: Indicates if the snapshot is an image.
+          example: false
+        name:
+          type: string
+          description: Name of the snapshot.
+          example: example-snapshot
+        region_id:
+          type: integer
+          description: Region where the snapshot will be available.
+          example: 1129
+        size:
+          type: integer
+          description: Size in GB of the snapshot.
+          example: 0
+        status:
+          type: string
+          description: Status of the snapshot.
+          example: CREATING
+        updated_at:
+          type: string
+          description: Last update timestamp.
+          format: date-time
+          example: '2026-05-06T16:04:09Z'
+        vm_id:
+          type: integer
+          description: ID of the VM from which the snapshot is created.
+          example: 2058
+        has_floating_ip:
+          type: boolean
+          description: Indicates if the VM had a floating IP assigned.
+          example: false
+        labels:
+          type: array
+          description: Labels associated with snapshot.
+          items:
+            type: string
+            description: ''
+    Instance_Environment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 9876
+        name:
+          type: string
+          description: Name of the environment.
+          example: example-environment
+        org_id:
+          type: integer
+          description: Identifier of the organization that owns the resource.
+          example: 7613
+        region:
+          type: string
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+          example: NORWAY-1
+        features:
+          $ref: '#/components/schemas/Environment_Features'
+          description: Optional feature flags applicable to the resource.
+    Instance_Image_Fields:
+      type:
+      - object
+      - 'null'
+      properties:
+        name:
+          type: string
+          description: Name of the image.
+          example: Ubuntu Server 24.04 LTS (Noble Numbat)
+    Snapshots:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Successfully retrieved Snapshots
+        snapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/SnapshotFields'
+          description: An array of `snapshots` objects, each containing details about a snapshot.
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 0
+        page:
+          type:
+          - integer
+          - 'null'
+          description: 1-indexed page number of the current result set.
+        page_size:
+          type:
+          - integer
+          - 'null'
+          description: Number of items per page in the current result set.
+    CreateImagePayload:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name for the new custom image.
+        labels:
+          type: array
+          description: List of labels to attach to the image.
+          items:
+            type: string
+            description: ''
+    Security_Rules_Fields_for_Instance:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 1129
+        direction:
+          type: string
+          description: Direction of traffic the rule applies to, `ingress` or `egress`.
+          example: egress
+        protocol:
+          type: string
+          description: Protocol, one of `tcp`, `udp`, `icmp`, or `any`.
+          example: any
+        port_range_min:
+          type: integer
+          description: Lower bound (inclusive) of the port range the rule applies to.
+          example: 1
+        port_range_max:
+          type: integer
+          description: Upper bound (inclusive) of the port range the rule applies to.
+          example: 65535
+        ethertype:
+          type: string
+          description: Internet Protocol version, `IPv4` or `IPv6`.
+          example: IPv4
+        remote_ip_prefix:
+          type: string
+          description: CIDR block the rule applies to.
+          example: 0.0.0.0/0
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: SUCCESS
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T15:18:42Z'
+    SnapshotRetrieve:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: 200
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Retrieved snapshot 1783
+        snapshot:
+          $ref: '#/components/schemas/SnapshotRetrieveFields'
+          description: Snapshot of a volume.
+    SnapshotRetrieveFields:
+      type: object
+      properties:
+        created_at:
+          type: string
+          description: ISO 8601 UTC timestamp indicating when the snapshot was created.
+          format: date-time
+          example: '2026-05-06T16:04:09Z'
+        description:
+          type: string
+          description: Description of the snapshot.
+          example: example
+        id:
+          type: integer
+          description: Unique identifier of the snapshot.
+          example: 1402
+        is_image:
+          type: boolean
+          description: Indicates if the snapshot is an image.
+          example: true
+        name:
+          type: string
+          description: Name of the snapshot.
+          example: example-snapshot
+        region_id:
+          type: integer
+          description: Region where the snapshot will be available.
+          example: 1129
+        size:
+          type: integer
+          description: Size in GB of the snapshot.
+          example: 0
+        status:
+          type: string
+          description: Status of the snapshot.
+          example: CREATING
+        updated_at:
+          type: string
+          description: Last update timestamp.
+          format: date-time
+          example: '2026-05-06T16:04:09Z'
+        vm_id:
+          type: integer
+          description: ID of the VM from which the snapshot is created.
+          example: 2058
+        has_floating_ip:
+          type: boolean
+          description: Indicates if the VM had a floating IP assigned.
+          example: false
+        labels:
+          type: string
+          description: Optional user-supplied tags for grouping or filtering.
+        region:
+          type: string
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+          example: NORWAY-1
+        vm_name:
+          type: string
+          description: Name of the virtual machine the snapshot was taken from.
+          example: example-vm
+        vm_status:
+          type: string
+          description: Status of the source virtual machine at the time of the snapshot.
+          example: ACTIVE
+        vm_environment:
+          type: string
+          description: Environment of the source virtual machine.
+        vm_flavor:
+          type: string
+          description: Flavor of the source virtual machine.
+        vm_image:
+          type: string
+          description: Image the source virtual machine was created from.
+        vm_keypair:
+          type: string
+          description: Keypair associated with the source virtual machine.
+        volume_id:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the volume.
+        volume_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the volume.
+        custom_image:
+          type:
+          - string
+          - 'null'
+          description: Name of the custom image created from the snapshot, if any.
+    Instance_Keypair_Fields:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the keypair.
+          example: example-keypair
+    Volume_Fields_for_Instance:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 1402
+        name:
+          type: string
+          description: Name of the volume.
+          example: example-volume
+        description:
+          type: string
+          description: Human-readable description of the resource.
+          example: example
+        volume_type:
+          type: string
+          description: Storage tier of the volume.
+          example: Cloud-SSD
+        bootable:
+          type: boolean
+          description: Whether the volume is the VM's boot volume.
+          example: false
+        size:
+          type: integer
+          description: Volume capacity in GB.
+          example: 10
+    SnapshotRestoreRequest:
+      required:
+      - new_vm_name
+      type: object
+      properties:
+        new_vm_name:
+          type: string
+          description: The name of the newly restored VM.
+        contract_id:
+          type: integer
+          description: Contract ID to assign to the newly restored VM.
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Resource name to check for availability.
+          example: example-availability-check
+        available:
+          type: boolean
+          description: Whether stock is currently available.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Name must not exceed 20 characters
+    Create_Image:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Image added successfully.
+        id:
+          type: integer
+          description: Unique numeric identifier.
+    Instance_Flavor_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 8429
+        name:
+          type: string
+          description: Name of the flavor.
+          example: n1-cpu-small
+        cpu:
+          type: integer
+          description: Number of vCPU cores.
+          example: 4
+        ram:
+          type: integer
+          description: Memory allocated to the flavor, in GB.
+          example: 4
+        disk:
+          type: integer
+          description: Root disk capacity, in GB.
+          example: 100
+        ephemeral:
+          type: integer
+          description: Ephemeral disk capacity, in GB. Cleared when the VM is deleted.
+          example: 0
+        gpu:
+          type: string
+          description: GPU model name. Empty string if the flavor has no GPU.
+          example: ''
+        gpu_count:
+          type: integer
+          description: Number of GPUs attached to the flavor.
+          example: 0
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlavorLabelFields'
+          description: Optional user-supplied tags for grouping or filtering.
+        features:
+          type: object
+          properties: {}
+          description: Optional feature flags applicable to the resource.
+    Instance_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 1402
+        name:
+          type: string
+          description: Name of the virtual machine.
+          example: example-vm
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: CREATING
+        environment:
+          $ref: '#/components/schemas/Instance_Environment_Fields'
+          description: Environment containing the resource.
+        image:
+          $ref: '#/components/schemas/Instance_Image_Fields'
+          description: Operating system image installed on the VM.
+        flavor:
+          $ref: '#/components/schemas/Instance_Flavor_Fields'
+          description: GPU and CPU configuration of the virtual machine.
+        os:
+          type: string
+          example: Ubuntu Server 24.04 LTS (Noble Numbat)
+          description: Operating system of the virtual machine.
+        keypair:
+          $ref: '#/components/schemas/Instance_Keypair_Fields'
+          description: SSH keypair attached to the VM.
+        volume_attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Volume_Attachment_Fields'
+          description: Volumes currently attached to the VM.
+        security_rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Security_Rules_Fields_for_Instance'
+          description: Firewall rules to apply to the VM at creation.
+        power_state:
+          type:
+          - string
+          - 'null'
+          description: Current power state reported by the hypervisor.
+          example: NOSTATE
+        vm_state:
+          type:
+          - string
+          - 'null'
+          description: Current VM lifecycle state, for example, `ACTIVE`, `SHUTOFF`, `HIBERNATED`, `ERROR`.
+          example: building
+        fixed_ip:
+          type:
+          - string
+          - 'null'
+          description: Fixed (private) IP address assigned to the VM in its environment.
+          example: 192.0.2.91
+        floating_ip:
+          type:
+          - string
+          - 'null'
+          description: Floating (public) IP address attached to the VM, or `null` if none.
+          example: 203.0.113.205
+        floating_ip_status:
+          type:
+          - string
+          - 'null'
+          description: State of the floating-IP attachment.
+          example: NO FLOATING IP
+        port_randomization_status:
+          type:
+          - string
+          - 'null'
+          example: NO_FLOATING_IP
+          description: Status of the port randomization process for the virtual machine.
+        port_randomization:
+          type: boolean
+          example: true
+          description: Whether port randomization is enabled (true) or disabled (false) for the virtual machine.
+        callback_url:
+          type:
+          - string
+          - 'null'
+          description: Webhook URL Hyperstack calls when the resource changes state.
+        locked:
+          type: boolean
+          example: false
+          description: Whether the virtual machine is locked, preventing state-changing actions (true) or unlocked (false).
+        contract_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier of the customer contract under which the resource is billed.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T16:04:09Z'
+        labels:
+          type: array
+          items:
+            type: string
+          description: Optional user-supplied tags for grouping or filtering.
+        features:
+          type: object
+          properties: {}
+          description: Optional feature flags applicable to the resource.
+        requires_public_ip:
+          type: boolean
+          example: false
+          description: Whether the virtual machine requires a public IP address to be attached (true) or not (false).
+    Volume_Attachment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        volume:
+          $ref: '#/components/schemas/Volume_Fields_for_Instance'
+          description: Volume attached to the resource.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: ATTACHING
+        device:
+          type: string
+          description: Device path the volume is attached at on the VM (for example, `/dev/sdb`).
+          example: /dev/disk/by-id/virtio-a66fd1a8-e198-4eb4-a
+        protected:
+          type: boolean
+          description: When `true`, the resource cannot be deleted while protection is enabled.
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T16:04:09Z'
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    Environment_Features_2:
+      type: object
+      properties:
+        network_optimised:
+          type: boolean
+        green_status:
+          type: string
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
+    Instance_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        instance:
+          $ref: '#/components/schemas/Instance_Fields_2'
+    FlavorLabelFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+        label:
+          type: string
+          description: ''
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    SnapshotFields_2:
+      required:
+      - created_at
+      - description
+      - id
+      - is_image
+      - name
+      - region_id
+      - size
+      - status
+      - updated_at
+      - vm_id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Snapshot ID
+        name:
+          type: string
+          description: Snapshot name
+        description:
+          type: string
+          description: Description of the snapshot
+        vm_id:
+          type: integer
+          description: ID of the VM from which the snapshot is created
+        region_id:
+          type: integer
+          description: Region where the snapshot will be available
+        status:
+          type: string
+          description: Status of the snapshot
+        is_image:
+          type: boolean
+          description: Indicates if the snapshot is an image
+        size:
+          type: integer
+          description: Size in GB of the snapshot
+        has_floating_ip:
+          type: boolean
+          description: Indicates if the VM had a floating IP assigned
+        labels:
+          type: array
+          description: Labels associated with snapshot
+          items:
+            type: string
+            description: ''
+        created_at:
+          type: string
+          description: Creation timestamp
+          format: date-time
+        updated_at:
+          type: string
+          description: Last update timestamp
+          format: date-time
+    Instance_Environment_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        org_id:
+          type: integer
+        region:
+          type: string
+        features:
+          $ref: '#/components/schemas/Environment_Features_2'
+    Instance_Image_Fields_2:
+      type: object
+      properties:
+        name:
+          type: string
+    Snapshots_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        snapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/SnapshotFields_2'
+        count:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+    CreateImagePayload_2:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name for the new custom image
+        labels:
+          type: array
+          description: List of labels to attach to the image
+          items:
+            type: string
+            description: ''
+    Security_Rules_Fields_for_Instance_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        direction:
+          type: string
+        protocol:
+          type: string
+        port_range_min:
+          type: integer
+        port_range_max:
+          type: integer
+        ethertype:
+          type: string
+        remote_ip_prefix:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    SnapshotRetrieve_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        snapshot:
+          $ref: '#/components/schemas/SnapshotRetrieveFields_2'
+    SnapshotRetrieveFields_2:
+      required:
+      - created_at
+      - description
+      - id
+      - is_image
+      - name
+      - region_id
+      - size
+      - status
+      - updated_at
+      - vm_id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Snapshot ID
+        name:
+          type: string
+          description: Snapshot name
+        description:
+          type: string
+          description: Description of the snapshot
+        vm_id:
+          type: integer
+          description: ID of the VM from which the snapshot is created
+        region_id:
+          type: integer
+          description: Region where the snapshot will be available
+        status:
+          type: string
+          description: Status of the snapshot
+        is_image:
+          type: boolean
+          description: Indicates if the snapshot is an image
+        size:
+          type: integer
+          description: Size in GB of the snapshot
+        has_floating_ip:
+          type: boolean
+          description: Indicates if the VM had a floating IP assigned
+        labels:
+          type: string
+          description: ''
+        created_at:
+          type: string
+          description: Creation timestamp
+          format: date-time
+        updated_at:
+          type: string
+          description: Last update timestamp
+          format: date-time
+        region:
+          type: string
+          description: ''
+        vm_name:
+          type: string
+          description: ''
+        vm_status:
+          type: string
+          description: ''
+        vm_environment:
+          type: string
+          description: ''
+        vm_flavor:
+          type: string
+          description: ''
+        vm_image:
+          type: string
+          description: ''
+        vm_keypair:
+          type: string
+          description: ''
+        volume_id:
+          type: string
+          description: ''
+        volume_name:
+          type: string
+          description: ''
+        custom_image:
+          type: string
+          description: ''
+    Instance_Keypair_Fields_2:
+      type: object
+      properties:
+        name:
+          type: string
+    Volume_Fields_for_Instance_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        volume_type:
+          type: string
+        bootable:
+          type: boolean
+        size:
+          type: integer
+    SnapshotRestoreRequest_2:
+      required:
+      - new_vm_name
+      type: object
+      properties:
+        new_vm_name:
+          type: string
+          description: The name of the newly restored VM
+        contract_id:
+          type: integer
+          description: Contract ID to assign to the newly restored VM
+    NameAvailableModel_2:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    Instance_Enhanced_Metrics_Fields:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    Instance_Flavor_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        cpu:
+          type: integer
+        ram:
+          type: integer
+        disk:
+          type: integer
+        ephemeral:
+          type: integer
+        gpu:
+          type: string
+        gpu_count:
+          type: integer
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlavorLabelFields_2'
+        features:
+          type: object
+          properties: {}
+    Instance_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+        environment:
+          $ref: '#/components/schemas/Instance_Environment_Fields_2'
+        image:
+          $ref: '#/components/schemas/Instance_Image_Fields_2'
+        flavor:
+          $ref: '#/components/schemas/Instance_Flavor_Fields_2'
+        os:
+          type: string
+        keypair:
+          $ref: '#/components/schemas/Instance_Keypair_Fields_2'
+        volume_attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Volume_Attachment_Fields_2'
+        security_rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Security_Rules_Fields_for_Instance_2'
+        power_state:
+          type: string
+        vm_state:
+          type: string
+        fixed_ip:
+          type: string
+        floating_ip:
+          type: string
+        floating_ip_status:
+          type: string
+        port_randomization_status:
+          type: string
+        port_randomization:
+          type: boolean
+        callback_url:
+          type: string
+        locked:
+          type: boolean
+        contract_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        labels:
+          type: array
+          items:
+            type: string
+        features:
+          type: object
+          properties: {}
+        requires_public_ip:
+          type: boolean
+        enhanced_metrics:
+          $ref: '#/components/schemas/Instance_Enhanced_Metrics_Fields'
+    Volume_Attachment_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        volume:
+          $ref: '#/components/schemas/Volume_Fields_for_Instance_2'
+        status:
+          type: string
+        device:
+          type: string
+        protected:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    Create_Image_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        id:
+          type: integer
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

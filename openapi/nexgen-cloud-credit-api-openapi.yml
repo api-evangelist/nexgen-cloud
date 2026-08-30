@@ -1,0 +1,165 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Credit API
+  version: '1.0'
+  description: 'Operations tagged Credit across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Credit
+  description: Credit endpoints retrieve your account's current credit balance. Credits are consumed by resource usage and replenished via payments or vouchers.
+paths:
+  /billing/user-credit/credit:
+    get:
+      tags:
+      - Credit
+      summary: View credit and threshold
+      description: Retrieves the current credit balance for your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization). Ensuring a positive credit balance allows you to create resources. However, for prepaid accounts, if the credit balance falls below $0, all associated resources will be temporarily suspended until a [**payment**](https://docs.hyperstack.cloud/docs/api-reference/initiate-payment) is made.
+      operationId: Get_user_credit
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Get_credit_and_threshold_info_in_response'
+              example:
+                message: Success
+                status: true
+                data:
+                  credit: 27.798387328253277
+                  threshold: 0
+                  can_create_instance: true
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    message: Success
+                    status: true
+                    data:
+                      credit: 27.798387328253277
+                      threshold: 0
+                      can_create_instance: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    Get_credit_and_threshold_info_in_response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Success
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        data:
+          $ref: '#/components/schemas/Get_credit_and_threshold_info'
+          description: Credit balance and notification threshold details.
+    Get_credit_and_threshold_info:
+      type: object
+      properties:
+        credit:
+          type: number
+          description: Available account credit.
+          example: 28.147631028367705
+        threshold:
+          type: number
+          description: Spending threshold above which the alert is triggered.
+          example: 0
+        can_create_instance:
+          type: boolean
+          example: true
+          description: The status of your ability to create virtual machine resources, where `true` indicates you have access, and `false` indicates your balance is below the `threshold` value.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Get_credit_and_threshold_info_in_response_2:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/Get_credit_and_threshold_info_2'
+    Get_credit_and_threshold_info_2:
+      type: object
+      properties:
+        credit:
+          type: number
+        threshold:
+          type: number
+        can_create_instance:
+          type: boolean
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

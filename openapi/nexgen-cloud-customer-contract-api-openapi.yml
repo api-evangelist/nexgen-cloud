@@ -1,0 +1,480 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Customer Contract API
+  version: '1.0'
+  description: 'Operations tagged Customer Contract across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Customer Contract
+  description: Customer contract endpoints retrieve negotiated pricing terms applied to your account. Contracts override standard pricebook rates for the resources they cover.
+paths:
+  /pricebook/contracts:
+    get:
+      tags:
+      - Customer Contract
+      summary: List Contracts
+      description: Retrieves a list of contracts and their details, including the terms of each contract and the discounts applied to all resources under each contract. Pagination can be controlled using the `page` and `per_page` query parameters. For additional information about contracts, see [Contracts](https://docs.hyperstack.cloud/docs/billing/contracts).
+      operationId: List_customer_contracts
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: Page number to retrieve.
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+        description: Number of items to return per page.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCustomerContractsListResponseModel'
+              example:
+                status: true
+                message: Getting customer contracts list successful
+                contracts: []
+                count: 0
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting customer contracts list successful
+                    contracts: []
+                    count: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /pricebook/contracts/{contract_id}:
+    get:
+      tags:
+      - Customer Contract
+      summary: Retrieve contract details
+      description: Retrieves the details of a specified customer [**contract**](https://docs.hyperstack.cloud/docs/billing/contracts), including its terms and the discounts applied to all resources under the contract. Include the contract ID in the path to view its details. For more information about contracts, see [Contracts](https://docs.hyperstack.cloud/docs/billing/contracts).
+      operationId: Retrieve_contract
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the customer contract.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerContractDetailResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /pricebook/contracts/{contract_id}/gpu_allocation_graph:
+    get:
+      tags:
+      - Customer Contract
+      summary: Retrieve GPU allocation graph for contract
+      description: Retrieve GPU allocation count graph for a specific contract by providing the contract ID in the path. The endpoint returns the GPU allocation count graph for the contract within the specified date range.
+      operationId: Get_contract_GPU_allocation_graph
+      parameters:
+      - name: contract_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the customer contract.
+      - name: start_date
+        in: query
+        description: Date should be formatted in YYYY-MM-DDTHH:MM:SS
+        schema:
+          type: string
+      - name: end_date
+        in: query
+        description: Date should be formatted in YYYY-MM-DDTHH:MM:SS
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractGPUAllocationGraphResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    AllocatedGPUCountGraph:
+      type: object
+      properties:
+        datetime:
+          type: string
+          description: ISO 8601 UTC timestamp.
+        value:
+          type: integer
+          description: Value of the entry.
+    GetCustomerContractsListResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting customer contracts list successful
+        contracts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerContractFields'
+          description: Customer contracts on the account.
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 0
+    ContractGPUAllocationGraphResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        contract:
+          $ref: '#/components/schemas/Contract'
+          description: Contains information about the specified contract.
+    Contract:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the contract.
+        org_id:
+          type: integer
+          description: Identifier of the organization that owns the resource.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+        granularity:
+          type: integer
+          description: Time bucket size, in seconds, for the data points returned.
+        total_gpu_allocation:
+          type: integer
+          description: Total number of GPUs allocated under the contract.
+        allocated_gpu_count_graph:
+          type: array
+          items:
+            $ref: '#/components/schemas/AllocatedGPUCountGraph'
+          description: Time series of allocated GPU counts over the contract period.
+    CustomerContractDetailResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        contracts:
+          $ref: '#/components/schemas/CustomerContractFields'
+          description: Customer contracts on the account.
+    ContractDiscountPlanFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        resource_id:
+          type: integer
+          description: Identifier of the resource the entry refers to.
+        resource_name:
+          type: string
+          description: Name of the resource the entry refers to.
+        resource_count:
+          type: integer
+          description: The number of resources that the discount is applied to.
+        discount_type:
+          type: string
+          description: The type of discount applied to the resource can be represented as either `flat` or `percent`. For `flat` discount type, the actual price of the discounted resource is specified, while for `percent` discount type, a percentage discount is applied to the market rate for the resource.
+        discount_code:
+          type: string
+          description: The discount code applied to the resource, if applicable.
+        discount_percent:
+          type: number
+          description: If the `discount_type` used is `percent`, this specifies the percentage discount to be applied to the market rate for a given resource.
+        discount_amount:
+          type: number
+          description: Amount discounted from the non-discounted bill.
+        discount_status:
+          type: string
+          description: The status of the discount (e.g., "active").
+        remaining_count:
+          type: integer
+          description: Number of discounted units remaining on the plan.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    CustomerContractFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        org_id:
+          type: integer
+          description: Identifier of the organization that owns the resource.
+        description:
+          type: string
+          description: Human-readable description of the resource.
+        start_date:
+          type: string
+          format: date-time
+          description: Inclusive start of the time window. ISO 8601 with `T` separator and time component (for example, `2026-05-01T00:00:00`).
+        end_date:
+          type: string
+          format: date-time
+          description: Exclusive end of the time window. Same format as `start_date`.
+        expiration_policy:
+          type: integer
+          description: The expiration policy for the contract is represented by a value of `0`, indicating that contracted resources will be deleted upon contract expiration, or `1`, indicating that contracted resources will be retained, with billing continuing at market rates.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+        discounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractDiscountPlanFields'
+          description: An array of objects containing information about discounts applied to each resource type associated with the contract.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+    AllocatedGPUCountGraph_2:
+      type: object
+      properties:
+        datetime:
+          type: string
+        value:
+          type: integer
+    GetCustomerContractsListResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        contracts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerContractFields_2'
+        count:
+          type: integer
+    ContractGPUAllocationGraphResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        contract:
+          $ref: '#/components/schemas/Contract_2'
+    Contract_2:
+      type: object
+      properties:
+        id:
+          type: string
+        org_id:
+          type: integer
+        status:
+          type: string
+        granularity:
+          type: integer
+        total_gpu_allocation:
+          type: integer
+        allocated_gpu_count_graph:
+          type: array
+          items:
+            $ref: '#/components/schemas/AllocatedGPUCountGraph_2'
+    CustomerContractDetailResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        contracts:
+          $ref: '#/components/schemas/CustomerContractFields_2'
+    ContractDiscountPlanFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource_id:
+          type: integer
+        resource_name:
+          type: string
+        resource_count:
+          type: integer
+        discount_type:
+          type: string
+        discount_code:
+          type: string
+        discount_percent:
+          type: number
+        discount_amount:
+          type: number
+        discount_status:
+          type: string
+        remaining_count:
+          type: integer
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    CustomerContractFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        org_id:
+          type: integer
+        description:
+          type: string
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        expiration_policy:
+          type: integer
+        status:
+          type: string
+        discounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractDiscountPlanFields_2'
+        created_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

@@ -1,0 +1,218 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Policy API
+  version: '1.0'
+  description: 'Operations tagged Policy across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Policy
+  description: Authorization policies that bind permissions to roles.
+paths:
+  /auth/policies:
+    get:
+      tags:
+      - Policy
+      summary: List Policies
+      description: Returns a list of [**policies**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) that can be added to RBAC roles. Assigning these policies to a user provides them with access to commonly used sets of permissions, allowing specific resource actions.
+      operationId: List_Policies
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPoliciesResponseModel'
+              example:
+                status: true
+                message: Getting policies success
+                policies:
+                - id: 2058
+                  name: policy:AllPermissions
+                  description: Grants all permissions to all resources
+                  permissions:
+                  - id: 7613
+                    resource: Environment
+                    permission: environment:list
+                  - id: 3287
+                    resource: Environment
+                    permission: environment:create
+                  - id: 8429
+                    resource: Environment
+                    permission: environment:details
+                  created_at: '2026-05-07T11:47:30Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting policies success
+                    policies:
+                    - id: 2058
+                      name: policy:AllPermissions
+                      description: Grants all permissions to all resources
+                      permissions:
+                      - id: 7613
+                        resource: Environment
+                        permission: environment:list
+                      - id: 3287
+                        resource: Environment
+                        permission: environment:create
+                      - id: 8429
+                        resource: Environment
+                        permission: environment:details
+                      created_at: '2026-05-07T11:47:30Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    GetPoliciesResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting policies success
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyFields'
+          description: Authorization policies assigned to the role.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    PolicyFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 6190
+        name:
+          type: string
+          description: Name of the policy.
+          example: policy:AllPermissions
+        description:
+          type: string
+          description: Human-readable description of the resource.
+          example: Grants all permissions to all resources
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyPermissionFields'
+          description: Permissions granted by the role.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T14:32:11Z'
+    PolicyPermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 6190
+        resource:
+          type: string
+          description: Resource the entry refers to.
+          example: Environment
+        permission:
+          type: string
+          description: Permission grant on the resource.
+          example: environment:list
+    GetPoliciesResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyFields_2'
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    PolicyFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyPermissionFields_2'
+        created_at:
+          type: string
+          format: date-time
+    PolicyPermissionFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

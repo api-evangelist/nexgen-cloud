@@ -1,0 +1,123 @@
+openapi: 3.2.0
+info:
+  title: Infrahub User Consent Events API
+  version: '1.0'
+  description: User Consent management
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: user-consent-events
+  description: User Consent management
+paths:
+  /auth/user-consent-events/{consent_type}/events:
+    get:
+      tags:
+      - user-consent-events
+      summary: Get audit trail for a consent
+      description: Get all consent audit events
+      operationId: Get_consent_audit_events
+      parameters:
+      - name: consent_type
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentEventsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+components:
+  schemas:
+    UserConsentEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+        consent_id:
+          type: integer
+        user_id:
+          type: integer
+        action:
+          type: string
+        ip_address:
+          type: string
+        consent_method:
+          type: string
+        created_at:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    ConsentEventsResponse:
+      type: object
+      properties:
+        consent:
+          $ref: '#/components/schemas/UserConsent'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserConsentEvent'
+    UserConsent:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        org_id:
+          type: integer
+        consent_type:
+          type: string
+        action:
+          type: string
+        ip_address:
+          type: string
+        consent_method:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

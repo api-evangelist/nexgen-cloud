@@ -1,0 +1,623 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Template API
+  version: '1.0'
+  description: 'Operations tagged Template across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Template
+  description: A template is a saved virtual machine configuration that you can reuse to deploy identical VMs without re-specifying every parameter. Templates capture flavor, image, keypair, networking, and metadata.
+paths:
+  /core/marketplace/templates:
+    get:
+      tags:
+      - Template
+      summary: List templates
+      description: Returns a list of templates, providing resource configuration details for each. Optionally, specify the `visibility` as `public` or `private` to retrieve templates with the desired visibility status. To learn more about the templates feature, see [Templates](https://docs.hyperstack.cloud/docs/api-reference/template).
+      operationId: List_templates
+      parameters:
+      - name: visibility
+        in: query
+        description: Specify the `visibility` status as either `public` or `private` to filter and retrieve templates with the desired visibility.
+        schema:
+          type: string
+          enum:
+          - public
+          - private
+      responses:
+        '200':
+          description: Templates list successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Templates'
+              example:
+                status: true
+                message: Getting templates success
+                templates:
+                - id: 9876
+                  name: 'Template 101: Welcome'
+                  description: Welcome to our Solution Marketplace template for deploying an instance. This template is designed to create an environment, a keypair, and an instance for the user, allowing them to input the appropriate details and create resources based on their needs. The input variables for this template are FLAVOR_NAME, IMAGE_NAME, PUBLIC_KEY, and INSTANCE_NAME. FLAVOR_NAME refers to the type of compute flavor that will be used, while IMAGE_NAME specifies the operating system image that will be installed on the instance. PUBLIC_KEY is the key that the user will use to authenticate and access the instance, and INSTANCE_NAME is the name that will be given to the instance being deployed.
+                  is_public: true
+                  created_at: '2026-05-07T09:21:55Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting templates success
+                    templates:
+                    - id: 9876
+                      name: 'Template 101: Welcome'
+                      description: Welcome to our Solution Marketplace template for deploying an instance. This template is designed to create an environment, a keypair, and an instance for the user, allowing them to input the appropriate details and create resources based on their needs. The input variables for this template are FLAVOR_NAME, IMAGE_NAME, PUBLIC_KEY, and INSTANCE_NAME. FLAVOR_NAME refers to the type of compute flavor that will be used, while IMAGE_NAME specifies the operating system image that will be installed on the instance. PUBLIC_KEY is the key that the user will use to authenticate and access the instance, and INSTANCE_NAME is the name that will be given to the instance being deployed.
+                      is_public: true
+                      created_at: '2026-05-07T09:21:55Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    post:
+      tags:
+      - Template
+      summary: Create template
+      description: Creates a resource template for deployment. **Content type:** `multipart/form-data`. This endpoint takes a YAML file upload, send the file body as `multipart/form-data` rather than JSON.
+      operationId: Create_template
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  required: true
+                  description: Template name.
+                content:
+                  type: string
+                  format: binary
+                  required: true
+                  description: YAML file upload (`application/x-yaml`). Send the file content, not its path.
+                description:
+                  type: string
+                  description: Template description.
+                is_public:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: String literal `"true"` or `"false"`, not a JSON boolean.
+              required:
+              - name
+              - content
+        required: true
+      responses:
+        '201':
+          description: Template added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+              example:
+                status: true
+                message: Template added successfully
+                template:
+                  id: 2058
+                  name: example-tmpl
+                  description: Example template
+                  content: 'description: Example template
+
+                    parameters: []
+
+                    runcmd:
+
+                    - echo hello
+
+                    '
+                  is_public: false
+                  created_at: '2026-05-07T11:47:30Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Template added successfully
+                    template:
+                      id: 2058
+                      name: example-tmpl
+                      description: Example template
+                      content: 'description: Example template
+
+                        parameters: []
+
+                        runcmd:
+
+                        - echo hello
+
+                        '
+                      is_public: false
+                      created_at: '2026-05-07T11:47:30Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    errors:
+                      name: name is required Missing required parameter in the post body
+                    message: Input payload validation failed
+              example:
+                errors:
+                  name: name is required Missing required parameter in the post body
+                message: Input payload validation failed
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/marketplace/templates/{id}:
+    get:
+      tags:
+      - Template
+      summary: Retrieve template details
+      description: Retrieves the resource configuration details for a specified template.Provide the template ID in the path to retrieve details for the specified template.For additional information on template configuration details, see [API reference](https://docs.hyperstack.cloud/docs/api-reference/introduction).
+      operationId: Get_template
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the template.
+      responses:
+        '200':
+          description: Template details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+              example:
+                status: true
+                message: Getting template detail success
+                template:
+                  id: 2058
+                  name: example-tmpl
+                  description: Example resource (updated)
+                  content: 'description: Example template
+
+                    parameters: []
+
+                    runcmd:
+
+                    - echo hello
+
+                    '
+                  is_public: false
+                  created_at: '2026-05-07T11:47:30Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting template detail success
+                    template:
+                      id: 2058
+                      name: example-tmpl
+                      description: Example resource (updated)
+                      content: 'description: Example template
+
+                        parameters: []
+
+                        runcmd:
+
+                        - echo hello
+
+                        '
+                      is_public: false
+                      created_at: '2026-05-07T11:47:30Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    put:
+      tags:
+      - Template
+      summary: Update template
+      description: Updates the details of a template. Modify the template name, description and/or`is_public` status to change the public/private visibility of the template.
+      operationId: Update_template
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the template.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Update_Template'
+              example:
+                name: example-tmpl
+                description: Example resource (updated)
+              properties: {}
+            example:
+              name: example-tmpl
+              description: Example resource (updated)
+        required: true
+      responses:
+        '200':
+          description: Template updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+              example:
+                status: true
+                message: Template updated successfully
+                template:
+                  id: 2058
+                  name: example-tmpl
+                  description: Example resource (updated)
+                  content: 'description: Example template
+
+                    parameters: []
+
+                    runcmd:
+
+                    - echo hello
+
+                    '
+                  is_public: false
+                  created_at: '2026-05-07T11:47:30Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Template updated successfully
+                    template:
+                      id: 2058
+                      name: example-tmpl
+                      description: Example resource (updated)
+                      content: 'description: Example template
+
+                        parameters: []
+
+                        runcmd:
+
+                        - echo hello
+
+                        '
+                      is_public: false
+                      created_at: '2026-05-07T11:47:30Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    delete:
+      tags:
+      - Template
+      summary: Delete template
+      description: Permanently deletes a template. Supply the template ID in the path to delete the specified template.
+      operationId: Delete_template
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the template.
+      responses:
+        '200':
+          description: Template deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Template deleted successfully
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Template deleted successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    Templates:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting templates success
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Template_Fields'
+          description: List of deployment templates available to the user.
+    Template:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Input payload validation failed
+        template:
+          $ref: '#/components/schemas/Template_Fields'
+          description: Marketplace template used to deploy the resource.
+    Update_Template:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the template.
+        description:
+          type: string
+          description: Human-readable description of the resource.
+        is_public:
+          type: boolean
+          description: Whether the resource is visible to other users in the organization.
+    Template_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 4501
+        name:
+          type: string
+          description: Name of the template.
+          example: 'Template 101: Welcome'
+        description:
+          type: string
+          description: Human-readable description of the resource.
+          example: Welcome to our Solution Marketplace template for deploying an instance. This template is designed to create an environment, a keypair, and an instance for the user, allowing them to input the appropriate details and create resources based on their needs. The input variables for this template are FLAVOR_NAME, IMAGE_NAME, PUBLIC_KEY, and INSTANCE_NAME. FLAVOR_NAME refers to the type of compute flavor that will be used, while IMAGE_NAME specifies the operating system image that will be installed on the instance. PUBLIC_KEY is the key that the user will use to authenticate and access the instance, and INSTANCE_NAME is the name that will be given to the instance being deployed.
+        content:
+          type: string
+          example: 'description: example
+
+            parameters: []
+
+            runcmd:
+
+            - echo hello
+
+            '
+          description: Template body containing the resource definitions and variable placeholders.
+        is_public:
+          type: boolean
+          description: Whether the resource is visible to other users in the organization.
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T11:47:30Z'
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Templates_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Template_Fields_2'
+    Template_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        template:
+          $ref: '#/components/schemas/Template_Fields_2'
+    Update_Template_2:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        is_public:
+          type: boolean
+    Template_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        content:
+          type: string
+        is_public:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

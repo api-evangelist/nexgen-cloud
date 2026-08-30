@@ -1,0 +1,201 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud User Permission API
+  version: '1.0'
+  description: 'Operations tagged User Permission across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: User Permission
+  description: Permissions assigned to specific users in the calling organization.
+paths:
+  /auth/users/me/permissions:
+    get:
+      tags:
+      - User Permission
+      summary: List my user permissions
+      description: Retrieves a list of [**permissions**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) granted to a specific user within your organization. Obtain the ID of the organization member using the [**Retrieve Organization Details**](https://docs.hyperstack.cloud/docs/api-reference/retrieve-organization-information) endpoint, and include the ID in the path.
+      operationId: List_My_User_Permissions
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserPermissionsResponseModel'
+              example:
+                status: true
+                message: Getting my permissions successfully
+                permissions:
+                - id: 6190
+                  resource: Environment
+                  permission: environment:list
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting my permissions successfully
+                    permissions:
+                    - id: 6190
+                      resource: Environment
+                      permission: environment:list
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/users/{id}/permissions:
+    get:
+      tags:
+      - User Permission
+      summary: List user permissions
+      description: Retrieves a list of permissions granted to a specific user within your organization. Provide the ID of the user in the path. For additional information on user permissions,.
+      operationId: List_User_Permissions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the user.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserPermissionsResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    UserPermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 7613
+        resource:
+          type: string
+          description: Resource the entry refers to.
+          example: Environment
+        permission:
+          type: string
+          description: Permission grant on the resource.
+          example: environment:list
+    GetUserPermissionsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting my permissions successfully
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPermissionFields'
+          description: Permissions granted by the role.
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    UserPermissionFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
+          type: string
+    GetUserPermissionsResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPermissionFields_2'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

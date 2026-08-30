@@ -1,0 +1,721 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Keypair API
+  version: '1.0'
+  description: 'Operations tagged Keypair across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Keypair
+  description: A keypair is an SSH public/private key pair used to authenticate into virtual machines after deployment. Generate the keypair locally, register the public key with Hyperstack, then reference the keypair name when deploying a VM. Hyperstack never stores private keys.
+paths:
+  /core/keypair/{id}:
+    put:
+      tags:
+      - Keypair
+      summary: Update key pair name
+      description: Updates the name of a specified key pair. Include the key pair ID in the request path and the new `name` of the key pair in the request body.
+      operationId: Update_key_pair_name
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the key pair.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Update_Keypair_Name'
+              example:
+                name: example-keypair
+              properties: {}
+            example:
+              name: example-keypair
+        required: true
+      responses:
+        '200':
+          description: Keypair name updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Update_Keypair_name_response'
+              example:
+                status: true
+                message: Keypair name updated successfully to example-keypair
+                keypair:
+                  id: 1129
+                  name: example-keypair
+                  environment:
+                    id: 1402
+                    name: example-environment
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                  public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJz0qO97NM7sZzUGT0z+eddAXg8BTYr1dz5LD8QyCmg1 user@example.com
+                  fingerprint: ea:85:b4:6e:a8:75:a1:17:10:51:f5:a2:65:7e:1f:c0
+                  created_at: '2026-05-06T15:18:42Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Keypair name updated successfully to example-keypair
+                    keypair:
+                      id: 1129
+                      name: example-keypair
+                      environment:
+                        id: 1402
+                        name: example-environment
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                      public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJz0qO97NM7sZzUGT0z+eddAXg8BTYr1dz5LD8QyCmg1 user@example.com
+                      fingerprint: ea:85:b4:6e:a8:75:a1:17:10:51:f5:a2:65:7e:1f:c0
+                      created_at: '2026-05-06T15:18:42Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    delete:
+      tags:
+      - Keypair
+      summary: Delete key pair
+      description: Permanently deletes a specified key pair. Include the key pair ID in the request path to remove the key pair.
+      operationId: Delete_key_pair
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the key pair.
+      responses:
+        '200':
+          description: Keypair successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Key was successfully deleted. You can still access your existing instances that use this key.
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Key was successfully deleted. You can still access your existing instances that use this key.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/keypairs:
+    get:
+      tags:
+      - Keypair
+      summary: List key pairs
+      description: Retrieves a list of your existing SSH key pairs, providing details for each. See [SSH keys](https://docs.hyperstack.cloud/docs/network/ssh) for additional information.
+      operationId: List_key_pairs
+      parameters:
+      - name: page
+        in: query
+        description: Page number of results to return.
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        description: Data Per Page
+        schema:
+          type: integer
+      - name: search
+        in: query
+        schema:
+          type: string
+        description: Filter results by case-insensitive substring match against the resource name.
+      responses:
+        '200':
+          description: Retrieval of key pairs list successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Keypairs'
+              example:
+                status: true
+                message: Getting user keypairs successful
+                keypairs:
+                - id: 6190
+                  name: example-key
+                  environment:
+                    id: 1129
+                    name: testing-debian
+                    features:
+                      network_optimised: true
+                      green_status: GREEN
+                  public_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXQKy9WJQS8/xOahGhjd3xpkURCqjReo5b44HOqg0rNFPt1JXVYuRgq5hpwd8wm08WpTrnw/w2X4MSScbmKpWE0tqYqxV/SE9WtB3S2J/FZ+he0oghskFbmcs8xX9fBQWDS/+SSQJHmM1voAT5Xo9tW3wWzVy4XQADUKDkd7eDg3avVzvp84+sw5ungQRgrK3zRBBeq4ttuaxRm5Ow6QjQ6a/u6CD+uQtZyCaXFwL0RYssA3rDIqrQsPk4Dfa4UFPFgYbwkmZ53jEBwcX2/QB88eu3KZld/tku7OKdqAwa6aE8woB7TrQUMeBS9f4kBl+L8I0J833H97sG5RvyinL5 '
+                  fingerprint: cc:c3:a1:a6:46:98:3f:5c:5d:40:30:0b:bf:7b:e2:78
+                  created_at: '2026-05-06T14:32:11Z'
+                page: null
+                page_size: null
+                count: 1
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting user keypairs successful
+                    keypairs:
+                    - id: 6190
+                      name: example-key
+                      environment:
+                        id: 1129
+                        name: testing-debian
+                        features:
+                          network_optimised: true
+                          green_status: GREEN
+                      public_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXQKy9WJQS8/xOahGhjd3xpkURCqjReo5b44HOqg0rNFPt1JXVYuRgq5hpwd8wm08WpTrnw/w2X4MSScbmKpWE0tqYqxV/SE9WtB3S2J/FZ+he0oghskFbmcs8xX9fBQWDS/+SSQJHmM1voAT5Xo9tW3wWzVy4XQADUKDkd7eDg3avVzvp84+sw5ungQRgrK3zRBBeq4ttuaxRm5Ow6QjQ6a/u6CD+uQtZyCaXFwL0RYssA3rDIqrQsPk4Dfa4UFPFgYbwkmZ53jEBwcX2/QB88eu3KZld/tku7OKdqAwa6aE8woB7TrQUMeBS9f4kBl+L8I0J833H97sG5RvyinL5 '
+                      fingerprint: cc:c3:a1:a6:46:98:3f:5c:5d:40:30:0b:bf:7b:e2:78
+                      created_at: '2026-05-06T14:32:11Z'
+                    page: null
+                    page_size: null
+                    count: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    post:
+      tags:
+      - Keypair
+      summary: Import key pair
+      description: Imports a new key pair for secure shell (SSH) access to your resources. To import a new key pair, include the key name, environment name, and [**public key**](https://docs.hyperstack.cloud/docs/api-reference/quickstart) in the request body. For additional information on importing SSH key pairs, see [Quickstart](https://docs.hyperstack.cloud/docs/api-reference/quickstart). If you haven't created a key pair yet, you can generate one by clicking [Quickstart](https://docs.hyperstack.cloud/docs/api-reference/quickstart).
+      operationId: Import_key_pair
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Import_Keypair_Payload'
+              example:
+                name: example-keypair
+                environment_name: example-environment
+                public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEIaiQg7+LfKOMWo9Mt9DNI4cKzocn9ISXme9FqCamKA user@example.com
+              properties: {}
+            example:
+              environment_name: example-environment
+              name: example-keypair
+              public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEIaiQg7+LfKOMWo9Mt9DNI4cKzocn9ISXme9FqCamKA user@example.com
+        required: true
+      responses:
+        '200':
+          description: Keypair is imported successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Import_Keypair_Response'
+              example:
+                status: true
+                message: Keypair is imported successfully
+                keypair:
+                  id: 1129
+                  name: example-keypair
+                  environment:
+                    id: 1402
+                    name: example-environment
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                  public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEIaiQg7+LfKOMWo9Mt9DNI4cKzocn9ISXme9FqCamKA user@example.com
+                  fingerprint: 26:3d:b0:8a:ef:b1:65:22:d1:94:c6:e4:00:6d:a7:e5
+                  created_at: '2026-05-06T15:18:42Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Keypair is imported successfully
+                    keypair:
+                      id: 1129
+                      name: example-keypair
+                      environment:
+                        id: 1402
+                        name: example-environment
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                      public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEIaiQg7+LfKOMWo9Mt9DNI4cKzocn9ISXme9FqCamKA user@example.com
+                      fingerprint: 26:3d:b0:8a:ef:b1:65:22:d1:94:c6:e4:00:6d:a7:e5
+                      created_at: '2026-05-06T15:18:42Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/supported-keypairs:
+    get:
+      tags:
+      - Keypair
+      summary: List supported key pair types
+      description: Retrieves the SSH public key types accepted when you import a key pair. Importing a public key of any other type is rejected. See [**SSH keys**](https://docs.hyperstack.cloud/docs/network/ssh#supported-ssh-key-types) for additional information.
+      operationId: List_supported_key_pair_types
+      responses:
+        '200':
+          description: Retrieval of supported key pair types successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supported_Keypair_Public_Key_Types_Response'
+              example:
+                status: true
+                message: Getting supported keypair public key types successful
+                supported_key_types:
+                - ssh-rsa
+                - ssh-ed25519
+                - ecdsa-sha2-nistp256
+                - ecdsa-sha2-nistp384
+                - ecdsa-sha2-nistp521
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting supported keypair public key types successful
+                    supported_key_types:
+                    - ssh-rsa
+                    - ssh-ed25519
+                    - ecdsa-sha2-nistp256
+                    - ecdsa-sha2-nistp384
+                    - ecdsa-sha2-nistp521
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    Keypair_Environment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 6190
+        name:
+          type: string
+          description: Name of the environment.
+          example: example-environment
+        region:
+          type: string
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+        features:
+          $ref: '#/components/schemas/Keypair_Environment_Features'
+          description: Optional feature flags applicable to the resource.
+    Import_Keypair_Payload:
+      required:
+      - environment_name
+      - name
+      - public_key
+      type: object
+      properties:
+        environment_name:
+          type: string
+          description: The name of the environment where the key pair is being created.
+        name:
+          maxLength: 50
+          type: string
+          description: The name of the key pair that is being created.
+        public_key:
+          type: string
+          description: The public key that is being used to import an SSH key pair. See the [**supported key types**](https://docs.hyperstack.cloud/docs/network/ssh#supported-ssh-key-types).
+    Supported_Keypair_Public_Key_Types_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting supported keypair public key types successful
+        supported_key_types:
+          type: array
+          description: The SSH public key types accepted when you import a key pair.
+          items:
+            type: string
+            example: ssh-ed25519
+    Keypairs:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting user keypairs successful
+        keypairs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Keypair_Fields'
+          description: An array of `keypairs` objects, containing details on your existing SSH key pairs.
+        page:
+          type:
+          - integer
+          - 'null'
+          description: 1-indexed page number of the current result set.
+        page_size:
+          type:
+          - integer
+          - 'null'
+          description: Number of items per page in the current result set.
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 6
+    Update_Keypair_name_response:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Keypair name updated successfully to example-keypair
+        keypair:
+          $ref: '#/components/schemas/Keypair_Fields'
+          description: SSH keypair attached to the VM.
+    Update_Keypair_Name:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The new key pair name.
+    Keypair_Environment_Features:
+      type: object
+      properties:
+        network_optimised:
+          type: boolean
+          description: Whether the resource has the network-optimised feature enabled.
+          example: false
+        green_status:
+          type: string
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
+          description: Indicator of how much of the region's capacity is running on green energy.
+    Import_Keypair_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Keypair is imported successfully
+        keypair:
+          $ref: '#/components/schemas/Keypair_Fields'
+          description: SSH keypair attached to the VM.
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Keypair_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 4501
+        name:
+          type: string
+          description: Name of the keypair.
+          example: example-keypair
+        environment:
+          $ref: '#/components/schemas/Keypair_Environment_Fields'
+          description: Environment containing the resource.
+        public_key:
+          type: string
+          description: OpenSSH-format public key.
+          example: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOu6TJudyoheKvyDdnr8HYCBNjJVT79bq9EGuDHdR3e3 user@example.com
+        fingerprint:
+          type: string
+          description: MD5 or SHA256 fingerprint of the public key.
+          example: ff:00:4b:02:8e:43:b6:75:03:7c:52:52:df:82:9d:58
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T11:47:30Z'
+    Keypair_Environment_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        region:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        features:
+          $ref: '#/components/schemas/Keypair_Environment_Features_2'
+    Import_Keypair_Payload_2:
+      required:
+      - environment_name
+      - name
+      - public_key
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The name of the key pair that is being created.
+        environment_name:
+          type: string
+          description: The name of the environment where the key pair is being created.
+        public_key:
+          type: string
+          description: The public key that is being used to import an SSH key pair.
+    Supported_Keypair_Public_Key_Types_Response_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        supported_key_types:
+          type: array
+          items:
+            type: string
+    Keypairs_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        keypairs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Keypair_Fields_2'
+        page:
+          type: integer
+        page_size:
+          type: integer
+        count:
+          type: integer
+    Update_Keypair_name_response_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        keypair:
+          $ref: '#/components/schemas/Keypair_Fields_2'
+    Keypair_Environment_Features_2:
+      type: object
+      properties:
+        network_optimised:
+          type: boolean
+        green_status:
+          type: string
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
+    Import_Keypair_Response_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        keypair:
+          $ref: '#/components/schemas/Keypair_Fields_2'
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Keypair_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        environment:
+          $ref: '#/components/schemas/Keypair_Environment_Fields_2'
+        public_key:
+          type: string
+        fingerprint:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

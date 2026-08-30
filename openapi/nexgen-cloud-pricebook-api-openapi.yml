@@ -1,0 +1,193 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Pricebook API
+  version: '1.0'
+  description: 'Operations tagged Pricebook across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Pricebook
+  description: Pricebook endpoints expose Hyperstack's pricing for compute, storage, and networking resources. Use these to estimate costs before deploying or to surface live pricing in your application.
+paths:
+  /pricebook:
+    get:
+      tags:
+      - Pricebook
+      description: 'Iterate the response directly. Retrieves the Hyperstack Pricebook, detailing hourly running costs for all resources offered by Hyperstack.
+
+
+        > **Non-standard envelope:** This endpoint returns a bare JSON array (no `status` / `message` envelope).'
+      operationId: Get_pricebook
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PricebookModel'
+              example:
+              - id: 1402
+                name: vCPU
+                value: 0E-9
+                original_value: 0E-9
+                discount_applied: false
+                start_time: null
+                end_time: null
+              - id: 9876
+                name: RAM
+                value: 0E-9
+                original_value: 0E-9
+                discount_applied: false
+                start_time: null
+                end_time: null
+              - id: 2058
+                name: RTX-A4000
+                value: '0.150000000'
+                original_value: '0.150000000'
+                discount_applied: false
+                start_time: null
+                end_time: null
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                  - id: 1402
+                    name: vCPU
+                    value: 0E-9
+                    original_value: 0E-9
+                    discount_applied: false
+                    start_time: null
+                    end_time: null
+                  - id: 9876
+                    name: RAM
+                    value: 0E-9
+                    original_value: 0E-9
+                    discount_applied: false
+                    start_time: null
+                    end_time: null
+                  - id: 2058
+                    name: RTX-A4000
+                    value: '0.150000000'
+                    original_value: '0.150000000'
+                    discount_applied: false
+                    start_time: null
+                    end_time: null
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      summary: Get the pricebook
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    PricebookModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        name:
+          type: string
+          description: Name of the pricebook entry.
+        value:
+          type: number
+          description: Value of the entry.
+        original_value:
+          type: number
+          description: Original price value for the resource per hour before any discounts.
+        discount_applied:
+          type: boolean
+          description: Indicates whether a discount has been applied to the resource price.
+        start_time:
+          type: string
+          format: date-time
+          description: Start time for the pricing. The `null` when there is no specified start time.
+          default: is
+        end_time:
+          type: string
+          format: date-time
+          description: The end time for the pricing. The `null` when there is no specified end time.
+          default: is
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    PricebookModel_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        value:
+          type: number
+        original_value:
+          type: number
+        discount_applied:
+          type: boolean
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

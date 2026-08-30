@@ -1,0 +1,609 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Auth API
+  version: '1.0'
+  description: 'Operations tagged Auth across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Auth
+  description: Auth endpoints manage organization tokens, including changing the active organization on the current token. Use these endpoints when an account spans multiple organizations and you need to scope subsequent calls to a specific one.
+paths:
+  /auth/me:
+    get:
+      tags:
+      - Auth
+      summary: Retrieve authenticated user details
+      description: Retrieves information about the currently authenticated user, including your name, username, email associated with your account, and timestamp of account creation.
+      operationId: Get_Authenticated_User
+      responses:
+        '200':
+          description: User Information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserInfoResponseModel'
+              example:
+                status: true
+                message: Auth user
+                user:
+                  email: user@example.com
+                  name: Jane Doe
+                  username: Jane Doe
+                  created_at: '2026-05-06T15:18:42Z'
+                  has_social_login: false
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Auth user
+                    user:
+                      email: user@example.com
+                      name: Jane Doe
+                      username: Jane Doe
+                      created_at: '2026-05-06T15:18:42Z'
+                      has_social_login: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/me/mfa:
+    get:
+      tags:
+      - Auth
+      summary: Get MFA status for authenticated user
+      description: Retrieve the Multi-Factor Authentication (MFA) status for the currently authenticated user. Includes whether MFA is enabled.
+      operationId: Get_User_MFA_Status
+      responses:
+        '200':
+          description: MFA Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MFAStatusResponse'
+              example:
+                status: true
+                message: MFA status retrieved successfully
+                mfa:
+                  mfa_enabled: true
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: MFA status retrieved successfully
+                    mfa:
+                      mfa_enabled: true
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/me/mfa/disable:
+    post:
+      tags:
+      - Auth
+      description: Disable Multi-Factor Authentication (MFA) for the currently authenticated user. This endpoint is used to turn off MFA.
+      operationId: Disable_MFA
+      responses:
+        '200':
+          description: MFA Disabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '403':
+          description: Forbidden - CSRF validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+      security:
+      - apiKey: []
+      summary: Disable MFA on the calling user
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/me/organizations:
+    get:
+      tags:
+      - Auth
+      summary: Get user organizations
+      description: 'Retrieve the organizations associated with a user by their user ID. This endpoint is useful for understanding the user''s organizational affiliations.
+
+
+        > **Non-standard envelope:** This endpoint returns only `{"organizations": [.]}`, no `status` or `message` field.'
+      operationId: Get_User_Organizations
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOrganizationsResponse'
+              example:
+                organizations:
+                - id: 2058
+                  name: Example Organization
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    organizations:
+                    - id: 2058
+                      name: Example Organization
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/token/change-org/{org_id}:
+    get:
+      tags:
+      - Auth
+      description: Change the organization associated with the current token. This is useful for users who have access to multiple organizations.
+      operationId: Change_Organization_for_Token
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the organization.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthGetTokenResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+      summary: Switch the active organization on the token
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    OrganizationFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 6190
+        name:
+          type: string
+          description: Name of the organization.
+          example: Example Organization
+        credit:
+          type: integer
+          description: Available account credit.
+        threshold:
+          type: integer
+          description: Spending threshold above which the alert is triggered.
+        total_instances:
+          type: integer
+          description: Total number of virtual machines in the organization.
+        total_volumes:
+          type: integer
+          description: Total number of volumes in the organization.
+        total_containers:
+          type: integer
+          description: Total number of containers in the organization.
+        total_clusters:
+          type: integer
+          description: Total number of Kubernetes clusters in the organization.
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationUserResponseModel'
+          description: An array containing information about the organization's members.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T09:21:55Z'
+    AccessTokenField:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: JWT access token used to authenticate API requests.
+    MFAStatusFields:
+      type: object
+      properties:
+        mfa_enabled:
+          type: boolean
+          description: Whether MFA is enabled for the user.
+          example: true
+    MFAStatusResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: MFA status retrieved successfully
+        mfa:
+          $ref: '#/components/schemas/MFAStatusFields'
+          description: Multi-factor authentication status for the user.
+    CommonResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Not found
+    UserOrganizationsResponse:
+      type: object
+      properties:
+        organizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationFields'
+          description: List of organizations the user belongs to.
+    OrganizationUserResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 9876
+        sub:
+          type: string
+          example: 5c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d
+          description: The unique identifier for the user for authentication and authorization purposes.
+        email:
+          type: string
+          description: User email address.
+          example: user@example.com
+        username:
+          type: string
+          description: Username used to log in.
+          example: Jane Doe
+        name:
+          type: string
+          description: Full name of the user.
+          example: Jane Doe
+        role:
+          type: string
+          description: Role assigned to the user.
+          example: Owner
+        rbac_roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RbacRoleField'
+          description: An array containing the IDs of any [**RBAC**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) (Role-Based Access Control) roles granted to the user.
+        joined_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp indicating when the user joined the organization.
+        last_login:
+          type: string
+          format: date-time
+          example: '2026-05-06T14:32:11Z'
+          description: ISO 8601 UTC timestamp indicating when the user last logged in.
+    AuthUserFields:
+      type: object
+      properties:
+        email:
+          type: string
+          description: User email address.
+          example: user@example.com
+        name:
+          type: string
+          description: Full name of the user.
+          example: Jane Doe
+        username:
+          type: string
+          description: Username used to log in.
+          example: Jane Doe
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T11:47:30Z'
+    AuthGetTokenResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        token:
+          $ref: '#/components/schemas/AccessTokenField'
+          description: Authentication tokens returned for the session.
+    RbacRoleField:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the RBAC role.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    AuthUserInfoResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Auth user
+        user:
+          $ref: '#/components/schemas/AuthUserFields'
+          description: An object containing user account details.
+    OrganizationFields_2:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        credit:
+          type: integer
+        threshold:
+          type: integer
+        total_instances:
+          type: integer
+        total_volumes:
+          type: integer
+        total_containers:
+          type: integer
+        total_clusters:
+          type: integer
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationUserResponseModel_2'
+        created_at:
+          type: string
+          format: date-time
+    AccessTokenField_2:
+      type: object
+      properties:
+        access_token:
+          type: string
+    MFAStatusFields_2:
+      required:
+      - mfa_enabled
+      type: object
+      properties:
+        mfa_enabled:
+          type: boolean
+          description: Whether MFA is enabled for the user
+    MFAStatusResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        mfa:
+          $ref: '#/components/schemas/MFAStatusFields_2'
+    CommonResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    UserOrganizationsResponse_2:
+      type: object
+      properties:
+        organizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationFields_2'
+    OrganizationUserResponseModel_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        sub:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        rbac_roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RbacRoleField_2'
+        joined_at:
+          type: string
+          format: date-time
+        last_login:
+          type: string
+          format: date-time
+    AuthUserFields_2:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    AuthGetTokenResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        token:
+          $ref: '#/components/schemas/AccessTokenField_2'
+    RbacRoleField_2:
+      type: object
+      properties:
+        name:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    AuthUserInfoResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        user:
+          $ref: '#/components/schemas/AuthUserFields_2'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

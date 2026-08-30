@@ -1,0 +1,209 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud GPU API
+  version: '1.0'
+  description: 'Operations tagged GPU across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: GPU
+  description: GPU model availability and stock per region.
+paths:
+  /core/gpus:
+    get:
+      tags:
+      - GPU
+      summary: List GPUs
+      description: Returns a list of all available GPUs that can be utilized in the creation of custom virtual machine configurations.
+      operationId: List_Gpus
+      responses:
+        '200':
+          description: Retrieval of GPUs list successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GPU_List'
+              example:
+                status: true
+                message: Getting GPU list successful
+                gpu_list:
+                - id: 4501
+                  name: RTX-A4000
+                  regions:
+                  - id: 8429
+                    name: NORWAY-1
+                  example_metadata: '{"pci_passthrough:alias": "RTX-A4000:4"}'
+                  created_at: '2026-05-07T11:47:30Z'
+                  updated_at: null
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting GPU list successful
+                    gpu_list:
+                    - id: 4501
+                      name: RTX-A4000
+                      regions:
+                      - id: 8429
+                        name: NORWAY-1
+                      example_metadata: '{"pci_passthrough:alias": "RTX-A4000:4"}'
+                      created_at: '2026-05-07T11:47:30Z'
+                      updated_at: null
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    GPU_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 5341
+        name:
+          type: string
+          description: Name of the GPU model.
+          example: RTX-A4000
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/GPU_Region_Fields'
+          description: Regions where the resource is available.
+        example_metadata:
+          type: string
+          example: '{"pci_passthrough:alias": "RTX-A4000:4"}'
+          description: Example metadata illustrating the format of GPU-specific attributes.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T14:32:11Z'
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was last modified.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    GPU_List:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting GPU list successful
+        gpu_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/GPU_Fields'
+          description: List of available GPU models.
+    GPU_Region_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 1402
+        name:
+          type: string
+          description: Name of the region.
+          example: NORWAY-1
+    GPU_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/GPU_Region_Fields_2'
+        example_metadata:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    GPU_List_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        gpu_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/GPU_Fields_2'
+    GPU_Region_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

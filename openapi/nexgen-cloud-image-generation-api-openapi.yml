@@ -1,0 +1,418 @@
+openapi: 3.2.0
+info:
+  title: AI Studio Image Generation API
+  version: '0.1'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
+
+
+    ## Base URL
+
+
+    All requests are sent to:
+
+
+    ```
+
+    https://console.hyperstack.cloud/ai/api/v1
+
+    ```
+
+
+    ## Authentication
+
+
+    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
+
+
+    ## Request and response format
+
+
+    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+servers:
+- url: https://console.hyperstack.cloud/ai/api/v1
+security:
+- apiKey: []
+tags:
+- name: Image Generation
+  description: Text-to-image and image-to-image generation. Submit a generation or edit request, then poll the task endpoint to retrieve the resulting image. Use a presigned upload URL to supply a source image for edits.
+paths:
+  /images/generations:
+    post:
+      tags:
+      - Image Generation
+      operationId: generateImageFromText
+      summary: Generate image from text
+      description: 'Generates one or more images from a text prompt using a text-to-image model. This operation is asynchronous: the response returns a `job_id` with status `queued`. Poll [Get image result](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-image-result) until the status is `completed` to retrieve the generated images.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageGenerationRequestSchema'
+            example:
+              model: FLUX.1-schnell
+              prompt: A red ceramic coffee mug on a wooden table, soft morning light
+              num_images: 1
+              image_size: square_hd
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageJobAcceptedSchema'
+              example:
+                job_id: 256
+                status: queued
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '422':
+          description: Validation Error
+  /images/edits:
+    post:
+      tags:
+      - Image Generation
+      operationId: generateImageFromImage
+      summary: Generate image from image
+      description: 'Generates an edited image from a source image and a text prompt using an image-to-image model. Supply the source image with `image_url` (an uploaded S3 filename from [Get image upload URL](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-image-upload-url), or a reachable URL). This operation is asynchronous: the response returns a `job_id` with status `queued`. Poll [Get image result](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-image-result) until the status is `completed` to retrieve the result. Requires an image-to-image model; text-to-image models return a `modality.incompatible` error.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageEditRequestSchema'
+            example:
+              model: FLUX.1-Kontext-dev
+              prompt: Make the background a clear blue sky
+              image_url: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+              num_images: 1
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageJobAcceptedSchema'
+              example:
+                job_id: 257
+                status: queued
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '422':
+          description: Validation Error
+  /images/signed-url:
+    get:
+      tags:
+      - Image Generation
+      operationId: getImageUploadUrl
+      summary: Get image upload URL
+      description: Returns a presigned S3 URL for uploading a source image. Upload the image bytes with an HTTP PUT to `signed_url`, then pass the returned `filename` as `image_url` in [Generate image from image](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/generate-image-from-image).
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageUploadUrlSchema'
+              example:
+                signed_url: https://ca1-dev.s3.nexgencloud.io/prod-image-bucket-ca1/a1b2c3d4-e5f6-7890-abcd-ef1234567890?X-Amz-Signature=...
+                filename: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '422':
+          description: Validation Error
+  /images/tasks/{job_id}:
+    get:
+      tags:
+      - Image Generation
+      operationId: getImageResult
+      summary: Get image result
+      description: Returns the status and progress of an image generation or edit job. While the job runs, `status` is `queued` or `in_progress` with a `progress` percentage. Once `status` is `completed`, the `result` object contains the generated images. Poll this endpoint after submitting a request to [Generate image from text](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/generate-image-from-text) or [Generate image from image](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/generate-image-from-image).
+      parameters:
+      - in: path
+        name: job_id
+        required: true
+        schema:
+          type: integer
+        description: The `job_id` returned by [Generate image from text](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/generate-image-from-text) or [Generate image from image](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/generate-image-from-image).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageTaskStatusSchema'
+              example:
+                status: completed
+                result:
+                  created: '2026-01-15T09:30:00.000000'
+                  data:
+                  - url: https://ca1-dev.s3.nexgencloud.io/prod-image-bucket-ca1/a1b2c3d4-e5f6-7890-abcd-ef1234567890.png
+                    b64_json: null
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '422':
+          description: Validation Error
+components:
+  schemas:
+    ImageUploadUrlSchema:
+      type: object
+      required:
+      - signed_url
+      - filename
+      properties:
+        signed_url:
+          type: string
+          description: Presigned S3 URL. Upload the image bytes with an HTTP PUT to this URL.
+        filename:
+          type: string
+          description: S3 key for the uploaded image. Pass this as `image_url` in [Generate image from image](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/generate-image-from-image).
+      title: ImageUploadUrlSchema
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
+    ImageGenerationRequestSchema:
+      type: object
+      required:
+      - model
+      - prompt
+      properties:
+        model:
+          type: string
+          description: ID of the text-to-image model to use, such as `FLUX.1-schnell`. Use the `model_name` from [List base models](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-base-models); the model must support the `text-to-image` modality.
+        prompt:
+          type: string
+          description: Text description of the image to generate.
+        negative_prompt:
+          type: string
+          default: null
+          description: Text describing what to exclude from the generated image.
+        image_size:
+          type: string
+          default: square_hd
+          description: Output image size, as an aspect-ratio preset or an explicit `WIDTHxHEIGHT` value.
+          x-enumDescriptions:
+            '`square_hd`': Square output, high resolution.
+            '`square`': Square output (1:1).
+            '`portrait_4_3`': Portrait output, 3:4 aspect ratio.
+            '`portrait_16_9`': Portrait output, 9:16 aspect ratio.
+            '`landscape_4_3`': Landscape output, 4:3 aspect ratio.
+            '`landscape_16_9`': Landscape output, 16:9 aspect ratio.
+        num_images:
+          type: integer
+          default: 1
+          description: Number of images to generate.
+        num_inference_steps:
+          type: integer
+          default: null
+          description: Number of denoising steps. Higher values can improve quality at the cost of speed.
+        guidance_scale:
+          type: number
+          default: null
+          description: How closely the result follows the prompt. Higher values follow the prompt more strictly.
+        seed:
+          type: integer
+          default: null
+          description: Random seed for reproducible results.
+        scheduler:
+          type: string
+          default: null
+          description: Sampler or scheduler to use, when supported by the model.
+        output_format:
+          type: string
+          enum:
+          - png
+          - jpeg
+          - webp
+          default: null
+          description: Format of the returned image.
+          x-enumDescriptions:
+            '`png`': Returns a lossless PNG image.
+            '`jpeg`': Returns a smaller, lossy JPEG image.
+            '`webp`': Returns a compact WebP image.
+        preset:
+          type: string
+          default: null
+          description: Named quality or style preset, when supported by the model.
+      title: ImageGenerationRequestSchema
+    ImageTaskStatusSchema:
+      type: object
+      properties:
+        status:
+          type: string
+          description: 'Job status: `queued` (accepted, not yet started), `in_progress` (generating, see `progress`), `completed` (result available in `result`), or `failed` (generation error).'
+        progress:
+          type: integer
+          default: null
+          description: Completion percentage from 0 to 100. Present while the job is in progress.
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ImageTaskResultSchema'
+          default: null
+          description: Generation result. Present once `status` is `completed`.
+      title: ImageTaskStatusSchema
+    ImageTaskResultSchema:
+      type: object
+      properties:
+        created:
+          type: string
+          description: Timestamp when the result was produced.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageData'
+          description: Generated images.
+      title: ImageTaskResultSchema
+    ImageJobAcceptedSchema:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          description: Identifier of the asynchronous image job. Poll [Get image result](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-image-result) to retrieve the result.
+        status:
+          type: string
+          description: Initial job status, such as `queued`.
+      title: ImageJobAcceptedSchema
+    ImageData:
+      type: object
+      properties:
+        url:
+          type: string
+          default: null
+          description: URL of the generated image. Populated when the output is returned as a URL.
+        b64_json:
+          type: string
+          default: null
+          description: Base64-encoded image. Populated instead of `url` when base64 output is requested.
+      title: ImageData
+    ImageEditRequestSchema:
+      type: object
+      required:
+      - model
+      - prompt
+      properties:
+        model:
+          type: string
+          description: ID of the image-to-image model to use, such as `FLUX.1-Kontext-dev`. Use the `model_name` from [List base models](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-base-models); the model must support the `image-to-image` modality.
+        prompt:
+          type: string
+          description: Text description of the edit to apply to the source image.
+        image_url:
+          type: string
+          default: null
+          description: URL or S3 filename of the source image to edit. Pass the `filename` returned by [Get image upload URL](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-image-upload-url) after uploading, or a publicly reachable image URL.
+        image_urls:
+          type: array
+          items:
+            type: string
+          default: null
+          description: Multiple source images to edit, as URLs or S3 filenames returned by [Get image upload URL](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-image-upload-url). Use instead of `image_url` when the model accepts several inputs.
+        negative_prompt:
+          type: string
+          default: null
+          description: Text describing what to exclude from the result.
+        image_size:
+          type: string
+          default: square_hd
+          description: Output image size, as an aspect-ratio preset or an explicit `WIDTHxHEIGHT` value.
+          x-enumDescriptions:
+            '`square_hd`': Square output, high resolution.
+            '`square`': Square output (1:1).
+            '`portrait_4_3`': Portrait output, 3:4 aspect ratio.
+            '`portrait_16_9`': Portrait output, 9:16 aspect ratio.
+            '`landscape_4_3`': Landscape output, 4:3 aspect ratio.
+            '`landscape_16_9`': Landscape output, 16:9 aspect ratio.
+        num_images:
+          type: integer
+          default: 1
+          description: Number of images to generate.
+        num_inference_steps:
+          type: integer
+          default: null
+          description: Number of denoising steps. Higher values can improve quality at the cost of speed.
+        guidance_scale:
+          type: number
+          default: null
+          description: How closely the result follows the prompt. Higher values follow the prompt more strictly.
+        output_format:
+          type: string
+          enum:
+          - png
+          - jpeg
+          - webp
+          default: null
+          description: Format of the returned image.
+          x-enumDescriptions:
+            '`png`': Returns a lossless PNG image.
+            '`jpeg`': Returns a smaller, lossy JPEG image.
+            '`webp`': Returns a compact WebP image.
+        preset:
+          type: string
+          default: null
+          description: Named quality or style preset, when supported by the model.
+      title: ImageEditRequestSchema
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'

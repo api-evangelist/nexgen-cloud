@@ -1,0 +1,494 @@
+openapi: 3.2.0
+info:
+  title: AI Studio Base Models API
+  version: '0.1'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
+
+
+    ## Base URL
+
+
+    All requests are sent to:
+
+
+    ```
+
+    https://console.hyperstack.cloud/ai/api/v1
+
+    ```
+
+
+    ## Authentication
+
+
+    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
+
+
+    ## Request and response format
+
+
+    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+servers:
+- url: https://console.hyperstack.cloud/ai/api/v1
+security:
+- apiKey: []
+tags:
+- name: Base Models
+  description: Pre-trained foundation models available in AI Studio. These endpoints let you list available models, retrieve pricing, and fetch details for a specific base model.
+paths:
+  /base_models:
+    get:
+      description: Returns all pre-trained foundation models available in AI Studio for inference. Base models are served through third-party provider integrations.
+      operationId: getBaseModels
+      parameters:
+      - in: query
+        name: inference
+        required: false
+        schema:
+          type: boolean
+          default: null
+        description: When `true`, returns only base models that are available for inference.
+      - in: query
+        name: finetuning
+        required: false
+        schema:
+          type: boolean
+          default: null
+        description: When `true`, returns only base models that support fine-tuning.
+      - in: query
+        name: modalities
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModalityEnum'
+        description: Filter models by modality. Repeat the parameter for multiple values, such as `modalities=text-to-image&modalities=image-to-image`.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseModelsResponseSchema'
+                example:
+                  models:
+                  - allowed_hf_lora_adapter_size: 8589934592
+                    available_for_finetuning: true
+                    available_for_inference: true
+                    default_batch_size: 16
+                    default_gradient_accumulation_steps: 2
+                    default_lr: 5.0e-05
+                    default_micro_batch_size: 4
+                    deployment_records: []
+                    display_name: Llama 3.3 70B Instruct
+                    hf_repo: meta-llama/Llama-3.3-70B-Instruct
+                    input_token_cost_per_m: 0.8
+                    is_third_party: false
+                    model_id: 1001
+                    model_name: Llama-3.3-70B-Instruct
+                    model_type: language_model
+                    output_token_cost_per_m: 0.8
+                    supported_context_len: 8192
+                    supported_locations:
+                    - ca1
+                    training_cost_per_log: 0.00551
+                    training_time_per_log: 0.08741
+                    training_time_y_intercept: 856.518
+                    input_modalities:
+                    - text
+                    output_modalities:
+                    - text
+                  status: success
+              example:
+                models:
+                - allowed_hf_lora_adapter_size: 8589934592
+                  available_for_finetuning: true
+                  available_for_inference: true
+                  default_batch_size: 16
+                  default_gradient_accumulation_steps: 2
+                  default_lr: 5.0e-05
+                  default_micro_batch_size: 4
+                  deployment_records: []
+                  display_name: Llama 3.3 70B Instruct
+                  hf_repo: meta-llama/Llama-3.3-70B-Instruct
+                  input_token_cost_per_m: 0.8
+                  is_third_party: false
+                  model_id: 1001
+                  model_name: Llama-3.3-70B-Instruct
+                  model_type: language_model
+                  output_token_cost_per_m: 0.8
+                  supported_context_len: 8192
+                  supported_locations:
+                  - ca1
+                  training_cost_per_log: 0.00551
+                  training_time_per_log: 0.08741
+                  training_time_y_intercept: 856.518
+                  input_modalities:
+                  - text
+                  output_modalities:
+                  - text
+                status: success
+          description: OK
+        '422':
+          description: Validation Error
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Internal Server Error
+      summary: List base models
+      tags:
+      - Base Models
+  /base_models/pricing:
+    get:
+      description: Returns input and output token pricing for each available base model, expressed as cost per 1 million tokens. Use this to estimate inference and evaluation costs before submitting jobs.
+      operationId: getBaseModelPricing
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                pricing:
+                - available_for_inference: true
+                  is_third_party: false
+                  last_health_check: '2025-01-15T10:30:00.000000+00:00'
+                  model_name: Llama-3.3-70B-Instruct
+                  pricing:
+                    input: '0.80'
+                    output: '0.80'
+                status: success
+              schema:
+                type: object
+                properties:
+                  pricing:
+                    type: array
+                    description: List of pricing entries, one per available model.
+                    items:
+                      type: object
+                      properties:
+                        available_for_inference:
+                          type: boolean
+                          description: Whether the model is currently available for inference.
+                        is_third_party:
+                          type: boolean
+                          description: Whether the model is hosted by a third-party provider.
+                        last_health_check:
+                          type: string
+                          description: ISO 8601 timestamp of the most recent availability health check.
+                        model_name:
+                          type: string
+                          description: Model display name.
+                        pricing:
+                          type: object
+                          description: Token pricing in USD per 1 million tokens.
+                          properties:
+                            input:
+                              type: string
+                              description: Cost per 1M input (prompt) tokens.
+                            output:
+                              type: string
+                              description: Cost per 1M output (completion) tokens.
+                  status:
+                    type: string
+                    description: Indicates the result of the operation. Typically `"success"`.
+                example:
+                  pricing:
+                  - available_for_inference: true
+                    is_third_party: false
+                    last_health_check: '2025-01-15T10:30:00.000000+00:00'
+                    model_name: Llama-3.3-70B-Instruct
+                    pricing:
+                      input: '0.80'
+                      output: '0.80'
+                  status: success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+      summary: List base model pricing
+      tags:
+      - Base Models
+  /base_models/{base_model_id}:
+    get:
+      description: Returns detailed information for a specific base model by its numeric ID, including supported context length and pricing tiers.
+      operationId: getBaseModel
+      parameters:
+      - in: path
+        name: base_model_id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        description: Unique identifier of the base model to retrieve.
+      - in: query
+        name: month
+        required: false
+        schema:
+          type: integer
+          default: null
+        description: Month (1-12) to scope returned usage data to.
+      - in: query
+        name: year
+        required: false
+        schema:
+          type: integer
+          default: null
+        description: Year (e.g. `2025`) to scope returned usage data to.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetModelResponseSchema'
+                example:
+                  message:
+                    allowed_hf_lora_adapter_size: 8589934592
+                    available_for_finetuning: true
+                    available_for_inference: true
+                    default_batch_size: 16
+                    default_gradient_accumulation_steps: 2
+                    default_lr: 5.0e-05
+                    default_micro_batch_size: 4
+                    deployment_records: []
+                    display_name: Llama 3.3 70B Instruct
+                    hf_repo: meta-llama/Llama-3.3-70B-Instruct
+                    input_token_cost_per_m: 0.8
+                    is_third_party: false
+                    model_id: 1001
+                    model_name: Llama-3.3-70B-Instruct
+                    model_type: language_model
+                    output_token_cost_per_m: 0.8
+                    supported_context_len: 8192
+                    supported_locations:
+                    - ca1
+                    training_cost_per_log: 0.00551
+                    training_time_per_log: 0.08741
+                    training_time_y_intercept: 856.518
+                    usage_data: []
+                    input_modalities:
+                    - text
+                    output_modalities:
+                    - text
+                  status: success
+              example:
+                message:
+                  allowed_hf_lora_adapter_size: 8589934592
+                  available_for_finetuning: true
+                  available_for_inference: true
+                  default_batch_size: 16
+                  default_gradient_accumulation_steps: 2
+                  default_lr: 5.0e-05
+                  default_micro_batch_size: 4
+                  deployment_records: []
+                  display_name: Llama 3.3 70B Instruct
+                  hf_repo: meta-llama/Llama-3.3-70B-Instruct
+                  input_token_cost_per_m: 0.8
+                  is_third_party: false
+                  model_id: 1001
+                  model_name: Llama-3.3-70B-Instruct
+                  model_type: language_model
+                  output_token_cost_per_m: 0.8
+                  supported_context_len: 8192
+                  supported_locations:
+                  - ca1
+                  training_cost_per_log: 0.00551
+                  training_time_per_log: 0.08741
+                  training_time_y_intercept: 856.518
+                  usage_data: []
+                  input_modalities:
+                  - text
+                  output_modalities:
+                  - text
+                status: success
+          description: OK
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+      summary: Get base model
+      tags:
+      - Base Models
+components:
+  schemas:
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
+    GetModelResponseSchema:
+      properties:
+        message:
+          title: Message
+          type: object
+          description: Model details object.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - message
+      title: GetModelResponseSchema
+      type: object
+    BaseModelInfoSchema:
+      properties:
+        available_for_finetuning:
+          type: boolean
+          description: Whether this model can be used for fine-tuning jobs.
+        available_for_inference:
+          type: boolean
+          description: Whether this model can be deployed for inference.
+        default_batch_size:
+          type: integer
+          description: Total batch size used during fine-tuning.
+        default_gradient_accumulation_steps:
+          type: integer
+          description: Number of gradient accumulation steps for fine-tuning.
+        default_lr:
+          type: number
+          description: Learning rate for fine-tuning.
+        default_micro_batch_size:
+          type: integer
+          description: Per-device micro-batch size for fine-tuning.
+        deployment_records:
+          items: {}
+          type: array
+          description: List of active deployment records associated with this model.
+        display_name:
+          type: string
+          description: Human-readable name for the model shown in the UI.
+        hf_repo:
+          type: string
+          description: Hugging Face repository identifier for this model.
+        model_id:
+          type: integer
+          description: Unique numeric identifier for the base model.
+        model_name:
+          type: string
+          description: Canonical model identifier used in API requests.
+        model_type:
+          type: string
+          description: 'Category of model. Common values: `"language_model"`, `"image_model"`.'
+        supported_context_len:
+          type: integer
+          description: Maximum context length (in tokens) supported by this model.
+        supported_locations:
+          items:
+            type: string
+          type: array
+          description: List of region identifiers where this model is available for deployment.
+        training_time_per_log:
+          type: number
+          description: Estimated training time (in seconds) per log step, used for duration projections.
+        training_time_y_intercept:
+          type: number
+          description: Y-intercept of the training time regression curve, used for fine-tuning duration estimates.
+        allowed_hf_lora_adapter_size:
+          type: integer
+          description: Maximum allowed size (in bytes) for a Hugging Face LoRA adapter when fine-tuning this model.
+        input_token_cost_per_m:
+          type: number
+          description: Cost in USD per million input tokens for inference.
+        is_third_party:
+          type: boolean
+          description: Whether this model was imported by the user (third-party) rather than provided natively by Hyperstack.
+        output_token_cost_per_m:
+          type: number
+          description: Cost in USD per million output tokens for inference.
+        training_cost_per_log:
+          type: number
+          description: Estimated training cost per log step, used for fine-tuning cost projections.
+        input_modalities:
+          type: array
+          items:
+            type: string
+          description: Input modalities the model accepts, such as `text` and `image`. A model that lists `image` supports image-to-text input.
+        output_modalities:
+          type: array
+          items:
+            type: string
+          description: Output modalities the model produces, such as `text`.
+      required:
+      - available_for_finetuning
+      - available_for_inference
+      - default_batch_size
+      - default_gradient_accumulation_steps
+      - default_lr
+      - default_micro_batch_size
+      - deployment_records
+      - display_name
+      - hf_repo
+      - model_id
+      - model_name
+      - model_type
+      - supported_context_len
+      - supported_locations
+      - training_time_per_log
+      - training_time_y_intercept
+      title: BaseModelInfoSchema
+      type: object
+    ModalityEnum:
+      type: string
+      enum:
+      - text-to-text
+      - text-to-image
+      - image-to-image
+      - image-to-text
+      title: ModalityEnum
+      x-enumDescriptions:
+        '`text-to-text`': Returns models that generate text from a text prompt ([text-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-text-models)).
+        '`text-to-image`': Returns models that generate images from a text prompt ([text-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-image-models)).
+        '`image-to-image`': Returns models that generate images from a source image and a text prompt ([image-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-image-models)).
+        '`image-to-text`': Returns models that generate text from an image and a text prompt ([image-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-text-models)).
+    BaseModelsResponseSchema:
+      properties:
+        models:
+          items:
+            $ref: '#/components/schemas/BaseModelInfoSchema'
+          type: array
+          description: List of available base model objects.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - models
+      title: BaseModelsResponseSchema
+      type: object
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'

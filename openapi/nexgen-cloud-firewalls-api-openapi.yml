@@ -1,0 +1,1299 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Firewalls API
+  version: '1.0'
+  description: 'Operations tagged Firewalls across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Firewalls
+  description: A firewall is a set of inbound and outbound rules scoped to an environment. Attach a firewall to one or more virtual machines or Kubernetes clusters to control which network traffic each resource can send and receive. Default rules block all inbound traffic, add explicit allow rules for SSH, HTTP, or any service you need to expose.
+paths:
+  /core/firewalls:
+    get:
+      tags:
+      - Firewalls
+      summary: List firewalls
+      description: Retrieves a list of existing firewalls and their details, including the security rules they contain and information about the virtual machines to which they are attached. For more information about the firewalls features offered by Hyperstack, see [Security groups](https://docs.hyperstack.cloud/docs/network/firewalls).
+      operationId: List_existing_firewalls
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: Page number to retrieve.
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+        description: Number of items to return per page.
+      - name: search
+        in: query
+        schema:
+          type: string
+        description: Filter results by case-insensitive substring match against the resource name.
+      - name: environment
+        in: query
+        description: Filter Environment ID or Name
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FirewallsListResponse'
+              example:
+                status: true
+                message: Getting firewalls success
+                page: null
+                page_size: null
+                count: 2
+                firewalls:
+                - id: 3287
+                  name: example-firewall
+                  description: Example firewall
+                  environment:
+                    id: 8429
+                    name: example-environment
+                    region: NORWAY-1
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                  status: SUCCESS
+                  created_at: '2026-05-06T16:04:09Z'
+                  rules:
+                  - id: 1402
+                    direction: egress
+                    protocol: any
+                    port_range_min: 1
+                    port_range_max: 65535
+                    ethertype: IPv6
+                    remote_ip_prefix: 0.0.0.0/0
+                    status: SUCCESS
+                    created_at: '2026-05-06T16:04:09Z'
+                  - id: 9876
+                    direction: egress
+                    protocol: any
+                    port_range_min: 1
+                    port_range_max: 65535
+                    ethertype: IPv4
+                    remote_ip_prefix: 0.0.0.0/0
+                    status: SUCCESS
+                    created_at: '2026-05-07T09:21:55Z'
+                  - id: 2058
+                    direction: ingress
+                    protocol: tcp
+                    port_range_min: 80
+                    port_range_max: 80
+                    ethertype: IPv4
+                    remote_ip_prefix: 0.0.0.0/0
+                    status: SUCCESS
+                    created_at: '2026-05-07T11:47:30Z'
+                  attachments: []
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting firewalls success
+                    page: null
+                    page_size: null
+                    count: 2
+                    firewalls:
+                    - id: 3287
+                      name: example-firewall
+                      description: Example firewall
+                      environment:
+                        id: 8429
+                        name: example-environment
+                        region: NORWAY-1
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                      status: SUCCESS
+                      created_at: '2026-05-06T16:04:09Z'
+                      rules:
+                      - id: 1402
+                        direction: egress
+                        protocol: any
+                        port_range_min: 1
+                        port_range_max: 65535
+                        ethertype: IPv6
+                        remote_ip_prefix: 0.0.0.0/0
+                        status: SUCCESS
+                        created_at: '2026-05-06T16:04:09Z'
+                      - id: 9876
+                        direction: egress
+                        protocol: any
+                        port_range_min: 1
+                        port_range_max: 65535
+                        ethertype: IPv4
+                        remote_ip_prefix: 0.0.0.0/0
+                        status: SUCCESS
+                        created_at: '2026-05-07T09:21:55Z'
+                      - id: 2058
+                        direction: ingress
+                        protocol: tcp
+                        port_range_min: 80
+                        port_range_max: 80
+                        ethertype: IPv4
+                        remote_ip_prefix: 0.0.0.0/0
+                        status: SUCCESS
+                        created_at: '2026-05-07T11:47:30Z'
+                      attachments: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    post:
+      tags:
+      - Firewalls
+      summary: Create firewall
+      description: Creates a firewall to which firewall rules can be added. A firewall containing rules can be attached to one or more virtual machines to control inbound and outbound traffic. In the request body, include the firewall `name`, the ID of the `environment` it belongs to, and an optional `description`. Retrieve the ID of an environment by calling the [**list environments**](https://docs.hyperstack.cloud/docs/api-reference/list-environments) endpoint.
+      operationId: Create_firewall
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFirewallPayload'
+              example:
+                name: example-firewall
+                description: Example firewall
+                environment_id: 8429
+              properties: {}
+            example:
+              environment_id: 8429
+              name: example-firewall
+              description: Example firewall
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FirewallResponse'
+              example:
+                status: true
+                message: Firewall is scheduled for creation.
+                firewall:
+                  id: 8429
+                  name: example-firewall
+                  description: Example firewall
+                  environment:
+                    id: 4501
+                    name: example-environment
+                    region: NORWAY-1
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                  status: CREATING
+                  created_at: '2026-05-07T09:21:55Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Firewall is scheduled for creation.
+                    firewall:
+                      id: 8429
+                      name: example-firewall
+                      description: Example firewall
+                      environment:
+                        id: 4501
+                        name: example-environment
+                        region: NORWAY-1
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                      status: CREATING
+                      created_at: '2026-05-07T09:21:55Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/firewalls/{firewall_id}/firewall-rules:
+    post:
+      tags:
+      - Firewalls
+      summary: Add firewall rule to firewall
+      description: Creates a [**firewall rule**](https://docs.hyperstack.cloud/docs/network/firewalls) and adds it to an existing firewall. Include the firewall ID in the path, and provide the firewall rule configuration in the request body.
+      operationId: Add_rule_to_firewall
+      parameters:
+      - name: firewall_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the firewall.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create_Firewall_Rule_Payload'
+              example:
+                direction: ingress
+                protocol: tcp
+                ethertype: IPv4
+                remote_ip_prefix: 0.0.0.0/0
+                port_range_min: 80
+                port_range_max: 80
+              properties: {}
+            example:
+              direction: ingress
+              ethertype: IPv4
+              protocol: tcp
+              remote_ip_prefix: 0.0.0.0/0
+              port_range_min: 80
+              port_range_max: 80
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Firewall_Rule'
+              example:
+                status: true
+                message: Firewall Rule created successfully
+                firewall_rule:
+                  id: 9876
+                  direction: ingress
+                  protocol: tcp
+                  port_range_min: 80
+                  port_range_max: 80
+                  ethertype: IPv4
+                  remote_ip_prefix: 0.0.0.0/0
+                  status: pending
+                  created_at: '2026-05-07T09:21:55Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Firewall Rule created successfully
+                    firewall_rule:
+                      id: 9876
+                      direction: ingress
+                      protocol: tcp
+                      port_range_min: 80
+                      port_range_max: 80
+                      ethertype: IPv4
+                      remote_ip_prefix: 0.0.0.0/0
+                      status: pending
+                      created_at: '2026-05-07T09:21:55Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/firewalls/{firewall_id}/firewall-rules/{firewall_rule_id}:
+    delete:
+      tags:
+      - Firewalls
+      summary: Delete firewall rules from firewall
+      description: Removes a firewall rule from a firewall. Provide the firewall ID and the firewall rule ID in the path.
+      operationId: Delete_rule_from_firewall
+      parameters:
+      - name: firewall_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the firewall.
+      - name: firewall_rule_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the firewall rule.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/firewalls/{id}:
+    get:
+      tags:
+      - Firewalls
+      summary: Retrieve firewall details
+      description: Retrieves details on an existing firewall, including the firewall rules it contains and information about the virtual machines to which it is attached.
+      operationId: Get_firewall
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the firewall.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FirewallDetailResponse'
+              example:
+                status: true
+                message: Getting Firewall Details Successful.
+                firewall:
+                  id: 8429
+                  name: example-firewall
+                  description: Example firewall
+                  environment:
+                    id: 4501
+                    name: example-environment
+                    region: NORWAY-1
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                  status: SUCCESS
+                  created_at: '2026-05-07T09:21:55Z'
+                  rules:
+                  - id: 9876
+                    direction: egress
+                    protocol: any
+                    port_range_min: 1
+                    port_range_max: 65535
+                    ethertype: IPv4
+                    remote_ip_prefix: 0.0.0.0/0
+                    status: SUCCESS
+                    created_at: '2026-05-07T09:21:55Z'
+                  - id: 2058
+                    direction: egress
+                    protocol: any
+                    port_range_min: 1
+                    port_range_max: 65535
+                    ethertype: IPv6
+                    remote_ip_prefix: 0.0.0.0/0
+                    status: SUCCESS
+                    created_at: '2026-05-07T11:47:30Z'
+                  attachments: []
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting Firewall Details Successful.
+                    firewall:
+                      id: 8429
+                      name: example-firewall
+                      description: Example firewall
+                      environment:
+                        id: 4501
+                        name: example-environment
+                        region: NORWAY-1
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                      status: SUCCESS
+                      created_at: '2026-05-07T09:21:55Z'
+                      rules:
+                      - id: 9876
+                        direction: egress
+                        protocol: any
+                        port_range_min: 1
+                        port_range_max: 65535
+                        ethertype: IPv4
+                        remote_ip_prefix: 0.0.0.0/0
+                        status: SUCCESS
+                        created_at: '2026-05-07T09:21:55Z'
+                      - id: 2058
+                        direction: egress
+                        protocol: any
+                        port_range_min: 1
+                        port_range_max: 65535
+                        ethertype: IPv6
+                        remote_ip_prefix: 0.0.0.0/0
+                        status: SUCCESS
+                        created_at: '2026-05-07T11:47:30Z'
+                      attachments: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    delete:
+      tags:
+      - Firewalls
+      summary: Delete firewall
+      description: Deletes a firewall. Include the ID of the firewall to be deleted in the request path.
+      operationId: Delete_existing_firewall
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the firewall.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Firewall is scheduled for deletion.
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Firewall is scheduled for deletion.
+        '400':
+          description: 'Bad Request
+
+
+            Common cause: `error_reason: bad_request`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    status: false
+                    message: Unable to delete Firewall example-firewall.
+                    error_reason: bad_request
+              example:
+                status: false
+                message: Unable to delete Firewall example-firewall.
+                error_reason: bad_request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/sg-rules-protocols:
+    get:
+      tags:
+      - Firewalls
+      summary: List firewall rule protocols
+      description: Returns a list of all available protocols that can be used in the creation of firewall rules for your virtual machines.
+      operationId: List_firewall_rule_protocols
+      responses:
+        '200':
+          description: Protocols list successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Security_Rules_Protocol_Fields'
+              example:
+                status: true
+                message: Getting security rule protocols successful
+                protocols:
+                - any
+                - ah
+                - dccp
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting security rule protocols successful
+                    protocols:
+                    - any
+                    - ah
+                    - dccp
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    FirewallEnvironmentFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 2058
+        name:
+          type: string
+          description: Name of the environment the firewall belongs to.
+          example: example-environment
+        region:
+          type: string
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+          example: NORWAY-1
+    FirewallDetailResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting Firewall Details Successful.
+        firewall:
+          $ref: '#/components/schemas/FirewallDetailFields'
+          description: Firewall attached to the VM.
+    FirewallResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Firewall is scheduled for creation.
+        firewall:
+          $ref: '#/components/schemas/FirewallFields'
+          description: Firewall attached to the VM.
+    Firewall_Rule:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Firewall Rule created successfully
+        firewall_rule:
+          $ref: '#/components/schemas/SecurityGroupRuleFields'
+          description: Details of the firewall rule.
+    FirewallsListResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting firewalls success
+        page:
+          type:
+          - integer
+          - 'null'
+          description: 1-indexed page number of the current result set.
+        page_size:
+          type:
+          - integer
+          - 'null'
+          description: Number of items per page in the current result set.
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 2
+        firewalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/FirewallDetailFields'
+          description: Firewalls attached to the VM.
+    Create_Firewall_Rule_Payload:
+      required:
+      - direction
+      - ethertype
+      - protocol
+      - remote_ip_prefix
+      type: object
+      properties:
+        direction:
+          type: string
+          description: The direction of traffic that the firewall rule applies to.
+        ethertype:
+          type: string
+          description: The Ethernet type associated with the rule.
+        protocol:
+          type: string
+          description: The network protocol associated with the rule. Call the [List firewall rule protocols](https://docs.hyperstack.cloud/docs/api-reference/list-firewall-rule-protocols) endpoint to retrieve a list of permitted network protocols.
+          example: any
+          enum:
+          - any
+          - ah
+          - dccp
+          - egp
+          - esp
+          - gre
+          - hopopt
+          - icmp
+          - igmp
+          - ip
+          - ipip
+          - ipv6-encap
+          - ipv6-frag
+          - ipv6-icmp
+          - icmpv6
+          - ipv6-nonxt
+          - ipv6-opts
+          - ipv6-route
+          - ospf
+          - pgm
+          - rsvp
+          - sctp
+          - tcp
+          - udp
+          - udplite
+          - vrrp
+        remote_ip_prefix:
+          type: string
+          description: The IP address range that is allowed to access the specified port. Use "0.0.0.0/0" to allow any IP address.
+        port_range_min:
+          type: integer
+          description: The minimum port number in the range of ports to be allowed by the firewall rule.
+        port_range_max:
+          type: integer
+          description: The maximum port number in the range of ports to be allowed by the firewall rule.
+    Firewall_Attachment_Model:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+        vm:
+          $ref: '#/components/schemas/Firewall_Attachment_VM_Model'
+          description: Virtual machine the firewall is attached to.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+    SecurityGroupRuleFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 7613
+        direction:
+          type: string
+          description: Direction of traffic the rule applies to, `ingress` or `egress`.
+          example: egress
+        protocol:
+          type: string
+          description: Protocol, one of `tcp`, `udp`, `icmp`, or `any`.
+          example: any
+        port_range_min:
+          type: integer
+          description: Lower bound (inclusive) of the port range the rule applies to.
+          example: 1
+        port_range_max:
+          type: integer
+          description: Upper bound (inclusive) of the port range the rule applies to.
+          example: 65535
+        ethertype:
+          type: string
+          description: Internet Protocol version, `IPv4` or `IPv6`.
+          example: IPv4
+        remote_ip_prefix:
+          type: string
+          description: CIDR block the rule applies to.
+          example: 0.0.0.0/0
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: SUCCESS
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T15:18:42Z'
+    Firewall_Attachment_VM_Model:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        name:
+          type: string
+          description: Name of the virtual machine.
+        flavor:
+          type: string
+          description: GPU and CPU configuration of the virtual machine.
+        environment:
+          type: string
+          description: Environment containing the resource.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+    FirewallDetailFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 9876
+        name:
+          type: string
+          description: Name of the firewall.
+          example: example-firewall
+        description:
+          type: string
+          description: Human-readable description of the resource.
+          example: example
+        environment:
+          $ref: '#/components/schemas/FirewallEnvironmentFields'
+          description: Environment containing the resource.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: SUCCESS
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T09:21:55Z'
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityGroupRuleFields'
+          description: Firewall rules, each entry defines a direction, protocol, and remote IP range.
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Firewall_Attachment_Model'
+          description: Attachments associated with this resource.
+    CreateFirewallPayload:
+      required:
+      - environment_id
+      - name
+      type: object
+      properties:
+        environment_id:
+          type: integer
+          description: ID of the [**environment**](https://docs.hyperstack.cloud/docs/resource-management/environments) within which the firewall is created.
+        name:
+          type: string
+          description: 'Name of the firewall. Maximum length: 50 characters.'
+        description:
+          type: string
+          description: Optional description of the firewall.
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Security_Rules_Protocol_Fields:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting security rule protocols successful
+        protocols:
+          type: array
+          items:
+            type: string
+          description: List of network protocols supported for firewall security rules.
+    FirewallFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 7613
+        name:
+          type: string
+          description: Name of the firewall.
+          example: example-firewall
+        description:
+          type: string
+          description: Human-readable description of the resource.
+          example: example
+        environment:
+          $ref: '#/components/schemas/FirewallEnvironmentFields'
+          description: Environment containing the resource.
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: CREATING
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T15:18:42Z'
+    FirewallEnvironmentFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        region:
+          type: string
+    FirewallDetailResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        firewall:
+          $ref: '#/components/schemas/FirewallDetailFields_2'
+    FirewallResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        firewall:
+          $ref: '#/components/schemas/FirewallFields_2'
+    Firewall_Rule_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        firewall_rule:
+          $ref: '#/components/schemas/SecurityGroupRuleFields_2'
+    FirewallsListResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        page:
+          type: integer
+        page_size:
+          type: integer
+        count:
+          type: integer
+        firewalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/FirewallDetailFields_2'
+    Create_Firewall_Rule_Payload_2:
+      required:
+      - direction
+      - ethertype
+      - protocol
+      - remote_ip_prefix
+      type: object
+      properties:
+        direction:
+          type: string
+          description: The direction of traffic that the firewall rule applies to.
+        protocol:
+          type: string
+          description: The network protocol associated with the rule. Call the [`GET /core/sg-rules-protocols`](https://infrahub-api-doc.nexgencloud.com/#get-/core/sg-rules-protocols) endpoint to retrieve a list of permitted network protocols.
+          example: any
+          enum:
+          - any
+          - ah
+          - dccp
+          - egp
+          - esp
+          - gre
+          - hopopt
+          - icmp
+          - igmp
+          - ip
+          - ipip
+          - ipv6-encap
+          - ipv6-frag
+          - ipv6-icmp
+          - icmpv6
+          - ipv6-nonxt
+          - ipv6-opts
+          - ipv6-route
+          - ospf
+          - pgm
+          - rsvp
+          - sctp
+          - tcp
+          - udp
+          - udplite
+          - vrrp
+        port_range_min:
+          type: integer
+          description: The minimum port number in the range of ports to be allowed by the firewall rule.
+        port_range_max:
+          type: integer
+          description: The maximum port number in the range of ports to be allowed by the firewall rule.
+        ethertype:
+          type: string
+          description: The Ethernet type associated with the rule.
+        remote_ip_prefix:
+          type: string
+          description: The IP address range that is allowed to access the specified port. Use "0.0.0.0/0" to allow any IP address.
+    Firewall_Attachment_Model_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        status:
+          type: string
+        vm:
+          $ref: '#/components/schemas/Firewall_Attachment_VM_Model_2'
+        created_at:
+          type: string
+          format: date-time
+    SecurityGroupRuleFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        direction:
+          type: string
+        protocol:
+          type: string
+        port_range_min:
+          type: integer
+        port_range_max:
+          type: integer
+        ethertype:
+          type: string
+        remote_ip_prefix:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Firewall_Attachment_VM_Model_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        flavor:
+          type: string
+        environment:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    FirewallDetailFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        environment:
+          $ref: '#/components/schemas/FirewallEnvironmentFields_2'
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityGroupRuleFields_2'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Firewall_Attachment_Model_2'
+    CreateFirewallPayload_2:
+      required:
+      - environment_id
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the firewall.
+        description:
+          type: string
+          description: Description of the firewall.
+        environment_id:
+          type: integer
+          description: ID of the environment.
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    FirewallFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        environment:
+          $ref: '#/components/schemas/FirewallEnvironmentFields_2'
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

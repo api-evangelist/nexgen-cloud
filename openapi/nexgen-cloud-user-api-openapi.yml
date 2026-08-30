@@ -1,0 +1,481 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud User API
+  version: '1.0'
+  description: 'Operations tagged User across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: User
+  description: Account-level user information and billing identity.
+paths:
+  /billing/user/info:
+    get:
+      tags:
+      - User
+      summary: Retrieve billing info
+      description: Retrieve the billing details associated with your user.
+      operationId: Get_User_billing_info
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersInfoListResponse'
+              example:
+                status: true
+                message: Getting users info success
+                users_info: []
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting users info success
+                    users_info: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    put:
+      tags:
+      - User
+      summary: Update billing info
+      description: Update the billing information for your user in the request body.
+      operationId: Update_user_billing_info
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User_info_post_payload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddUserInfoSuccessResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    post:
+      tags:
+      - User
+      summary: Insert billing info
+      description: Add billing details associated with your user in the request body.
+      operationId: Add_user_billing_info
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User_info_post_payload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddUserInfoSuccessResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /billing/user/countries:
+    get:
+      tags:
+      - User
+      summary: List supported billing countries
+      description: Retrieve the list of supported ISO 3166-1 alpha-2 country codes that can be used for [**billing information**](https://docs.hyperstack.cloud/docs/api-reference/add-user-billing-info). Country values submitted through the billing endpoints are validated against this list, which excludes sanctioned and otherwise restricted countries.
+      operationId: List_supported_billing_countries
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Returns the complete list of supported country codes. The example shows a representative sample.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportedCountriesResponse'
+              example:
+                status: true
+                countries:
+                - AE
+                - AU
+                - BR
+                - CA
+                - DE
+                - FR
+                - GB
+                - IN
+                - JP
+                - SG
+                - US
+                - ZA
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    UsersInfoListResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting users info success
+        users_info:
+          $ref: '#/components/schemas/UsersInfoFields'
+          description: Billing and contact information for the users.
+    SupportedCountriesResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        countries:
+          type: array
+          description: The supported ISO 3166-1 alpha-2 country codes that can be used for billing information. Codes for sanctioned or otherwise restricted countries are excluded.
+          items:
+            type: string
+            description: A supported ISO 3166-1 alpha-2 country code.
+            example: US
+          example:
+          - AE
+          - AU
+          - BR
+          - CA
+          - DE
+          - FR
+          - GB
+          - IN
+          - JP
+          - SG
+          - US
+          - ZA
+    UsersInfoFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        organization_id:
+          type: integer
+          description: Identifier of the organization.
+        name:
+          type: string
+          description: Full name of the account holder.
+        email:
+          type: string
+          description: User email address.
+        business:
+          type: boolean
+          description: Whether the account is a business account (true) or personal (false).
+        company_name:
+          type: string
+          description: Company name for the billing account.
+        vat_number:
+          type: string
+          description: VAT registration number for the billing account.
+        phone:
+          type: string
+          description: User phone number, in E.164 format.
+        billing_address1:
+          type: string
+          description: First line of the billing address.
+        billing_address2:
+          type: string
+          description: Second line of the billing address.
+        zip_code:
+          type: string
+          description: Postal or ZIP code of the billing address.
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code of the region.
+        state:
+          type: string
+          description: State or province of the billing address.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+        stripe_user_id:
+          type: string
+          description: Stripe customer identifier associated with the account.
+    AddUserInfoSuccessResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        data:
+          $ref: '#/components/schemas/UsersInfoFields'
+          description: Saved user billing information.
+    User_info_post_payload:
+      required:
+      - business
+      - country
+      - zip_code
+      type: object
+      properties:
+        business:
+          type: boolean
+          description: Whether the account is a business account (true) or personal (false).
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code of the region. Call the [**List supported billing countries**](https://docs.hyperstack.cloud/docs/api-reference/list-supported-billing-countries) API to retrieve the valid values.
+        zip_code:
+          type: string
+          description: Postal or ZIP code of the billing address.
+        name:
+          type: string
+          description: Full name of the account holder.
+        email:
+          type: string
+          description: User email address.
+        company_name:
+          type: string
+          description: Company name for the billing account.
+        vat_number:
+          type: string
+          description: VAT registration number for the billing account.
+        phone:
+          type: string
+          description: User phone number, in E.164 format.
+        billing_address1:
+          type: string
+          description: First line of the billing address.
+        billing_address2:
+          type: string
+          description: Second line of the billing address.
+        state:
+          type: string
+          description: State or province of the billing address.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    UsersInfoListResponse_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        users_info:
+          $ref: '#/components/schemas/UsersInfoFields_2'
+    UsersInfoFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        organization_id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        business:
+          type: boolean
+        company_name:
+          type: string
+        vat_number:
+          type: string
+        phone:
+          type: string
+        billing_address1:
+          type: string
+        billing_address2:
+          type: string
+        zip_code:
+          type: string
+        country:
+          type: string
+        state:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        stripe_user_id:
+          type: string
+    AddUserInfoSuccessResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/UsersInfoFields_2'
+    User_info_post_payload_2:
+      required:
+      - business
+      - country
+      - zip_code
+      type: object
+      properties:
+        business:
+          type: boolean
+        name:
+          type: string
+        email:
+          type: string
+        company_name:
+          type: string
+        vat_number:
+          type: string
+        phone:
+          type: string
+        billing_address1:
+          type: string
+        billing_address2:
+          type: string
+        zip_code:
+          type: string
+        country:
+          type: string
+        state:
+          type: string
+    AllowedCountriesResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        countries:
+          type: array
+          items:
+            type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

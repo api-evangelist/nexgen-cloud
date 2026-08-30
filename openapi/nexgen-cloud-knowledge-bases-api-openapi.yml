@@ -1,0 +1,1242 @@
+openapi: 3.2.0
+info:
+  title: AI Studio Knowledge Bases API
+  version: '0.1'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
+
+
+    ## Base URL
+
+
+    All requests are sent to:
+
+
+    ```
+
+    https://console.hyperstack.cloud/ai/api/v1
+
+    ```
+
+
+    ## Authentication
+
+
+    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
+
+
+    ## Request and response format
+
+
+    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+servers:
+- url: https://console.hyperstack.cloud/ai/api/v1
+security:
+- apiKey: []
+tags:
+- name: Knowledge Bases
+  description: Collections of your own documents that models can search at inference time.
+paths:
+  /knowledge-bases:
+    get:
+      operationId: listKnowledgeBases
+      tags:
+      - Knowledge Bases
+      summary: List knowledge bases
+      description: Returns your knowledge bases, newest first, with the file and chunk counts for each. Results are paginated.
+      parameters:
+      - name: page
+        in: query
+        required: false
+        description: Page of results to return. Defaults to `1`.
+        schema:
+          type: integer
+          default: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Number of knowledge bases per page. Defaults to `20`.
+        schema:
+          type: integer
+          default: 20
+      responses:
+        '200':
+          description: Your knowledge bases.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: The knowledge bases on this page.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique numeric identifier for the knowledge base.
+                        uuid:
+                          type: string
+                          description: Stable string identifier, prefixed with `kb-`.
+                        name:
+                          type: string
+                          description: Name you gave the knowledge base. Unique among your knowledge bases.
+                        description:
+                          type:
+                          - string
+                          - 'null'
+                          description: Optional description of what the knowledge base holds.
+                        status:
+                          type: string
+                          description: Current state of the knowledge base.
+                          enum:
+                          - active
+                          - processing
+                          - failed
+                          - deleting
+                        embedding_model:
+                          type: string
+                          description: Model used to embed this knowledge base's content.
+                        created_at:
+                          type: string
+                          description: Timestamp when the knowledge base was created.
+                          format: date-time
+                        updated_at:
+                          type: string
+                          description: Timestamp when the knowledge base was last updated.
+                          format: date-time
+                        deleted_at:
+                          type:
+                          - string
+                          - 'null'
+                          format: date-time
+                          description: Timestamp when the knowledge base was deleted, or `null` if it is active.
+                        file_count:
+                          type: integer
+                          description: Number of files in the knowledge base.
+                        chunk_count:
+                          type: integer
+                          description: Total number of chunks indexed across all files.
+                        total_size:
+                          type: integer
+                          description: Combined size of all files, in bytes.
+                        organization_id:
+                          type: integer
+                          description: Organization that owns the knowledge base.
+                        user_id:
+                          type: integer
+                          description: User who created the knowledge base.
+                  page:
+                    type: integer
+                    description: Current page number.
+                  per_page:
+                    type: integer
+                    description: Number of results per page.
+                  total:
+                    type: integer
+                    description: Total number of knowledge bases.
+              example:
+                data:
+                - id: 15
+                  uuid: kb-696e2cf9-e39e-4b24-b989-8bb75c6c3e6d
+                  name: example-knowledge-base
+                  description: Reference notes on GPU selection and storage types.
+                  status: active
+                  embedding_model: BAAI/bge-small-en-v1.5
+                  ingestion_task_ids: []
+                  created_at: '2026-07-27T06:39:55.906500Z'
+                  updated_at: '2026-07-27T06:39:55.906500+00:00'
+                  deleted_at: null
+                  file_count: 2
+                  chunk_count: 4
+                  total_size: 1526
+                  organization_id: 12345
+                  user_id: 678
+                page: 1
+                per_page: 20
+                total: 1
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+    post:
+      operationId: createKnowledgeBase
+      tags:
+      - Knowledge Bases
+      summary: Create a knowledge base
+      description: Creates an empty knowledge base. Add files to it with [**Generate a file upload URL**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-kb-file-upload-url) followed by [**Ingest uploaded files**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/ingest-kb-files).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  description: Name for the knowledge base. Must be unique among your knowledge bases.
+                  maxLength: 100
+                description:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 500
+                  description: Optional description of what the knowledge base holds.
+            example:
+              name: example-knowledge-base
+              description: Reference notes on GPU selection and storage types.
+      responses:
+        '201':
+          description: The knowledge base was created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Unique numeric identifier for the knowledge base.
+                  uuid:
+                    type: string
+                    description: Stable string identifier, prefixed with `kb-`.
+                  name:
+                    type: string
+                    description: Name you gave the knowledge base. Unique among your knowledge bases.
+                  description:
+                    type:
+                    - string
+                    - 'null'
+                    description: Optional description of what the knowledge base holds.
+                  status:
+                    type: string
+                    description: Current state of the knowledge base.
+                    enum:
+                    - active
+                    - processing
+                    - failed
+                    - deleting
+                  embedding_model:
+                    type: string
+                    description: Model used to embed this knowledge base's content.
+                  created_at:
+                    type: string
+                    description: Timestamp when the knowledge base was created.
+                    format: date-time
+                  ingestion_task_ids:
+                    type: array
+                    items:
+                      type: integer
+                    description: Ingestion tasks queued for this knowledge base. Empty on creation.
+              example:
+                id: 15
+                uuid: kb-696e2cf9-e39e-4b24-b989-8bb75c6c3e6d
+                name: example-knowledge-base
+                description: Reference notes on GPU selection and storage types.
+                status: active
+                embedding_model: BAAI/bge-small-en-v1.5
+                ingestion_task_ids: []
+                created_at: '2026-07-27T06:39:55.906500Z'
+        '400':
+          description: You already have a knowledge base with that name.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: duplicate_knowledge_base_name
+                message: You already have a knowledge base with this name. Please choose a different name.
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+  /knowledge-bases/choices:
+    get:
+      operationId: listKnowledgeBaseChoices
+      tags:
+      - Knowledge Bases
+      summary: List selectable knowledge bases
+      description: Returns the ID and name of every knowledge base that has finished indexing, for populating a selector. Knowledge bases that are still processing, failed, or being deleted are excluded.
+      responses:
+        '200':
+          description: Knowledge bases available for selection.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Selectable knowledge bases.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Numeric ID of the knowledge base.
+                        name:
+                          type: string
+                          description: Name of the knowledge base.
+              example:
+                data:
+                - id: 15
+                  name: example-knowledge-base
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+  /knowledge-bases/{kb_id}:
+    get:
+      operationId: getKnowledgeBase
+      tags:
+      - Knowledge Bases
+      summary: Retrieve a knowledge base
+      description: Returns a single knowledge base with its files and a summary of their ingestion states.
+      parameters:
+      - name: kb_id
+        in: path
+        required: true
+        description: Numeric ID of the knowledge base. Call the [**List knowledge bases**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/list-knowledge-bases) API to retrieve the `id` of an existing knowledge base.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: The knowledge base.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Unique numeric identifier for the knowledge base.
+                  uuid:
+                    type: string
+                    description: Stable string identifier, prefixed with `kb-`.
+                  name:
+                    type: string
+                    description: Name you gave the knowledge base. Unique among your knowledge bases.
+                  description:
+                    type:
+                    - string
+                    - 'null'
+                    description: Optional description of what the knowledge base holds.
+                  status:
+                    type: string
+                    description: Current state of the knowledge base.
+                    enum:
+                    - active
+                    - processing
+                    - failed
+                    - deleting
+                  embedding_model:
+                    type: string
+                    description: Model used to embed this knowledge base's content.
+                  created_at:
+                    type: string
+                    description: Timestamp when the knowledge base was created.
+                    format: date-time
+                  file_count:
+                    type: integer
+                    description: Number of files in the knowledge base.
+                  files:
+                    type: array
+                    description: Files in the knowledge base.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Unique numeric identifier for the file.
+                        uuid:
+                          type: string
+                          description: Stable string identifier, prefixed with `kbf-`.
+                        file_name:
+                          type: string
+                          description: Original filename.
+                        mime_type:
+                          type: string
+                          description: MIME type of the file.
+                          enum:
+                          - text/plain
+                          - text/markdown
+                        file_size_bytes:
+                          type: integer
+                          description: Size of the file, in bytes.
+                        chunk_count:
+                          type: integer
+                          description: Number of chunks indexed from this file.
+                        chunking_strategy:
+                          type: string
+                          description: Strategy used to split the file into chunks.
+                          enum:
+                          - semantic
+                        status:
+                          type: string
+                          description: Current ingestion state of the file.
+                          enum:
+                          - pending
+                          - processing
+                          - indexed
+                          - failed
+                          - cancelled
+                        created_at:
+                          type: string
+                          description: Timestamp when the file was added.
+                          format: date-time
+                  ingestion_summary:
+                    type: object
+                    description: Counts of files in each ingestion state.
+                    properties:
+                      pending:
+                        type: integer
+                        description: Number of files in the `pending` state.
+                      processing:
+                        type: integer
+                        description: Number of files in the `processing` state.
+                      completed:
+                        type: integer
+                        description: Number of files in the `completed` state.
+                      failed:
+                        type: integer
+                        description: Number of files in the `failed` state.
+                      cancelled:
+                        type: integer
+                        description: Number of files in the `cancelled` state.
+                  ingestion_task_ids:
+                    type: array
+                    items:
+                      type: integer
+                    description: Ingestion tasks currently queued or running.
+              example:
+                id: 15
+                uuid: kb-696e2cf9-e39e-4b24-b989-8bb75c6c3e6d
+                name: example-knowledge-base
+                description: Reference notes on GPU selection and storage types.
+                status: active
+                embedding_model: BAAI/bge-small-en-v1.5
+                ingestion_task_ids: []
+                created_at: '2026-07-27T06:39:55.906500Z'
+                file_count: 2
+                files:
+                - id: 24
+                  uuid: kbf-55fc6b25-3c9c-4c13-ab52-b030dc392a4e
+                  file_name: example-storage-notes.txt
+                  mime_type: text/plain
+                  file_size_bytes: 683
+                  chunk_count: 2
+                  chunking_strategy: semantic
+                  status: indexed
+                  created_at: '2026-07-27T06:43:55.112452Z'
+                ingestion_summary:
+                  pending: 0
+                  processing: 0
+                  completed: 2
+                  failed: 0
+                  cancelled: 0
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+        '404':
+          description: No knowledge base with that ID exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: knowledge_base.not_found
+                message: Knowledge base not found.
+    delete:
+      operationId: deleteKnowledgeBase
+      tags:
+      - Knowledge Bases
+      summary: Delete a knowledge base
+      description: Deletes a knowledge base along with its files and everything indexed from them. Any conversation that used it is detached from it. This cannot be undone.
+      parameters:
+      - name: kb_id
+        in: path
+        required: true
+        description: Numeric ID of the knowledge base. Call the [**List knowledge bases**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/list-knowledge-bases) API to retrieve the `id` of an existing knowledge base.
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: The knowledge base was deleted. No content is returned.
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+        '404':
+          description: No knowledge base with that ID exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: knowledge_base.not_found
+                message: Knowledge base not found.
+  /knowledge-bases/{kb_id}/files/upload-url:
+    get:
+      operationId: getKbFileUploadUrl
+      tags:
+      - Knowledge Bases
+      summary: Generate a file upload URL
+      description: Returns a pre-signed URL for uploading one file, along with the storage key you pass to [**Ingest uploaded files**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/ingest-kb-files). Upload the file to the URL with a `PUT` request before calling that endpoint. The URL is valid for one hour.
+      parameters:
+      - name: kb_id
+        in: path
+        required: true
+        description: Numeric ID of the knowledge base. Call the [**List knowledge bases**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/list-knowledge-bases) API to retrieve the `id` of an existing knowledge base.
+        schema:
+          type: integer
+      - name: filename
+        in: query
+        required: true
+        description: Name of the file you are uploading.
+        schema:
+          type: string
+      - name: mime_type
+        in: query
+        required: true
+        description: MIME type of the file. Only `text/plain` and `text/markdown` are accepted.
+        schema:
+          type: string
+          enum:
+          - text/plain
+          - text/markdown
+      responses:
+        '200':
+          description: The pre-signed upload URL.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  signed_url:
+                    type: string
+                    description: Pre-signed URL to `PUT` the file to. Valid for one hour.
+                  s3_key:
+                    type: string
+                    description: Storage key for the uploaded file. Pass this to the ingest endpoint.
+              example:
+                signed_url: https://example-object-storage/preprod-knowledge-base-files-bucket/knowledge-bases/kb-12345/kbf-032d115ac61f49648a0a0c852106757e.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Expires=3600&X-Amz-Signature=REDACTED
+                s3_key: knowledge-bases/kb-12345/kbf-032d115ac61f49648a0a0c852106757e.txt
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+        '404':
+          description: No knowledge base with that ID exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: knowledge_base.not_found
+                message: Knowledge base not found.
+        '422':
+          description: The MIME type is not supported.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: knowledge_base.mime_type.invalid
+                message: 'mime_type must be one of: text/plain, text/markdown'
+  /knowledge-bases/{kb_id}/files/ingest:
+    post:
+      operationId: ingestKbFiles
+      tags:
+      - Knowledge Bases
+      summary: Ingest uploaded files
+      description: Queues one or more uploaded files for indexing. Call this after uploading each file to the pre-signed URL from [**Generate a file upload URL**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-kb-file-upload-url). Indexing runs in the background, so the response returns immediately with a task per file.
+      parameters:
+      - name: kb_id
+        in: path
+        required: true
+        description: Numeric ID of the knowledge base. Call the [**List knowledge bases**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/list-knowledge-bases) API to retrieve the `id` of an existing knowledge base.
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: One entry per uploaded file.
+              items:
+                type: object
+                required:
+                - s3_key
+                - filename
+                - mime_type
+                - file_size_bytes
+                properties:
+                  s3_key:
+                    type: string
+                    description: Storage key returned when you generated the upload URL. Call the [**Generate a file upload URL**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-kb-file-upload-url) API to retrieve the `s3_key` for the uploaded file.
+                  filename:
+                    type: string
+                    description: Name of the uploaded file.
+                    maxLength: 512
+                  mime_type:
+                    type: string
+                    description: MIME type of the file.
+                    enum:
+                    - text/plain
+                    - text/markdown
+                  file_size_bytes:
+                    type: integer
+                    description: Size of the uploaded file, in bytes.
+                    exclusiveMinimum: 0
+                  chunking_strategy:
+                    type: string
+                    description: How the file is split into chunks. Defaults to `semantic`.
+                    enum:
+                    - semantic
+                    default: semantic
+            example:
+            - s3_key: knowledge-bases/kb-12345/kbf-032d115ac61f49648a0a0c852106757e.txt
+              filename: example-storage-notes.txt
+              mime_type: text/plain
+              file_size_bytes: 683
+              chunking_strategy: semantic
+      responses:
+        '202':
+          description: The files were queued for indexing.
+          content:
+            application/json:
+              schema:
+                type: array
+                description: One entry per queued file.
+                items:
+                  type: object
+                  properties:
+                    file_name:
+                      type: string
+                      description: Name of the queued file.
+                    file_uuid:
+                      type: string
+                      description: Stable identifier for the new file, prefixed with `kbf-`.
+                    ingestion_task_id:
+                      type: integer
+                      description: ID of the ingestion task. Pass this to the status endpoint.
+                    status:
+                      type: string
+                      description: Initial state of the file.
+                      enum:
+                      - pending
+              example:
+              - file_name: example-storage-notes.txt
+                file_uuid: kbf-55fc6b25-3c9c-4c13-ab52-b030dc392a4e
+                ingestion_task_id: 24
+                status: pending
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+        '404':
+          description: No knowledge base with that ID exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: knowledge_base.not_found
+                message: Knowledge base not found.
+  /knowledge-bases/{kb_id}/files:
+    delete:
+      operationId: deleteKnowledgeBaseFiles
+      tags:
+      - Knowledge Bases
+      summary: Remove files from a knowledge base
+      description: Removes one or more files and the chunks indexed from them, so their content stops being retrieved. Cleanup runs in the background. Removing a file that has already been removed succeeds without doing anything.
+      parameters:
+      - name: kb_id
+        in: path
+        required: true
+        description: Numeric ID of the knowledge base. Call the [**List knowledge bases**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/list-knowledge-bases) API to retrieve the `id` of an existing knowledge base.
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - file_ids
+              properties:
+                file_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: IDs of the files to remove. Call the [**Retrieve a knowledge base**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-knowledge-base) API to retrieve the `id` of an existing file.
+            example:
+              file_ids:
+              - 24
+              - 25
+      responses:
+        '202':
+          description: The files were marked for deletion.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `success` when the request is accepted.
+                  message:
+                    type: string
+                    description: Confirmation that the files were marked for deletion.
+              example:
+                status: success
+                message: Knowledge base files marked for deletion.
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+        '404':
+          description: No knowledge base with that ID exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: knowledge_base.not_found
+                message: Knowledge base not found.
+  /knowledge-bases/{kb_id}/status:
+    get:
+      operationId: getKnowledgeBaseStatus
+      tags:
+      - Knowledge Bases
+      summary: Retrieve ingestion task status
+      description: Returns the state of specific ingestion tasks for a knowledge base. Pass the task IDs returned by [**Ingest uploaded files**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/ingest-kb-files). To check a whole knowledge base instead, use [**Retrieve status for multiple knowledge bases**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/post-knowledge-bases-status).
+      parameters:
+      - name: kb_id
+        in: path
+        required: true
+        description: Numeric ID of the knowledge base. Call the [**List knowledge bases**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/list-knowledge-bases) API to retrieve the `id` of an existing knowledge base.
+        schema:
+          type: integer
+      - name: task_ids
+        in: query
+        required: true
+        description: IDs of the ingestion tasks to check. At least one is required. Call the [**Ingest uploaded files**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/ingest-kb-files) API to retrieve the `ingestion_task_id` of a queued file.
+        schema:
+          type: array
+          items:
+            type: integer
+      responses:
+        '200':
+          description: The requested ingestion tasks.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: State of each requested task.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: ID of the ingestion task.
+                        status:
+                          type: string
+                          description: Current state of the task.
+                          enum:
+                          - pending
+                          - processing
+                          - completed
+                          - failed
+                          - cancelled
+                        file_name:
+                          type: string
+                          description: File the task is indexing.
+              example:
+                data:
+                - id: 24
+                  status: completed
+                  file_name: example-storage-notes.txt
+        '400':
+          description: No task IDs were supplied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: knowledge_base.task_ids_required
+                message: At least one knowledge base task id is required.
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+        '404':
+          description: No knowledge base with that ID exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: knowledge_base.not_found
+                message: Knowledge base not found.
+  /knowledge-bases/status:
+    post:
+      operationId: postKnowledgeBasesStatus
+      tags:
+      - Knowledge Bases
+      summary: Retrieve status for multiple knowledge bases
+      description: Returns the current state, counts, and ingestion summary for several knowledge bases in one call. Use this to refresh a list view without polling each knowledge base separately.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - kb_ids
+              properties:
+                kb_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: IDs of the knowledge bases to check. Call the [**List knowledge bases**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/list-knowledge-bases) API to retrieve the `id` of an existing knowledge base.
+                include_tasks_status:
+                  type: boolean
+                  default: false
+                  description: Set to `true` to include per-task detail in `tasks`.
+                task_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: Optional. Limits `tasks` to these ingestion tasks. Call the [**Ingest uploaded files**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/ingest-kb-files) API to retrieve the `ingestion_task_id` of a queued file.
+            example:
+              kb_ids:
+              - 15
+              - 16
+              include_tasks_status: true
+      responses:
+        '200':
+          description: Status for each requested knowledge base.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Status for each knowledge base that was found.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Numeric ID of the knowledge base.
+                        status:
+                          type: string
+                          description: Current state of the knowledge base.
+                          enum:
+                          - active
+                          - processing
+                          - failed
+                          - deleting
+                        file_count:
+                          type: integer
+                          description: Number of files in the knowledge base.
+                        chunk_count:
+                          type: integer
+                          description: Total number of chunks indexed.
+                        total_size:
+                          type: integer
+                          description: Combined size of all files, in bytes.
+                        ingestion_summary:
+                          type: object
+                          description: Counts of files in each ingestion state.
+                          properties:
+                            pending:
+                              type: integer
+                              description: Number of files in the `pending` state.
+                            processing:
+                              type: integer
+                              description: Number of files in the `processing` state.
+                            completed:
+                              type: integer
+                              description: Number of files in the `completed` state.
+                            failed:
+                              type: integer
+                              description: Number of files in the `failed` state.
+                            cancelled:
+                              type: integer
+                              description: Number of files in the `cancelled` state.
+                        tasks:
+                          type: array
+                          description: Per-task detail when `include_tasks_status` is `true`.
+                          items:
+                            type: object
+                  not_found_kb_ids:
+                    type: array
+                    items:
+                      type: integer
+                    description: Requested IDs that do not exist.
+              example:
+                data:
+                - id: 15
+                  status: active
+                  file_count: 2
+                  chunk_count: 4
+                  total_size: 1526
+                  ingestion_summary:
+                    pending: 0
+                    processing: 0
+                    completed: 2
+                    failed: 0
+                    cancelled: 0
+                  tasks: []
+                not_found_kb_ids: []
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+  /knowledge-bases/{kb_id}/cancel-ingestion:
+    post:
+      operationId: cancelKnowledgeBaseIngestion
+      tags:
+      - Knowledge Bases
+      summary: Cancel knowledge base ingestion
+      description: Stops the ingestion tasks that have not finished for a knowledge base. Chunks already written for those files are discarded, while files that finished indexing keep their chunks and stay searchable. Returns `404` when the knowledge base has no ingestion in progress.
+      parameters:
+      - name: kb_id
+        in: path
+        required: true
+        description: Numeric ID of the knowledge base. Call the [**List knowledge bases**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/list-knowledge-bases) API to retrieve the `id` of an existing knowledge base.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Ingestion was cancelled.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `success` when ingestion is cancelled.
+                  message:
+                    type: string
+                    description: Confirmation that ingestion was cancelled.
+              example:
+                status: success
+                message: Knowledge base ingestion cancelled.
+        '401':
+          description: Your API key is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: api_key.invalid
+                message: Your API key is invalid.
+        '404':
+          description: The knowledge base has no ingestion task in progress.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Always `error` for a failed request.
+                  code:
+                    type: string
+                    description: Machine-readable error code.
+                  message:
+                    type: string
+                    description: Human-readable description of the error.
+              example:
+                status: error
+                code: knowledge_base_ingestion_task.not_found
+                message: Knowledge base ingestion task not found.
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'

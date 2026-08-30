@@ -1,0 +1,440 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Organization API
+  version: '1.0'
+  description: 'Operations tagged Organization across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Organization
+  description: 'Organization endpoints manage organization-level metadata: name, members, and configuration. Most users belong to a single organization; multi-organization accounts use these endpoints to switch context and manage memberships.'
+paths:
+  /auth/organizations:
+    get:
+      tags:
+      - Organization
+      summary: Retrieve organization information
+      description: Retrieves information about your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization) and its members. This includes the organization's name, date of creation, and details about each member, such as their name, email, roles, and more.
+      operationId: Retrieve_Organization_Information
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrganizationResponseModel'
+              example:
+                status: true
+                message: Successfully retrieved organizations info
+                organization:
+                  id: 5341
+                  name: Example Organization
+                  created_at: '2026-05-06T14:32:11Z'
+                  users:
+                  - id: 3287
+                    sub: 5c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d
+                    email: user@example.com
+                    username: Jane Doe
+                    name: Jane Doe
+                    role: Owner
+                    rbac_roles: []
+                    last_login: '2026-05-07T11:47:30Z'
+                    created_at: '2026-05-06T16:04:09Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Successfully retrieved organizations info
+                    organization:
+                      id: 5341
+                      name: Example Organization
+                      created_at: '2026-05-06T14:32:11Z'
+                      users:
+                      - id: 3287
+                        sub: 5c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d
+                        email: user@example.com
+                        username: Jane Doe
+                        name: Jane Doe
+                        role: Owner
+                        rbac_roles: []
+                        last_login: '2026-05-07T11:47:30Z'
+                        created_at: '2026-05-06T16:04:09Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/organizations/remove-member:
+    post:
+      tags:
+      - Organization
+      summary: Remove organization member
+      description: Removes a member from your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization). Include the email of the user to be removed in the request body.
+      operationId: Remove_Organization_Member
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveMemberPayload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoveMemberFromOrganizationResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/organizations/update:
+    put:
+      tags:
+      - Organization
+      summary: Update organization information
+      description: Updates the name of your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization). Specify the new organization `name` in the request body.
+      operationId: Update_Organization_Information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationPayload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateOrganizationResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    OrganizationFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 6190
+        name:
+          type: string
+          description: Name of the organization.
+          example: Example Organization
+        credit:
+          type: integer
+          description: Available account credit.
+        threshold:
+          type: integer
+          description: Spending threshold above which the alert is triggered.
+        total_instances:
+          type: integer
+          description: Total number of virtual machines in the organization.
+        total_volumes:
+          type: integer
+          description: Total number of volumes in the organization.
+        total_containers:
+          type: integer
+          description: Total number of containers in the organization.
+        total_clusters:
+          type: integer
+          description: Total number of Kubernetes clusters in the organization.
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationUserResponseModel'
+          description: An array containing information about the organization's members.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T09:21:55Z'
+    RemoveMemberFromOrganizationResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+    OrganizationUserResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 9876
+        sub:
+          type: string
+          example: 5c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d
+          description: The unique identifier for the user for authentication and authorization purposes.
+        email:
+          type: string
+          description: User email address.
+          example: user@example.com
+        username:
+          type: string
+          description: Username used to log in.
+          example: Jane Doe
+        name:
+          type: string
+          description: Full name of the user.
+          example: Jane Doe
+        role:
+          type: string
+          description: Role assigned to the user.
+          example: Owner
+        rbac_roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RbacRoleField'
+          description: An array containing the IDs of any [**RBAC**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) (Role-Based Access Control) roles granted to the user.
+        joined_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp indicating when the user joined the organization.
+        last_login:
+          type: string
+          format: date-time
+          example: '2026-05-06T14:32:11Z'
+          description: ISO 8601 UTC timestamp indicating when the user last logged in.
+    GetOrganizationResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Successfully retrieved organizations info
+        organization:
+          $ref: '#/components/schemas/OrganizationFields'
+          description: An object containing details about the organization and its members.
+    UpdateOrganizationPayload:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          minLength: 3
+          type: string
+          description: New name for your organization.
+    RbacRoleField:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the RBAC role.
+    RemoveMemberPayload:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          maxLength: 64
+          type: string
+          description: Email of the user to remove from your organization.
+    UpdateOrganizationResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    OrganizationFields_2:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        credit:
+          type: integer
+        threshold:
+          type: integer
+        total_instances:
+          type: integer
+        total_volumes:
+          type: integer
+        total_containers:
+          type: integer
+        total_clusters:
+          type: integer
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationUserResponseModel_2'
+        created_at:
+          type: string
+          format: date-time
+    RemoveMemberFromOrganizationResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    OrganizationUserResponseModel_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        sub:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        rbac_roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RbacRoleField_2'
+        joined_at:
+          type: string
+          format: date-time
+        last_login:
+          type: string
+          format: date-time
+    GetOrganizationResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        organization:
+          $ref: '#/components/schemas/OrganizationFields_2'
+    UpdateOrganizationPayload_2:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          minLength: 3
+          type: string
+          description: The new name for the organition
+    RbacRoleField_2:
+      type: object
+      properties:
+        name:
+          type: string
+    RemoveMemberPayload_2:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          maxLength: 64
+          type: string
+          description: The email of the user to be removed.
+    UpdateOrganizationResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

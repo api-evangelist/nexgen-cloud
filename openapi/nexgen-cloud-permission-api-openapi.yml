@@ -1,0 +1,181 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Permission API
+  version: '1.0'
+  description: 'Operations tagged Permission across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Permission
+  description: Permission endpoints list the granular permissions defined by Hyperstack. Permissions compose into RBAC roles, which are assigned to organization members. List permissions to discover what's available before building a custom role.
+paths:
+  /auth/permissions:
+    get:
+      tags:
+      - Permission
+      summary: List Permissions
+      description: Returns a list of [**permissions**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) that can be granted to users providing them with access to a specific resource action.
+      operationId: List_Permissions
+      responses:
+        '200':
+          description: Getting permissions success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPermissionsResponseModel'
+              example:
+                status: true
+                message: Getting permissions success
+                permissions:
+                - id: 6190
+                  resource: Environment
+                  permission: environment:list
+                  method: GET
+                  endpoint: ^/core/environments/?$
+                  created_at: '2026-05-06T14:32:11Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting permissions success
+                    permissions:
+                    - id: 6190
+                      resource: Environment
+                      permission: environment:list
+                      method: GET
+                      endpoint: ^/core/environments/?$
+                      created_at: '2026-05-06T14:32:11Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    GetPermissionsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting permissions success
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionFields'
+          description: Permissions granted by the role.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    PermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 7613
+        resource:
+          type: string
+          description: Resource the entry refers to.
+          example: Environment
+        permission:
+          type: string
+          description: Permission grant on the resource.
+          example: environment:list
+        method:
+          type: string
+          example: GET
+          description: The HTTP method associated with the permission.
+        endpoint:
+          type: string
+          description: Bucket endpoint URL. Use this with the S3 protocol.
+          example: ^/core/environments/?$
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T15:18:42Z'
+    GetPermissionsResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionFields_2'
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    PermissionFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
+          type: string
+        method:
+          type: string
+        endpoint:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

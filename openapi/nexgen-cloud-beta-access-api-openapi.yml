@@ -1,0 +1,244 @@
+openapi: 3.2.0
+info:
+  title: Infrahub beta access API
+  version: '1.0'
+  description: Beta Access APIs
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: beta access
+  description: Beta Access APIs
+paths:
+  /auth/beta-access/requests:
+    get:
+      tags:
+      - beta access
+      summary: Check the status of all beta access requests
+      description: Check the status of all beta access requests.
+      operationId: Get_beta_access_status
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BetaAccessStatusResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+    post:
+      tags:
+      - beta access
+      summary: Create a new beta access request
+      description: Creates a new beta access request for the current user
+      operationId: Create_beta_access_request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BetaAccessRequestPayload'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BetaAccessRequestResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+      x-codegen-request-body-name: payload
+  /auth/beta-access/requests/{program}:
+    get:
+      tags:
+      - beta access
+      summary: Check the status of beta access requests
+      description: Check the status of a particular beta access requests.
+      operationId: Get_beta_access_requests
+      parameters:
+      - name: program
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BetaAccessStatusResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+components:
+  schemas:
+    BetaAccessRequestPayload:
+      required:
+      - program
+      type: object
+      properties:
+        program:
+          type: string
+          description: Name of the beta program
+        metadata:
+          type: object
+          properties: {}
+          description: Optional metadata for the request
+    BetaAccessRequestFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the request
+        user_id:
+          type: integer
+          description: ID of the user who made the request
+        program_id:
+          type: integer
+          description: ID of the beta program
+        program_name:
+          type: string
+          description: Name of the beta program
+        status:
+          type: string
+          description: Status of the request
+          example: requested
+          enum:
+          - requested
+          - approved
+          - denied
+          - revoked
+        created_at:
+          type: string
+          description: When the request was made
+          format: date-time
+    BetaAccessRequestResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        beta_access_request:
+          $ref: '#/components/schemas/BetaAccessRequestFields'
+    BetaAccessStatusItem:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the request (requested, approved, denied, revoked)
+          example: requested
+          enum:
+          - requested
+          - approved
+          - denied
+          - revoked
+        program_name:
+          type: string
+          description: Name of the beta program
+        request_date:
+          type: string
+          description: When the request was made
+          format: date-time
+    BetaAccessStatusResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        beta_access_requests:
+          type: array
+          description: List of beta access requests
+          items:
+            $ref: '#/components/schemas/BetaAccessStatusItem'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

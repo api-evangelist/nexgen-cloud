@@ -1,0 +1,843 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Environment API
+  version: '1.0'
+  description: 'Operations tagged Environment across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Environment
+  description: An environment is a logical container for resources within a region. Use environments to separate development, staging, and production resources, or to isolate per-team workloads. Most resource endpoints require an environment name in the request.
+paths:
+  /core/environments:
+    get:
+      tags:
+      - Environment
+      summary: List environments
+      description: Returns a list of your existing environments, providing the following details for each; environment ID, name, [**region**](https://docs.hyperstack.cloud/docs/api-reference/environment), and the date and time of creation. For more information on environments, see [Environment](https://docs.hyperstack.cloud/docs/api-reference/environment).
+      operationId: List_environments
+      parameters:
+      - name: page
+        in: query
+        description: Page number of results to return.
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        description: Data Per Page
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: Search By ID or Name or Region
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of environments list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Environments'
+              example:
+                status: true
+                message: Getting environments successful
+                environments:
+                - id: 8429
+                  name: testing-debian
+                  region: CANADA-1
+                  created_at: '2026-05-07T09:21:55Z'
+                  features:
+                    network_optimised: true
+                    green_status: GREEN
+                page: null
+                page_size: null
+                count: 5
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting environments successful
+                    environments:
+                    - id: 8429
+                      name: testing-debian
+                      region: CANADA-1
+                      created_at: '2026-05-07T09:21:55Z'
+                      features:
+                        network_optimised: true
+                        green_status: GREEN
+                    page: null
+                    page_size: null
+                    count: 5
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    post:
+      tags:
+      - Environment
+      summary: Create environment
+      description: Creates an [**environment**](https://docs.hyperstack.cloud/docs/resource-management/environments), a container that organizes related resources such as SSH key pairs, virtual machines, and volumes. To create an environment, provide an environment `name` and a `region` in the request body. Environment names must be unique within your organization, even across different regions.
+      operationId: Create_environment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create_Environment'
+              example:
+                name: example-environment
+                region: NORWAY-1
+              properties: {}
+            example:
+              name: example-environment
+              region: NORWAY-1
+        required: true
+      responses:
+        '200':
+          description: Environment has been created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Environment'
+              example:
+                status: true
+                message: Environment example-environment is created successfully
+                environment:
+                  id: 4501
+                  name: example-environment
+                  region: NORWAY-1
+                  created_at: '2026-05-07T11:47:30Z'
+                  features:
+                    network_optimised: false
+                    green_status: GREEN
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Environment example-environment is created successfully
+                    environment:
+                      id: 4501
+                      name: example-environment
+                      region: NORWAY-1
+                      created_at: '2026-05-07T11:47:30Z'
+                      features:
+                        network_optimised: false
+                        green_status: GREEN
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/environments/name-availability/{name}:
+    get:
+      tags:
+      - Environment
+      summary: Fetch environment name availability
+      description: Check if a Environment name is available.
+      operationId: Fetch_environment_name_availability
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the environment.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NameAvailableModel'
+              example:
+                name: example-availability-check
+                available: true
+                message: This name is available
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    name: example-availability-check
+                    available: true
+                    message: This name is available
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/environments/{id}:
+    get:
+      tags:
+      - Environment
+      summary: Retrieve environment
+      description: Retrieves details on a specified environment. Supply the environment ID in the path, and Hyperstack will return the corresponding `environment` object containing details on the environment.
+      operationId: Get_environment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the environment.
+      responses:
+        '200':
+          description: Environment details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Environment'
+              example:
+                status: true
+                message: Getting detail successful
+                environment:
+                  id: 4501
+                  name: example-environment
+                  region: NORWAY-1
+                  created_at: '2026-05-07T11:47:30Z'
+                  features:
+                    network_optimised: false
+                    green_status: GREEN
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting detail successful
+                    environment:
+                      id: 4501
+                      name: example-environment
+                      region: NORWAY-1
+                      created_at: '2026-05-07T11:47:30Z'
+                      features:
+                        network_optimised: false
+                        green_status: GREEN
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    put:
+      tags:
+      - Environment
+      summary: Update environment
+      description: Updates the name of an existing environment. Provide the environment ID in the path and the new environment `name` in the request body to modify the specified environment.
+      operationId: Update_environment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the environment.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Update_Environment'
+              example:
+                name: example-environment
+              properties: {}
+            example:
+              name: example-environment
+        required: true
+      responses:
+        '200':
+          description: Environment name successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Environment'
+              example:
+                status: true
+                message: Successfully updated Environment 83991
+                environment:
+                  id: 4501
+                  name: example-environment
+                  region: NORWAY-1
+                  created_at: '2026-05-07T11:47:30Z'
+                  features:
+                    network_optimised: false
+                    green_status: GREEN
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Successfully updated Environment 83991
+                    environment:
+                      id: 4501
+                      name: example-environment
+                      region: NORWAY-1
+                      created_at: '2026-05-07T11:47:30Z'
+                      features:
+                        network_optimised: false
+                        green_status: GREEN
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    delete:
+      tags:
+      - Environment
+      summary: Delete environment
+      description: 'Deletes an environment permanently. Provide the environment ID in the path to remove the specified environment.
+
+
+        > **State requirement:** This operation requires the environment to have no attached child resources. Delete or move VMs, volumes, keypairs, firewalls, and any other environment-scoped resources first.'
+      operationId: Delete_environment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the environment.
+      responses:
+        '200':
+          description: The environment has been successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Environment 83992 is deleted successfully
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Environment 83992 is deleted successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '405':
+          description: 'The HTTP method isn''t supported for this path. Check the method and try again.
+
+
+            Common cause: `error_reason: not_allowed`.'
+          content:
+            application/json:
+              examples:
+                default:
+                  summary: The HTTP method isn't supported for this path. Check the method and try again.
+                  value:
+                    status: false
+                    message: Sorry but this request cannot be fulfilled because the environment contains 1 virtual-machines, 0 volumes, 1 firewalls & 1 key pairs in it. Please delete these before deleting the environment
+                    error_reason: not_allowed
+              example:
+                status: false
+                message: Sorry but this request cannot be fulfilled because the environment contains 1 virtual-machines, 0 volumes, 1 firewalls & 1 key pairs in it. Please delete these before deleting the environment
+                error_reason: not_allowed
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/environments/{id}/vm-quota:
+    get:
+      tags:
+      - Environment
+      summary: Get environment VM quota
+      description: Retrieves VM quota information for a specific environment, including current VM count, maximum VMs allowed, available VMs, and percentage used in an environment before reaching the subnet IP limit.
+      operationId: Get_environment_VM_quota
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the environment.
+      responses:
+        '200':
+          description: VM quota information retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VM_Quota'
+              example:
+                current_vms: 1
+                max_vms: 250
+                available_vms: 249
+                percentage_used: 0.4
+                cidr: 10.0.5.0/24
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    current_vms: 1
+                    max_vms: 250
+                    available_vms: 249
+                    percentage_used: 0.4
+                    cidr: 10.0.5.0/24
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Resource name to check for availability.
+          example: example-availability-check
+        available:
+          type: boolean
+          description: Whether stock is currently available.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Name must not exceed 20 characters
+    Environments:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting environments successful
+        environments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Environment_Fields'
+          description: An array of objects each containing details about an environment.
+        page:
+          type:
+          - integer
+          - 'null'
+          description: 1-indexed page number of the current result set.
+        page_size:
+          type:
+          - integer
+          - 'null'
+          description: Number of items per page in the current result set.
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 11
+    VM_Quota:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        current_vms:
+          type: integer
+          example: 1
+          description: Number of virtual machines currently provisioned.
+        max_vms:
+          type: integer
+          example: 250
+          description: Maximum number of virtual machines allowed by the quota.
+        available_vms:
+          type: integer
+          example: 249
+          description: Number of additional virtual machines that can still be created.
+        percentage_used:
+          type: number
+          example: 0.4
+          description: Percentage of the virtual machine quota currently used.
+        cidr:
+          type: string
+          example: 10.0.11.0/24
+          description: CIDR block allocated for the virtual machines.
+    Environment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 3287
+        name:
+          type: string
+          description: Name of the environment.
+          example: example-environment
+        region:
+          type: string
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+          example: NORWAY-1
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T16:04:09Z'
+        features:
+          $ref: '#/components/schemas/Environment_Features'
+          description: Optional feature flags applicable to the resource.
+    Update_Environment:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The new name of the environment.
+    Environment_Features:
+      type: object
+      properties:
+        network_optimised:
+          type: boolean
+          description: Whether the resource has the network-optimised feature enabled.
+          example: false
+        green_status:
+          type: string
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
+          description: Indicator of how much of the region's capacity is running on green energy.
+    Environment:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Environment example-environment is created successfully
+        environment:
+          $ref: '#/components/schemas/Environment_Fields'
+          description: Environment containing the resource.
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    Create_Environment:
+      required:
+      - name
+      - region
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: Name of the environment being created. Environments must have unique names, even across different regions.
+        region:
+          type: string
+          description: Geographic location of the data center where the environment is created. See [**Regions**](https://docs.hyperstack.cloud/docs/resource-management/regions) for the list of supported values.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    NameAvailableModel_2:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    Environments_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        environments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Environment_Fields_2'
+        page:
+          type: integer
+        page_size:
+          type: integer
+        count:
+          type: integer
+    VM_Quota_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        current_vms:
+          type: integer
+        max_vms:
+          type: integer
+        available_vms:
+          type: integer
+        percentage_used:
+          type: number
+        cidr:
+          type: string
+    Environment_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        region:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        features:
+          $ref: '#/components/schemas/Environment_Features_2'
+    Environment_Features_2:
+      type: object
+      properties:
+        network_optimised:
+          type: boolean
+        green_status:
+          type: string
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
+    Environment_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        environment:
+          $ref: '#/components/schemas/Environment_Fields_2'
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    Create_Environment_2:
+      required:
+      - name
+      - region
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The name of the environment being created.
+        region:
+          type: string
+          description: The geographic location of the data center where the environment is being created. To learn more about regions, [**click here**]({Config.INFRAHUB_DOCS_BASE}/docs/features/regions).
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

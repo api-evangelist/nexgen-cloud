@@ -1,0 +1,310 @@
+openapi: 3.2.0
+info:
+  title: AI Studio Models API
+  version: '0.1'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
+
+
+    ## Base URL
+
+
+    All requests are sent to:
+
+
+    ```
+
+    https://console.hyperstack.cloud/ai/api/v1
+
+    ```
+
+
+    ## Authentication
+
+
+    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
+
+
+    ## Request and response format
+
+
+    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+servers:
+- url: https://console.hyperstack.cloud/ai/api/v1
+security:
+- apiKey: []
+tags:
+- name: Models
+  description: User-deployed models and model aliases. These endpoints let you deploy and undeploy models, list available models, manage model aliases, and retrieve deployment details.
+paths:
+  /models:
+    get:
+      description: Returns all models available to the authenticated user in OpenAI-compatible format. Use a model's `id` as the `model` value in inference requests.
+      operationId: getModels
+      parameters:
+      - in: query
+        name: modalities
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModalityEnum'
+        description: Filter models by modality. Repeat the parameter for multiple values, such as `modalities=text-to-image&modalities=image-to-image`.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenAIModelsListResponseSchema'
+                example:
+                  data:
+                  - created: 1736932200
+                    id: Llama-3.3-70B-Instruct
+                    object: model
+                    owned_by: hyperstack
+                  object: list
+              example:
+                data:
+                - created: 1736932200
+                  id: Llama-3.3-70B-Instruct
+                  object: model
+                  owned_by: hyperstack
+                object: list
+          description: OK
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Bad Request
+        '422':
+          description: Validation Error
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Internal Server Error
+      summary: List models
+      tags:
+      - Models
+  /models/choices:
+    get:
+      description: Returns a simplified list of models available for selection in the AI Studio interface, including display names and base model identifiers. Use this endpoint to populate model picker UI elements.
+      operationId: getModelsChoices
+      parameters:
+      - in: query
+        name: inference
+        required: false
+        schema:
+          type: boolean
+          default: null
+        description: When `true`, returns only models available for inference.
+      - in: query
+        name: finetuning
+        required: false
+        schema:
+          type: boolean
+          default: null
+        description: When `true`, returns only models that support fine-tuning.
+      - in: query
+        name: modalities
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModalityEnum'
+        description: Filter models by modality. Repeat the parameter for multiple values, such as `modalities=text-to-image&modalities=image-to-image`.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetModelsChoicesResponseSchema'
+                example:
+                  models:
+                  - base_model_hf_repo: mistralai/Mistral-Small-24B-Instruct-2501
+                    display_name: 'test-model-123 '
+                    hf_repo: null
+                    is_finetuned_model: true
+                    model_id: 1001
+                    model_name: 'test-model-123 '
+                    provider: Hyperstack
+                    input_modalities:
+                    - text
+                    output_modalities:
+                    - text
+                    parameter_schema: null
+                  status: success
+              example:
+                models:
+                - base_model_hf_repo: mistralai/Mistral-Small-24B-Instruct-2501
+                  display_name: 'test-model-123 '
+                  hf_repo: null
+                  is_finetuned_model: true
+                  model_id: 1001
+                  model_name: 'test-model-123 '
+                  provider: Hyperstack
+                  input_modalities:
+                  - text
+                  output_modalities:
+                  - text
+                  parameter_schema: null
+                status: success
+          description: OK
+        '422':
+          description: Validation Error
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Internal Server Error
+      summary: List model choices
+      tags:
+      - Models
+components:
+  schemas:
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
+    ModelOptionSchema:
+      properties:
+        display_name:
+          type: string
+          description: User-friendly display name of the model.
+        is_finetuned_model:
+          type: boolean
+          description: When `true`, the model is a fine-tuned model; when `false`, it is a base model.
+        model_id:
+          type: integer
+          description: Unique identifier of the model.
+        model_name:
+          type: string
+          description: Name of the model, used as the `model` value in inference requests.
+        hf_repo:
+          type: string
+          default: null
+          description: Hugging Face repository identifier of the base model, if applicable.
+        base_mode_hf_repo:
+          type: string
+          default: null
+          description: Hugging Face repository identifier of the underlying base model for a fine-tuned model, if applicable.
+        provider:
+          type: string
+          default: null
+          description: Name of the model provider, such as `HuggingFace` or `Hyperstack`.
+        input_modalities:
+          type: array
+          items:
+            type: string
+          default: null
+          description: Input modalities the model accepts, such as `text` or `image`.
+        output_modalities:
+          type: array
+          items:
+            type: string
+          default: null
+          description: Output modalities the model produces, such as `text` or `image`.
+        parameter_schema:
+          type: object
+          default: null
+          description: JSON Schema describing the model's accepted generation parameters. Populated for vision (image) models with their image-generation parameters; `null` for text models.
+        base_model_hf_repo:
+          type: string
+          description: Hugging Face repository identifier of the base model.
+      required:
+      - model_id
+      - model_name
+      - display_name
+      - is_finetuned_model
+      title: ModelOptionSchema
+      type: object
+    OpenAIModelsListResponseSchema:
+      description: OpenAI-compliant response schema for GET /api/v1/models.
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/OpenAIModelSchema'
+          type: array
+          description: Array of model objects in OpenAI-compatible format.
+        object:
+          default: list
+          enum:
+          - list
+          type: string
+          description: Object type identifier. Always `"list"`.
+      required:
+      - data
+      title: OpenAIModelsListResponseSchema
+      type: object
+    ModalityEnum:
+      type: string
+      enum:
+      - text-to-text
+      - text-to-image
+      - image-to-image
+      - image-to-text
+      title: ModalityEnum
+      x-enumDescriptions:
+        '`text-to-text`': Returns models that generate text from a text prompt ([text-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-text-models)).
+        '`text-to-image`': Returns models that generate images from a text prompt ([text-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-image-models)).
+        '`image-to-image`': Returns models that generate images from a source image and a text prompt ([image-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-image-models)).
+        '`image-to-text`': Returns models that generate text from an image and a text prompt ([image-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-text-models)).
+    OpenAIModelSchema:
+      description: Schema for individual model in OpenAI format.
+      properties:
+        created:
+          type: integer
+          description: Unix timestamp indicating when the model was created.
+        id:
+          type: string
+          description: Identifier of the model, used as the `model` value in inference requests.
+        owned_by:
+          type: string
+          description: Identifier of the owner of the model.
+        object:
+          default: model
+          enum:
+          - model
+          type: string
+          description: Object type, always `"model"`.
+      required:
+      - id
+      - created
+      - owned_by
+      title: OpenAIModelSchema
+      type: object
+    GetModelsChoicesResponseSchema:
+      properties:
+        models:
+          items:
+            $ref: '#/components/schemas/ModelOptionSchema'
+          type: array
+          description: List of model objects available for inference selection.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - models
+      title: GetModelsChoicesResponseSchema
+      type: object
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'

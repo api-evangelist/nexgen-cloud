@@ -1,0 +1,431 @@
+openapi: 3.2.0
+info:
+  title: AI Studio System Prompts API
+  version: '0.1'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
+
+
+    ## Base URL
+
+
+    All requests are sent to:
+
+
+    ```
+
+    https://console.hyperstack.cloud/ai/api/v1
+
+    ```
+
+
+    ## Authentication
+
+
+    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
+
+
+    ## Request and response format
+
+
+    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+servers:
+- url: https://console.hyperstack.cloud/ai/api/v1
+security:
+- apiKey: []
+tags:
+- name: System Prompts
+  description: Reusable system prompt templates for AI Studio deployments. These endpoints let you create, retrieve, update, and delete system prompts that can be applied to deployed models.
+paths:
+  /system-prompts:
+    get:
+      description: Returns all saved system prompt templates for the authenticated user. System prompts define the assistant's persona, behavior, and response style and can be attached to chat completions or conversation messages.
+      operationId: listSystemPrompts
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemPromptsListSchema'
+                example:
+                  prompts:
+                  - content: Updated content for API test. You are a concise assistant.
+                    created_at: '2025-01-15T10:30:00.000000+00:00'
+                    id: 1001
+                    name: example-sysprompt
+                    organization_id: 1001
+                    updated_at: '2025-01-15T10:30:00.000000+00:00'
+                    user_id: 1001
+                    uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+              example:
+                prompts:
+                - content: Updated content for API test. You are a concise assistant.
+                  created_at: '2025-01-15T10:30:00.000000+00:00'
+                  id: 1001
+                  name: example-sysprompt
+                  organization_id: 1001
+                  updated_at: '2025-01-15T10:30:00.000000+00:00'
+                  user_id: 1001
+                  uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+          description: OK
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '422':
+          description: Validation Error
+      summary: List system prompts
+      tags:
+      - System Prompts
+    post:
+      description: Creates a new reusable system prompt template. The saved prompt can then be referenced by its ID in chat completion or conversation requests to apply a consistent persona or instruction set without repeating the prompt text.
+      operationId: createSystemPrompt
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemPromptCreateSchema'
+              example:
+                name: example-sysprompt
+                content: You are a helpful assistant created for API testing purposes.
+            example:
+              name: example-sysprompt
+              content: You are a helpful assistant created for API testing purposes.
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemPromptResponseSchema'
+                example:
+                  content: You are a helpful assistant created for API testing purposes.
+                  created_at: '2025-01-15T10:30:00.000000+00:00'
+                  id: 1001
+                  name: example-sysprompt
+                  organization_id: 1001
+                  updated_at: null
+                  user_id: 1001
+                  uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+              example:
+                content: You are a helpful assistant created for API testing purposes.
+                created_at: '2025-01-15T10:30:00.000000+00:00'
+                id: 1001
+                name: example-sysprompt
+                organization_id: 1001
+                updated_at: null
+                user_id: 1001
+                uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+          description: Created
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '422':
+          description: Validation Error
+      summary: Create system prompt
+      tags:
+      - System Prompts
+  /system-prompts/{id}:
+    delete:
+      description: Permanently deletes a system prompt template by ID. Existing conversation history that referenced this prompt is unaffected, but the prompt can no longer be attached to new requests.
+      operationId: deleteSystemPrompt
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: Unique identifier of the system prompt to delete.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessSchema'
+                example:
+                  message: System prompt deleted successfully
+                  status: success
+              example:
+                message: System prompt deleted successfully
+                status: success
+          description: OK
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+      summary: Delete system prompt
+      tags:
+      - System Prompts
+    get:
+      description: Returns a specific system prompt template by ID, including its name and full content.
+      operationId: getSystemPrompt
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: Unique identifier of the system prompt to retrieve.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemPromptResponseSchema'
+                example:
+                  content: You are a helpful assistant created for API testing purposes.
+                  created_at: '2025-01-15T10:30:00.000000+00:00'
+                  id: 1001
+                  name: example-sysprompt
+                  organization_id: 1001
+                  updated_at: null
+                  user_id: 1001
+                  uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+              example:
+                content: You are a helpful assistant created for API testing purposes.
+                created_at: '2025-01-15T10:30:00.000000+00:00'
+                id: 1001
+                name: example-sysprompt
+                organization_id: 1001
+                updated_at: null
+                user_id: 1001
+                uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+          description: OK
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+      summary: Get system prompt
+      tags:
+      - System Prompts
+    put:
+      description: Updates the content of an existing system prompt template. Changes take effect immediately for any subsequent requests that reference this prompt ID.
+      operationId: updateSystemPrompt
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: Unique identifier of the system prompt to update.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemPromptUpdateSchema'
+              example:
+                content: Updated content for API test. You are a concise assistant.
+            example:
+              content: Updated content for API test. You are a concise assistant.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemPromptResponseSchema'
+                example:
+                  content: Updated content for API test. You are a concise assistant.
+                  created_at: '2025-01-15T10:30:00.000000+00:00'
+                  id: 1001
+                  name: example-sysprompt
+                  organization_id: 1001
+                  updated_at: '2025-01-15T10:30:00.000000+00:00'
+                  user_id: 1001
+                  uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+              example:
+                content: Updated content for API test. You are a concise assistant.
+                created_at: '2025-01-15T10:30:00.000000+00:00'
+                id: 1001
+                name: example-sysprompt
+                organization_id: 1001
+                updated_at: '2025-01-15T10:30:00.000000+00:00'
+                user_id: 1001
+                uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+          description: OK
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+          description: Not Found
+        '422':
+          description: Validation Error
+      summary: Update system prompt
+      tags:
+      - System Prompts
+components:
+  schemas:
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
+    SystemPromptResponseSchema:
+      description: Schema for system prompt response.
+      properties:
+        content:
+          description: Content of the system prompt.
+          type: string
+        id:
+          description: Unique identifier of the system prompt.
+          type: integer
+        name:
+          description: Name of the system prompt.
+          type: string
+        organization_id:
+          description: ID of the organization.
+          type: integer
+        user_id:
+          description: ID of the user who created the prompt.
+          type: integer
+        created_at:
+          format: date-time
+          type: string
+          default: null
+          description: ISO 8601 UTC timestamp indicating when the system prompt was created.
+        updated_at:
+          format: date-time
+          type: string
+          default: null
+          description: Last update timestamp.
+        uuid:
+          type: string
+          default: null
+          description: UUID of the prompt.
+      required:
+      - id
+      - name
+      - content
+      - user_id
+      - organization_id
+      title: SystemPromptResponseSchema
+      type: object
+    SystemPromptCreateSchema:
+      description: Schema for creating a new system prompt.
+      properties:
+        content:
+          description: The system prompt text that defines the model's persona, behavior, and response constraints.
+          minLength: 1
+          type: string
+          example: You are a helpful assistant that responds concisely and accurately.
+        name:
+          description: Unique display name for the system prompt template.
+          maxLength: 255
+          minLength: 1
+          type: string
+          example: example-system-prompt
+      required:
+      - name
+      - content
+      title: SystemPromptCreateSchema
+      type: object
+      example:
+        name: example-sysprompt
+        content: You are a helpful assistant created for API testing purposes.
+    SystemPromptUpdateSchema:
+      description: Schema for updating an existing system prompt.
+      properties:
+        content:
+          minLength: 1
+          type: string
+          default: null
+          description: Replacement text for the system prompt. Overwrites the existing content.
+          example: You are a helpful assistant that responds concisely and accurately.
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
+          default: null
+          description: Name of the system prompt.
+      title: SystemPromptUpdateSchema
+      type: object
+      example:
+        content: Updated content for API test. You are a concise assistant.
+    SystemPromptsListSchema:
+      description: Schema for listing system prompts with pagination.
+      properties:
+        prompts:
+          description: List of system prompts.
+          items:
+            $ref: '#/components/schemas/SystemPromptResponseSchema'
+          type: array
+      required:
+      - prompts
+      title: SystemPromptsListSchema
+      type: object
+    SuccessSchema:
+      properties:
+        message:
+          default: null
+          type: string
+          description: Human-readable message describing the operation result.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+        deleted_count:
+          type: integer
+          default: null
+          description: Number of records deleted by the operation.
+      title: SuccessSchema
+      type: object
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'

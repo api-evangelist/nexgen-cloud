@@ -1,0 +1,47 @@
+openapi: 3.2.0
+info:
+  title: Infrahub snapshot events API
+  version: '1.0'
+  description: Snapshot Events APIs
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: snapshot events
+  description: Snapshot Events APIs
+paths:
+  /core/snapshots/{snapshot_id}/events:
+    get:
+      tags:
+      - snapshot events
+      summary: Fetch all events for a snapshot
+      description: Retrieves a list of all events for a Snapshot's history, which records actions performed on the specific snapshot. Requires the snapshot ID in the path.
+      operationId: List_Snapshot_Events
+      parameters:
+      - name: snapshot_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+components:
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

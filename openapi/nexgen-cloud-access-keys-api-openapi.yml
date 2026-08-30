@@ -1,0 +1,468 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Access Keys API
+  version: '1.0'
+  description: 'Operations tagged Access Keys across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Access Keys
+  description: Access keys authenticate S3-compatible object storage operations. Each key has an access ID and a secret. Generate access keys via this API or in the console, then use them to sign requests to bucket endpoints.
+paths:
+  /object-storage/access-keys:
+    get:
+      tags:
+      - Access Keys
+      summary: List access keys
+      operationId: listAccessKeysEndpoint
+      parameters:
+      - name: search
+        in: query
+        schema:
+          type: string
+        description: Filter results by case-insensitive substring match against the resource name.
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: Page number to retrieve.
+      - name: page_size
+        in: query
+        schema:
+          type: integer
+        description: Number of items to return per page.
+      responses:
+        '200':
+          description: Request succeeded.
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object_storage__AccessKeyListResponse'
+              example:
+                access_keys:
+                - access_key: AK5V1JGJXWZW9XHGX49Z
+                  created_at: '2026-05-07T09:21:55Z'
+                  description: Example access key
+                  id: 9876
+                  region: CANADA-1
+                  user_id: 5341
+                meta:
+                  count: 12
+                  current_page: 1
+                  total_pages: 1
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    access_keys:
+                    - access_key: AK5V1JGJXWZW9XHGX49Z
+                      created_at: '2026-05-07T09:21:55Z'
+                      description: Example access key
+                      id: 9876
+                      region: CANADA-1
+                      user_id: 5341
+                    meta:
+                      count: 12
+                      current_page: 1
+                      total_pages: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object_storage__ErrorResponse'
+              examples: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              examples: {}
+      description: Retrieve a list of existing access keys tied to your [**Object Storage**](https://docs.hyperstack.cloud/docs/storage/object-storage) account, including their IDs, descriptions, creation timestamps, and region scopes.
+      security:
+      - apiKey: []
+    post:
+      tags:
+      - Access Keys
+      summary: Generate a new access key
+      operationId: createAccessKeyEndpoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/object_storage__AccessKeyCreateRequest'
+              example:
+                description: Example access key
+                region: CANADA-1
+              properties: {}
+            example:
+              region: CANADA-1
+              description: Example access key
+        required: false
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object_storage__AccessKeyCreateResponse'
+              example:
+                access_key: AK5V1JGJXWZW9XHGX49Z
+                created_at: '2026-05-07T09:21:55Z'
+                id: 8429
+                region: CANADA-1
+                secret_key: BprxAr9gRo3nVZkbfoFkssPnLr8viU76IQHcc8XD
+                user_id: 6190
+                description: Example access key
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    access_key: AK5V1JGJXWZW9XHGX49Z
+                    created_at: '2026-05-07T09:21:55Z'
+                    id: 8429
+                    region: CANADA-1
+                    secret_key: BprxAr9gRo3nVZkbfoFkssPnLr8viU76IQHcc8XD
+                    user_id: 6190
+                    description: Example access key
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object_storage__ErrorResponse'
+              examples: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              examples: {}
+      description: Generates a new access key for interacting with the [**Object Storage**](https://docs.hyperstack.cloud/docs/storage/object-storage) service. Each access key consists of a unique `access_key` and a corresponding `secret_key`, scoped to a specific [**region**](https://docs.hyperstack.cloud/docs/resource-management/regions).
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /object-storage/access-keys/{access_key_id}:
+    delete:
+      tags:
+      - Access Keys
+      summary: Remove an existing access key
+      operationId: deleteAccessKeyEndpoint
+      parameters:
+      - name: access_key_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the access key.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object_storage__DeleteResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object_storage__ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object_storage__ErrorResponse'
+        '422':
+          description: Validation Error
+          content: {}
+      description: 'Deletes an existing access key from your [**Object Storage**](https://docs.hyperstack.cloud/docs/storage/object-storage) account. Once deleted, the access key can no longer be used to authenticate any object storage operations.
+
+
+        **Access key deletion:** Deletion is immediate and disables every object-storage operation (upload, download, list) that depends on this key.'
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    object_storage__PaginationMeta:
+      title: PaginationMeta
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 5
+        current_page:
+          type: integer
+          example: 1
+          description: The current page number.
+        total_pages:
+          type: integer
+          example: 1
+          description: Total number of available pages.
+    object_storage__ErrorResponse:
+      title: ErrorResponse
+      type: object
+      properties:
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+    object_storage__AccessKeyListResponse:
+      title: AccessKeyListResponse
+      type: object
+      properties:
+        access_keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/object_storage__AccessKeyResponse'
+          description: Object-storage access keys.
+        meta:
+          $ref: '#/components/schemas/object_storage__PaginationMeta'
+          description: Pagination metadata.
+    object_storage__AccessKeyResponse:
+      title: AccessKeyResponse
+      type: object
+      properties:
+        access_key:
+          type: string
+          description: Object-storage access key.
+          example: AKW370C2J7Z47QL6SV22
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T11:47:30Z'
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 4501
+        region:
+          $ref: '#/components/schemas/object_storage__RegionsEnum'
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+        user_id:
+          type: integer
+          description: Identifier of the user.
+          example: 1129
+        description:
+          title: Description
+          type: object
+          example: example
+          description: An optional description of the API key.
+    object_storage__AccessKeyCreateResponse:
+      title: AccessKeyCreateResponse
+      type: object
+      properties:
+        access_key:
+          type: string
+          description: Object-storage access key.
+          example: AKUXU7D1M49L3NR9YJHU
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T15:18:42Z'
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 7613
+        region:
+          $ref: '#/components/schemas/object_storage__RegionsEnum'
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+        secret_key:
+          type: string
+          example: IfzGQzxPiwi6mCOncLvNxVdItKPZh0dcMxAwcnpu
+          description: The corresponding secret key. This is only returned at the time of creation, store it securely.
+        user_id:
+          type: integer
+          description: Identifier of the user.
+          example: 8429
+        description:
+          title: Description
+          type: object
+          example: example
+          description: An optional description of the API key.
+    object_storage__RegionsEnum:
+      type: string
+      enum:
+      - CANADA-1
+      example: CANADA-1
+    object_storage__DeleteResponse:
+      title: DeleteResponse
+      type: object
+      properties:
+        message:
+          type: string
+          description: Human-readable description of the result.
+    object_storage__AccessKeyCreateRequest:
+      title: AccessKeyCreateRequest
+      required:
+      - region
+      type: object
+      properties:
+        region:
+          $ref: '#/components/schemas/object_storage__RegionsEnum'
+          enum:
+          - CANADA-1
+          description: The [**region**](https://docs.hyperstack.cloud/docs/resource-management/regions) where the access key is valid.
+        description:
+          title: Description
+          type: object
+          description: 'Optional description for the access key. Maximum length: 250 characters.'
+    object_storage__PaginationMeta_2:
+      title: PaginationMeta
+      required:
+      - count
+      - current_page
+      - total_pages
+      type: object
+      properties:
+        count:
+          title: Count
+          type: integer
+        current_page:
+          title: Current Page
+          type: integer
+        total_pages:
+          title: Total Pages
+          type: integer
+    object_storage__ErrorResponse_2:
+      title: ErrorResponse
+      required:
+      - error_reason
+      - message
+      type: object
+      properties:
+        error_reason:
+          title: Error Reason
+          type: string
+        message:
+          title: Message
+          type: string
+        status:
+          title: Status
+          type: boolean
+          default: false
+    object_storage__AccessKeyListResponse_2:
+      title: AccessKeyListResponse
+      required:
+      - access_keys
+      - meta
+      type: object
+      properties:
+        access_keys:
+          title: Access Keys
+          type: array
+          items:
+            $ref: '#/components/schemas/object_storage__AccessKeyResponse_2'
+        meta:
+          $ref: '#/components/schemas/object_storage__PaginationMeta_2'
+    object_storage__AccessKeyResponse_2:
+      title: AccessKeyResponse
+      required:
+      - access_key
+      - created_at
+      - id
+      - region
+      - user_id
+      type: object
+      properties:
+        access_key:
+          title: Access Key
+          type: string
+        created_at:
+          title: Created At
+          type: string
+          format: date-time
+        description:
+          title: Description
+          type: object
+        id:
+          title: Id
+          type: integer
+        region:
+          $ref: '#/components/schemas/object_storage__RegionsEnum_2'
+        user_id:
+          title: User Id
+          type: integer
+    object_storage__AccessKeyCreateResponse_2:
+      title: AccessKeyCreateResponse
+      required:
+      - access_key
+      - created_at
+      - id
+      - region
+      - secret_key
+      - user_id
+      type: object
+      properties:
+        access_key:
+          title: Access Key
+          type: string
+        created_at:
+          title: Created At
+          type: string
+          format: date-time
+        description:
+          title: Description
+          type: object
+        id:
+          title: Id
+          type: integer
+        region:
+          $ref: '#/components/schemas/object_storage__RegionsEnum_2'
+        secret_key:
+          title: Secret Key
+          type: string
+        user_id:
+          title: User Id
+          type: integer
+    object_storage__RegionsEnum_2:
+      title: RegionsEnum
+      type: string
+      enum:
+      - CANADA-1
+    object_storage__DeleteResponse_2:
+      title: DeleteResponse
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          title: Message
+          type: string
+    object_storage__AccessKeyCreateRequest_2:
+      title: AccessKeyCreateRequest
+      required:
+      - region
+      type: object
+      properties:
+        description:
+          title: Description
+          type: object
+        region:
+          $ref: '#/components/schemas/object_storage__RegionsEnum_2'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

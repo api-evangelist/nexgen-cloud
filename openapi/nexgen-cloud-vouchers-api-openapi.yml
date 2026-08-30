@@ -1,0 +1,194 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Vouchers API
+  version: '1.0'
+  description: 'Operations tagged Vouchers across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Vouchers
+  description: Voucher endpoints redeem promotional codes to add credit to your account. Vouchers are single-use.
+paths:
+  /billing/billing/vouchers/redeem:
+    post:
+      tags:
+      - Vouchers
+      summary: Redeem a voucher with a voucher code
+      description: Redeems a Hyperstack voucher and applies its credit to your organization's billing balance. Submit the `voucher_code` of a valid, unused voucher in the request body. The credit is applied to the currently selected organization's account. For voucher constraints and credit behavior, see [**Voucher Rules and Account Credit Behavior**](https://docs.hyperstack.cloud/docs/billing/vouchers/#voucher-rules-and-account-credit-behavior).
+      operationId: Redeem_a_voucher
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Redeem_voucher_payload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoucherRedeemResponseSchema'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    voucher:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Voucher code.
+        id:
+          type: integer
+          description: Voucher ID.
+        status:
+          type: string
+          description: Voucher status.
+        redemption_count:
+          type: integer
+          description: Current redemption count for a General Voucher.
+        max_redemption_count:
+          type: integer
+          description: Max redemption count for a General Voucher.
+        remaining_redemptions:
+          type: integer
+          description: Number of remaining redemptions allowed on this voucher.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Redeem_voucher_payload:
+      required:
+      - voucher_code
+      type: object
+      properties:
+        voucher_code:
+          type: string
+          description: Voucher code to redeem. Must consist only of uppercase letters and hyphens, and must exactly match a valid, unredeemed code issued by Hyperstack.
+    VoucherRedeemResponseSchema:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response message.
+        status:
+          type: boolean
+          description: Success status of the operation.
+        voucher:
+          type: object
+          description: Redeemed voucher details.
+          allOf:
+          - $ref: '#/components/schemas/voucher'
+    voucher_2:
+      required:
+      - code
+      - id
+      - status
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Voucher ID
+        code:
+          type: string
+          description: Voucher code
+        status:
+          type: string
+          description: Voucher status
+        redemption_count:
+          type: integer
+          description: Current redemption count for a General Voucher
+        max_redemption_count:
+          type: integer
+          description: Max redemption count for a General Voucher
+        remaining_redemptions:
+          type: integer
+          description: Remaining redemptions
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Redeem_voucher_payload_2:
+      required:
+      - voucher_code
+      type: object
+      properties:
+        voucher_code:
+          type: string
+          description: The code of the voucher you want to redeem.
+    VoucherRedeemResponseSchema_2:
+      required:
+      - message
+      - status
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Success status of the operation
+        message:
+          type: string
+          description: Response message
+        voucher:
+          type: object
+          description: Redeemed voucher details
+          allOf:
+          - $ref: '#/components/schemas/voucher_2'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

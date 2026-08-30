@@ -1,0 +1,315 @@
+openapi: 3.2.0
+info:
+  title: Infrahub Compliance API
+  version: '1.0'
+  description: Compliance APIs
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: compliance
+  description: Compliance APIs
+paths:
+  /core/compliance:
+    get:
+      tags:
+      - compliance
+      summary: Retrieve GPU compliance
+      description: Returns a list of compliance objects each corresponding to available GPU models. These compliance objects contain minimum and maximum values for RAM in GB, number of vCPUs, and system disk capacity in GB. Use the optional `gpu` model parameter in the query string to filter responses by GPU model. For additional details on GPU compliance, [**click here**](https://docs.hyperstack.cloud/docs/hardware/flavors#adhering-to-gpu-compliance).
+      operationId: Get_compliance
+      parameters:
+      - name: gpu
+        in: query
+        description: This is for gpu model
+        schema: {}
+      responses:
+        '200':
+          description: Compliance list retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplianceResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+    put:
+      tags:
+      - compliance
+      summary: Update a compliance
+      operationId: Update_compliance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompliancePayload'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateComplianceResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+      x-codegen-request-body-name: payload
+    post:
+      tags:
+      - compliance
+      summary: Create compliance
+      operationId: Create_Compliance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompliancePayload'
+        required: true
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUpdateComplianceResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+      x-codegen-request-body-name: payload
+  /core/compliance/{gpu_model}:
+    delete:
+      tags:
+      - compliance
+      summary: Delete a compliance
+      operationId: Delete_compliance
+      parameters:
+      - name: gpu_model
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+components:
+  schemas:
+    ComplianceFields:
+      type: object
+      properties:
+        gpu_model:
+          type: string
+        cpu:
+          type: array
+          items:
+            type: integer
+        ram:
+          type: array
+          items:
+            type: integer
+        hdd:
+          type: array
+          items:
+            type: integer
+    CompliancePayload:
+      required:
+      - base_value
+      - gpu_model
+      - resource_type
+      - variation_max
+      - variation_min
+      - variation_unit
+      type: object
+      properties:
+        gpu_model:
+          type: string
+        resource_type:
+          type: string
+        base_value:
+          type: integer
+        variation_min:
+          type: integer
+        variation_max:
+          type: integer
+        variation_unit:
+          type: integer
+    ComplianceModelFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        gpu_model:
+          type: string
+        resource_type:
+          type: string
+        base_value:
+          type: integer
+        variation_min:
+          type: integer
+        variation_max:
+          type: integer
+        variation_unit:
+          type: integer
+    CreateUpdateComplianceResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        compliance:
+          $ref: '#/components/schemas/ComplianceModelFields'
+    ComplianceResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        compliance:
+          $ref: '#/components/schemas/ComplianceFields'
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

@@ -1,0 +1,421 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Invite API
+  version: '1.0'
+  description: 'Operations tagged Invite across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Invite
+  description: Invite endpoints add and manage users within an organization. Invite a user by email; they accept the invitation and gain access to the organization with the role you specified.
+paths:
+  /auth/invites:
+    get:
+      tags:
+      - Invite
+      summary: List Invites
+      description: Retrieves a list of existing email invitations to join your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization) along with their details, including the email addresses to which invitations have been sent, the status of each invitation, and the timestamp of when it was sent.
+      operationId: List_Invites
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetInvitesResponseModel'
+              example:
+                status: true
+                message: Getting invites successful
+                invites:
+                - id: 8429
+                  email: user@example.com
+                  status: CONFIRMATION_PENDING
+                  created_at: '2026-05-07T09:21:55Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting invites successful
+                    invites:
+                    - id: 8429
+                      email: user@example.com
+                      status: CONFIRMATION_PENDING
+                      created_at: '2026-05-07T09:21:55Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    post:
+      tags:
+      - Invite
+      summary: Invite user to organization
+      description: Sends an invitation for a user to join your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization). Include the email of the user to be invited in the request body.
+      operationId: Invite_User_to_Organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteUserPayload'
+              example:
+                email: user@example.com
+              properties: {}
+            example:
+              email: user@example.com
+        required: true
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InviteUserResponseModel'
+              example:
+                status: true
+                message: Inviting user successful
+                invite:
+                  id: 4501
+                  email: user@example.com
+                  status: EMAIL_SENT
+                  created_at: '2026-05-07T11:47:30Z'
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Inviting user successful
+                    invite:
+                      id: 4501
+                      email: user@example.com
+                      status: EMAIL_SENT
+                      created_at: '2026-05-07T11:47:30Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/invites/{id}:
+    delete:
+      tags:
+      - Invite
+      summary: Accept Invite
+      description: Deletes an invitation for a user to join your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization). Include the ID of the invitation to be deleted in the path. You can obtain the IDs of outstanding invitations by calling the [**List Organization Invites**](https://docs.hyperstack.cloud/docs/api-reference/list-invites) endpoint.
+      operationId: Delete_Invite
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the invite.
+      responses:
+        '200':
+          description: Invite accepted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponseModel'
+              example:
+                status: true
+                message: Invite deleted successfully
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Invite deleted successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /auth/invites/{id}/accept:
+    get:
+      tags:
+      - Invite
+      summary: Accept Invite
+      description: Accept an invitation for a user to join your organization.
+      operationId: Accept_Invite
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the invite.
+      responses:
+        '200':
+          description: Invite deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: 'Not Found
+
+
+            Common cause: `error_reason: not_found`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Not Found
+                  value:
+                    status: false
+                    message: Not found
+                    error_reason: not_found
+              example:
+                status: false
+                message: Not found
+                error_reason: not_found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    CommonResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Not found
+    GetInvitesResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting invites successful
+        invites:
+          type: array
+          items:
+            $ref: '#/components/schemas/InviteFields'
+          description: An array of objects containing details about invitations that have been sent.
+    InviteFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 2058
+        email:
+          type: string
+          description: User email address.
+          example: user@example.com
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: CONFIRMATION_PENDING
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T11:47:30Z'
+    InviteUserResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Inviting user successful
+        invite:
+          $ref: '#/components/schemas/InviteFields'
+          description: An object containing details about the invitation that was sent.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    InviteUserPayload:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          maxLength: 100
+          type: string
+          description: Email of the user to invite to your organization.
+    CommonResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    GetInvitesResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        invites:
+          type: array
+          items:
+            $ref: '#/components/schemas/InviteFields_2'
+    InviteFields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    InviteUserResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        invite:
+          $ref: '#/components/schemas/InviteFields_2'
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    InviteUserPayload_2:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          maxLength: 254
+          minLength: 6
+          pattern: ^[A-Za-z0-9](?:[A-Za-z0-9._+-]{0,62}[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$
+          type: string
+          description: The email for sending invitation.
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

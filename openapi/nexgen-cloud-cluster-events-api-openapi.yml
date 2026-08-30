@@ -1,0 +1,114 @@
+openapi: 3.2.0
+info:
+  title: Infrahub cluster events API
+  version: '1.0'
+  description: Cluster Event APIs
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: cluster events
+  description: Cluster Event APIs
+paths:
+  /core/clusters/{cluster_id}/events:
+    get:
+      tags:
+      - cluster events
+      summary: Fetch all of a cluster events
+      operationId: List_cluster_events
+      parameters:
+      - name: cluster_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterEvents'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+components:
+  schemas:
+    ClusterEventsFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        cluster_id:
+          type: integer
+        user_id:
+          type: integer
+        org_id:
+          type: integer
+        time:
+          type: string
+          format: date-time
+        type:
+          type: string
+        reason:
+          type: string
+        object:
+          type: string
+        message:
+          type: string
+    ClusterEvents:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        cluster_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterEventsFields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

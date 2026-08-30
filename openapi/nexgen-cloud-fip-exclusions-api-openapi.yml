@@ -1,0 +1,137 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud FIP Exclusions API
+  version: '1.0'
+  description: 'Operations tagged FIP Exclusions across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: FIP Exclusions
+  description: FIP exclusion endpoints manage which virtual machines are exempt from automatic floating-IP detachment policies.
+paths:
+  /core/fip-detachment-exclusions/org/{org_id}:
+    get:
+      tags:
+      - FIP Exclusions
+      description: 'Checks whether a specific organization is excluded from public IP detachment when a VM is hibernated. By default, for on-demand (pre-paid) users, any attached public IP address is released when the VM is hibernated; see [**Default Behavior for Public IPs During Hibernation**](https://docs.hyperstack.cloud/docs/virtual-machines/hibernation/#default-behavior-for-public-ips-during-hibernation) for details.
+
+
+        Users who are not excluded but want to retain their public IP during hibernation can set the `retain_ip` field to `true` when calling the [**Hibernate virtual machine**](https://docs.hyperstack.cloud/docs/api-reference/hibernate-vm) endpoint.'
+      operationId: Check_if_Org_is_Excluded_from_Floating_IP_Detachment
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the organization.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Not Found
+                  value:
+                    status: true
+                    message: Org is not excluded from floating IP detachment
+              example:
+                status: true
+                message: Org is not excluded from floating IP detachment
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+      summary: Check floating-IP detachment exclusion for an organization
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

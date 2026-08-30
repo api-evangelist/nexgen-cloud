@@ -1,0 +1,228 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud VNC URL API
+  version: '1.0'
+  description: 'Operations tagged VNC URL across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: VNC URL
+  description: Console-access URLs for connecting to a virtual machine over VNC.
+paths:
+  /core/virtual-machines/{vm_id}/console/{job_id}:
+    get:
+      tags:
+      - VNC URL
+      summary: Get VNC console link
+      description: Retrieves the URL to access the VNC console for a specified virtual machine. Include the ID of the virtual machine for which to retrieve the VNC console and the job ID returned from [**GET** `/core/virtual-machines/{id}/request-console`](https://docs.hyperstack.cloud/docs/api-reference/request-vm-console).
+      operationId: Get_VNC_URL
+      parameters:
+      - name: vm_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the vm.
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the job.
+      responses:
+        '200':
+          description: Get VNC Console Link Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VNC_URL'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/virtual-machines/{vm_id}/request-console:
+    get:
+      tags:
+      - VNC URL
+      summary: Request instance console
+      description: 'Retrieves the path of the VNC console for the given virtual machine ID by providing the virtual machine ID in the path.
+
+
+        > **State requirement:** This operation requires the VM to be in the `ACTIVE` or `PRE_ACTIVE` state.'
+      operationId: Request_VM_Console
+      parameters:
+      - name: vm_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the vm.
+      responses:
+        '200':
+          description: Please wait a few seconds and visit the below link to access your VNC console URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request_Console'
+              example:
+                status: true
+                message: Please wait a few seconds and visit the below link to access your VNC console URL
+                url: /core/virtual-machines/793869/console/2300169
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Please wait a few seconds and visit the below link to access your VNC console URL
+                    url: /core/virtual-machines/793869/console/2300169
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    VNC_URL_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+        vnc_url:
+          type: string
+          description: URL of the VNC console for the VM.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Request_Console:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Please wait a few seconds and visit the below link to access your VNC console URL
+        url:
+          type: string
+          description: Webhook URL Hyperstack calls when the resource changes state.
+          example: /core/virtual-machines/793490/console/2299076
+    VNC_URL:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        vnc_url:
+          $ref: '#/components/schemas/VNC_URL_Fields'
+          description: URL of the VNC console for the VM.
+    VNC_URL_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        vnc_url:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Request_Console_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        url:
+          type: string
+    VNC_URL_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        vnc_url:
+          $ref: '#/components/schemas/VNC_URL_Fields_2'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

@@ -1,0 +1,270 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Dashboard API
+  version: '1.0'
+  description: 'Operations tagged Dashboard across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Dashboard
+  description: Aggregate account-level metrics for the calling user, VM and resource counts, recent activity.
+paths:
+  /core/dashboard:
+    get:
+      tags:
+      - Dashboard
+      summary: Retrieve Dashboard
+      description: Returns an overview of hardware and pricing information for your active resources, including virtual machines, containers, and volumes. For additional information on the Dashboard feature, see [Dashboard](https://docs.hyperstack.cloud/docs/resource-management/dashboard).
+      operationId: Get_Dashboard
+      responses:
+        '200':
+          description: Getting dashboard info success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard_Info_Response'
+              example:
+                status: true
+                message: Getting dashboard info success
+                overview:
+                  instance:
+                    count: 2
+                    vcpus: 8
+                    gpus: 0
+                    ram: 8
+                    cost_per_hour: 0.6
+                  container:
+                    count: 0
+                    vcpus: 0
+                    gpus: 0
+                    ram: 0
+                    cost_per_hour: 0
+                  volume:
+                    count: 2
+                    using: 20
+                    cost_per_hour: 0.002
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting dashboard info success
+                    overview:
+                      instance:
+                        count: 2
+                        vcpus: 8
+                        gpus: 0
+                        ram: 8
+                        cost_per_hour: 0.6
+                      container:
+                        count: 0
+                        vcpus: 0
+                        gpus: 0
+                        ram: 0
+                        cost_per_hour: 0
+                      volume:
+                        count: 2
+                        using: 20
+                        cost_per_hour: 0.002
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    Instance_Overview_Fields:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 0
+        vcpus:
+          type: integer
+          description: Number of vCPU cores allocated.
+          example: 0
+        gpus:
+          type: integer
+          description: GPUs allocated to the resource.
+          example: 0
+        ram:
+          type: integer
+          description: Memory allocated to the flavor, in GB.
+          example: 0
+        cost_per_hour:
+          type: number
+          description: Hourly cost incurred by the resource.
+          example: 0
+    Container_Overview_Fields:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 0
+        vcpus:
+          type: integer
+          description: Number of vCPU cores allocated.
+          example: 0
+        gpus:
+          type: integer
+          description: GPUs allocated to the resource.
+          example: 0
+        ram:
+          type: integer
+          description: Memory allocated to the flavor, in GB.
+          example: 0
+        cost_per_hour:
+          type: number
+          description: Hourly cost incurred by the resource.
+          example: 0
+    Overview_Info:
+      type: object
+      properties:
+        instance:
+          $ref: '#/components/schemas/Instance_Overview_Fields'
+          description: Virtual machine the entry refers to.
+        container:
+          $ref: '#/components/schemas/Container_Overview_Fields'
+          description: An object containing details about containers in the overview.
+        volume:
+          $ref: '#/components/schemas/Volume_Overview_Fields'
+          description: Volume attached to the resource.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Dashboard_Info_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting dashboard info success
+        overview:
+          $ref: '#/components/schemas/Overview_Info'
+          description: An object containing an overview of running resources, including; virtual machines, containers, and volumes.
+    Volume_Overview_Fields:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 5
+        using:
+          type: integer
+          example: 50
+          description: The number of volumes currently in use.
+        cost_per_hour:
+          type: number
+          description: Hourly cost incurred by the resource.
+          example: 0.005
+    Instance_Overview_Fields_2:
+      type: object
+      properties:
+        count:
+          type: integer
+        vcpus:
+          type: integer
+        gpus:
+          type: integer
+        ram:
+          type: integer
+        cost_per_hour:
+          type: number
+    Container_Overview_Fields_2:
+      type: object
+      properties:
+        count:
+          type: integer
+        vcpus:
+          type: integer
+        gpus:
+          type: integer
+        ram:
+          type: integer
+        cost_per_hour:
+          type: number
+    Overview_Info_2:
+      type: object
+      properties:
+        instance:
+          $ref: '#/components/schemas/Instance_Overview_Fields_2'
+        container:
+          $ref: '#/components/schemas/Container_Overview_Fields_2'
+        volume:
+          $ref: '#/components/schemas/Volume_Overview_Fields_2'
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Dashboard_Info_Response_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        overview:
+          $ref: '#/components/schemas/Overview_Info_2'
+    Volume_Overview_Fields_2:
+      type: object
+      properties:
+        count:
+          type: integer
+        using:
+          type: integer
+        cost_per_hour:
+          type: number
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

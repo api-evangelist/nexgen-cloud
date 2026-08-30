@@ -1,0 +1,519 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Callbacks API
+  version: '1.0'
+  description: 'Operations tagged Callbacks across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Callbacks
+  description: Webhook callback registrations on virtual machines and volumes for state-change notifications.
+paths:
+  /core/virtual-machines/{vm_id}/attach-callback:
+    post:
+      tags:
+      - Callbacks
+      summary: Attach callback to virtual machine
+      description: Creates a callback URL for a specified virtual machine, enabling the posting of action events executed on the virtual machine to the specified URL. Provide the callback URL in the request body and the ID of the virtual machine to which it is being attached in the path. For more details on virtual machine callback URLs,.
+      operationId: Attach_callback_to_VM
+      parameters:
+      - name: vm_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the vm.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attach_Callback_Payload'
+              example:
+                url: https://example.com/example-webhook
+              properties: {}
+            example:
+              url: https://example.com/example-webhook
+        required: true
+      responses:
+        '200':
+          description: Callback URL successfully attached to your virtual machine. Any action events on your virtual machine will be posted to the provided URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attach_Callback_Response'
+              example:
+                status: true
+                message: Callback URL successfully attached to VM 'example-vm'. Any action events on your instance will be posted to the provided URL.
+                url: https://example.com/example-webhook
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Callback URL successfully attached to VM 'example-vm'. Any action events on your instance will be posted to the provided URL.
+                    url: https://example.com/example-webhook
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/virtual-machines/{vm_id}/delete-callback:
+    delete:
+      tags:
+      - Callbacks
+      summary: Delete virtual machine callback
+      description: Permanently deletes the callback URL associated with a specified virtual machine by providing the virtual machine ID in the request path. See [Callbacks](https://docs.hyperstack.cloud/docs/resource-management/callbacks) for additional information.
+      operationId: Delete_VM_callback
+      parameters:
+      - name: vm_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the vm.
+      responses:
+        '200':
+          description: Virtual machine callback URL successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Callback URL deleted successfully in VM example-vm.
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Callback URL deleted successfully in VM example-vm.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/virtual-machines/{vm_id}/update-callback:
+    put:
+      tags:
+      - Callbacks
+      summary: Update virtual machine callback
+      description: Updates the callback URL for a specified virtual machine. Provide the new callback URL in the request body, along with the ID of the associated virtual machine in the path. For additional information on virtual machine callback URLs, see [Attach callback to vm](https://docs.hyperstack.cloud/docs/api-reference/attach-callback-to-vm).
+      operationId: Update_VM_callback
+      parameters:
+      - name: vm_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the vm.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attach_Callback_Payload'
+              example:
+                url: https://example.com/example-webhook-v2
+              properties: {}
+            example:
+              url: https://example.com/example-webhook-v2
+        required: true
+      responses:
+        '200':
+          description: Virtual machine callback URL successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attach_Callback_Response'
+              example:
+                status: true
+                message: Callback URL successfully updated in VM example-vm.
+                url: https://example.com/example-webhook-v2
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Callback URL successfully updated in VM example-vm.
+                    url: https://example.com/example-webhook-v2
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/volumes/{volume_id}/attach-callback:
+    post:
+      tags:
+      - Callbacks
+      summary: Attach callback to volume
+      description: Creates a callback URL for a specified volume, enabling the posting of action events executed on the volume to the specified URL. Provide the callback URL in the request body and the ID of the volume to which it is being attached in the path. For more details on volume callback URLs,.
+      operationId: Attach_callback_to_volume
+      parameters:
+      - name: volume_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the volume.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attach_Callback_Payload'
+              example:
+                url: https://example.com/example-volume-webhook
+              properties: {}
+            example:
+              url: https://example.com/example-volume-webhook
+        required: true
+      responses:
+        '200':
+          description: Callback URL successfully attached to your volume. Any action events on your volume will be posted to the provided URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attach_Callback_Response'
+              example:
+                status: true
+                message: Callback URL successfully attached to your volume example-volume. Any action events on your volume will be posted to the provided URL.
+                url: https://example.com/example-volume-webhook
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Callback URL successfully attached to your volume example-volume. Any action events on your volume will be posted to the provided URL.
+                    url: https://example.com/example-volume-webhook
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/volumes/{volume_id}/delete-callback:
+    delete:
+      tags:
+      - Callbacks
+      summary: Delete volume callback
+      description: Permanently deletes the callback URL associated with a specified volume by providing the volume ID in the request path. For additional information on volume callback URLs,.
+      operationId: Delete_volume_callback
+      parameters:
+      - name: volume_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the volume.
+      responses:
+        '200':
+          description: Volume callback URL successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Callback URL deleted successfully in Volume example-volume.
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Callback URL deleted successfully in Volume example-volume.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/volumes/{volume_id}/update-callback:
+    put:
+      tags:
+      - Callbacks
+      summary: Update volume callback
+      description: Updates the callback URL for a specified volume. Provide the new callback URL in the request body, along with the ID of the associated volume in the path. For additional information on volume callback URLs,.
+      operationId: Update_volume_callback
+      parameters:
+      - name: volume_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the volume.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attach_Callback_Payload'
+              example:
+                url: https://example.com/example-volume-v2
+              properties: {}
+            example:
+              url: https://example.com/example-volume-v2
+        required: true
+      responses:
+        '200':
+          description: Callback URL successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attach_Callback_Response'
+              example:
+                status: true
+                message: Callback URL successfully updated in Volume example-volume.
+                url: https://example.com/example-volume-v2
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Callback URL successfully updated in Volume example-volume.
+                    url: https://example.com/example-volume-v2
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    Attach_Callback_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Callback URL successfully attached to VM 'example-vm'. Any action events on your instance will be posted to the provided URL.
+        url:
+          type: string
+          description: Webhook URL Hyperstack calls when the resource changes state.
+          example: https://example.com/example-webhook
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Attach_Callback_Payload:
+      required:
+      - url
+      type: object
+      properties:
+        url:
+          type: string
+          description: Webhook URL Hyperstack calls when the resource changes state.
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    Attach_Callback_Response_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        url:
+          type: string
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Attach_Callback_Payload_2:
+      required:
+      - url
+      type: object
+      properties:
+        url:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

@@ -1,0 +1,1165 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Volume API
+  version: '1.0'
+  description: 'Operations tagged Volume across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Volume
+  description: A volume is persistent block storage that attaches to a virtual machine. Volumes are region-scoped and can be detached and reattached to other VMs in the same region. Snapshots capture a point-in-time copy of a volume that can be restored to any new volume of equal or greater size.
+paths:
+  /core/volume-types:
+    get:
+      tags:
+      - Volume
+      summary: List volume types
+      description: Retrieves a list of available volume types that can be used in the creation of a new volume.
+      operationId: List_volume_types
+      responses:
+        '200':
+          description: Successful retrieval of volume types list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volume_Types'
+              example:
+                status: true
+                message: Retrieved Volume Types.
+                volume_types:
+                - Cloud-SSD
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Retrieved Volume Types.
+                    volume_types:
+                    - Cloud-SSD
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/volume/name-availability/{name}:
+    get:
+      tags:
+      - Volume
+      summary: Fetch volume name availability
+      description: Check if a Volume name is available.
+      operationId: Fetch_volume_name_availability
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the volume.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NameAvailableModel'
+              example:
+                name: example-availability-check
+                available: true
+                message: This name is available
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    name: example-availability-check
+                    available: true
+                    message: This name is available
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/volumes:
+    get:
+      tags:
+      - Volume
+      summary: List volumes
+      description: Returns a list of your existing volumes, providing details for each. See [Shared storage volumes](https://docs.hyperstack.cloud/docs/storage/volumes/shared-storage-volumes) for more information.
+      operationId: List_volumes
+      parameters:
+      - name: page
+        in: query
+        description: Page number of results to return.
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        description: Data Per Page
+        schema:
+          type: integer
+      - name: search
+        in: query
+        schema:
+          type: string
+        description: Filter results by case-insensitive substring match against the resource name.
+      - name: environment
+        in: query
+        description: Filter Environment ID or Name
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volumes'
+              example:
+                status: true
+                message: Getting volumes successful
+                page: null
+                page_size: null
+                count: 3
+                volumes:
+                - id: 3287
+                  name: example-volume
+                  environment:
+                    name: example-environment
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                    region: NORWAY-1
+                  description: Example volume
+                  volume_type: Cloud-SSD
+                  size: 10
+                  status: available
+                  bootable: false
+                  image_id: null
+                  callback_url: null
+                  created_at: '2026-05-06T16:04:09Z'
+                  updated_at: '2026-05-06T16:04:09Z'
+                  attachments: []
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting volumes successful
+                    page: null
+                    page_size: null
+                    count: 3
+                    volumes:
+                    - id: 3287
+                      name: example-volume
+                      environment:
+                        name: example-environment
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                        region: NORWAY-1
+                      description: Example volume
+                      volume_type: Cloud-SSD
+                      size: 10
+                      status: available
+                      bootable: false
+                      image_id: null
+                      callback_url: null
+                      created_at: '2026-05-06T16:04:09Z'
+                      updated_at: '2026-05-06T16:04:09Z'
+                      attachments: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    post:
+      tags:
+      - Volume
+      summary: Create volume
+      description: Creates a volume in Hyperstack that can be attached to a virtual machine, expanding its storage capacity. Specify the volume type and custom configuration in the request body. If you install an operating system on the volume using the `image_id` field, it becomes a [**bootable volume**](https://docs.hyperstack.cloud/docs/storage/volumes/bootable-volumes); the `size` must be at least 100 GB to accommodate the OS.
+      operationId: Create_volume
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create_Volume_Payload'
+              example:
+                name: example-volume
+                environment_name: example-environment
+                description: Example volume
+                volume_type: Cloud-SSD
+                size: 10
+              properties: {}
+            example:
+              environment_name: example-environment
+              name: example-volume
+              size: 10
+              volume_type: Cloud-SSD
+              description: Example volume
+        required: true
+      responses:
+        '200':
+          description: Volume successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volume'
+              example:
+                status: true
+                message: Volume created successfully
+                volume:
+                  id: 8429
+                  name: example-volume
+                  environment:
+                    name: example-environment
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                    region: NORWAY-1
+                  description: Example volume
+                  volume_type: Cloud-SSD
+                  size: 10
+                  status: creating
+                  bootable: false
+                  image_id: null
+                  callback_url: null
+                  created_at: '2026-05-07T09:21:55Z'
+                  updated_at: null
+                  attachments: []
+                  os_image: ''
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Volume created successfully
+                    volume:
+                      id: 8429
+                      name: example-volume
+                      environment:
+                        name: example-environment
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                        region: NORWAY-1
+                      description: Example volume
+                      volume_type: Cloud-SSD
+                      size: 10
+                      status: creating
+                      bootable: false
+                      image_id: null
+                      callback_url: null
+                      created_at: '2026-05-07T09:21:55Z'
+                      updated_at: null
+                      attachments: []
+                      os_image: ''
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /core/volumes/{volume_id}:
+    get:
+      tags:
+      - Volume
+      summary: Fetch volume details
+      description: Retrieves details for a specific volume. This endpoint returns all data associated with the requested volume, including ID, name, environment, size, type, status, bootable flag, image ID, callback URL, timestamps, and attachment metadata.
+      operationId: Get_Volume
+      parameters:
+      - name: volume_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the volume.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volume'
+              example:
+                status: true
+                message: Getting volume successful
+                volume:
+                  id: 8429
+                  name: example-volume
+                  environment:
+                    name: example-environment
+                    features:
+                      network_optimised: false
+                      green_status: GREEN
+                    region: NORWAY-1
+                  description: Example volume
+                  volume_type: Cloud-SSD
+                  size: 10
+                  status: available
+                  bootable: false
+                  image_id: null
+                  callback_url: null
+                  created_at: '2026-05-07T09:21:55Z'
+                  updated_at: '2026-05-07T09:21:55Z'
+                  attachments:
+                  - id: 8429
+                    instance_id: 7613
+                    device: /dev/disk/by-id/virtio-2e2fb02e-68e0-4ae7-8
+                    status: DETACHED
+                    protected: false
+                  os_image: ''
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Getting volume successful
+                    volume:
+                      id: 8429
+                      name: example-volume
+                      environment:
+                        name: example-environment
+                        features:
+                          network_optimised: false
+                          green_status: GREEN
+                        region: NORWAY-1
+                      description: Example volume
+                      volume_type: Cloud-SSD
+                      size: 10
+                      status: available
+                      bootable: false
+                      image_id: null
+                      callback_url: null
+                      created_at: '2026-05-07T09:21:55Z'
+                      updated_at: '2026-05-07T09:21:55Z'
+                      attachments:
+                      - id: 8429
+                        instance_id: 7613
+                        device: /dev/disk/by-id/virtio-2e2fb02e-68e0-4ae7-8
+                        status: DETACHED
+                        protected: false
+                      os_image: ''
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '405':
+          description: Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    delete:
+      tags:
+      - Volume
+      summary: Delete volume
+      description: 'Deletes a volume permanently. Provide the volume ID in the path to specify the volume to be deleted.
+
+
+        > **State requirement:** This operation requires the volume to not be currently attached to any VM. Detach with [Detach volumes](https://docs.hyperstack.cloud/docs/api-reference/detach-volumes-from-vm) before deleting.'
+      operationId: Delete_volume
+      parameters:
+      - name: volume_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the volume.
+      responses:
+        '200':
+          description: Volume successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+              example:
+                status: true
+                message: Volume is being deleted.
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: true
+                    message: Volume is being deleted.
+        '400':
+          description: 'Bad Request
+
+
+            Common cause: `error_reason: bad_request`. Example message: "The Volume is currently attached to vm "example". Please detach it before deleting the volume.".'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    status: false
+                    message: The Volume is currently attached to vm "example-vm". Please detach it before deleting the volume.
+                    error_reason: bad_request
+              example:
+                status: false
+                message: The Volume is currently attached to vm "example-vm". Please detach it before deleting the volume.
+                error_reason: bad_request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    patch:
+      tags:
+      - Volume
+      summary: Update volume fields
+      description: 'Updates an existing volume by modifying its attributes such as the environment to which it belongs. The target environment must be in the same [**region**](https://docs.hyperstack.cloud/docs/resource-management/regions) as the current one. Retrieve the `volume_id` by calling the [**List volumes**](https://docs.hyperstack.cloud/docs/api-reference/list-volumes) endpoint, and the `environment_name` by calling the [**List environments**](https://docs.hyperstack.cloud/docs/api-reference/list-environments) endpoint.
+
+
+        **Detachment requirement:** This operation is only permitted when the volume is not attached to a virtual machine.
+
+
+        > **State requirement:** This operation requires the volume to have finished provisioning. PATCH against a volume in the `creating` state returns `400`.'
+      operationId: Update_volume
+      parameters:
+      - name: volume_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID of the volume.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Update_Volume_Payload'
+        required: true
+      responses:
+        '200':
+          description: Volume successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Update_Volume_Response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                default:
+                  summary: Bad Request
+                  value:
+                    errors:
+                      environment_name: '''environment_name'' is a required property'
+                    message: Input payload validation failed
+              example:
+                errors:
+                  environment_name: '''environment_name'' is a required property'
+                message: Input payload validation failed
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              examples: {}
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Resource name to check for availability.
+          example: example-availability-check
+        available:
+          type: boolean
+          description: Whether stock is currently available.
+          example: false
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Name must not exceed 20 characters
+    Volumes_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 9876
+        name:
+          type: string
+          description: Name of the volume.
+          example: example-volume
+        environment:
+          $ref: '#/components/schemas/Environment_Fields_for_Volume'
+          description: Environment containing the resource.
+        description:
+          type: string
+          description: Human-readable description of the resource.
+          example: example
+        volume_type:
+          type: string
+          description: Storage tier of the volume.
+          example: Cloud-SSD
+        size:
+          type: integer
+          description: Volume capacity in GB.
+          example: 10
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: available
+        bootable:
+          type: boolean
+          description: Whether the volume is the VM's boot volume.
+          example: false
+        image_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier of the OS image to install, see [List images](https://docs.hyperstack.cloud/docs/api-reference/list-images).
+        callback_url:
+          type:
+          - string
+          - 'null'
+          description: Webhook URL Hyperstack calls when the resource changes state.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-07T09:21:55Z'
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was last modified.
+          example: '2026-05-07T09:21:55Z'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachments_Fields_for_Volume'
+          description: Attachments associated with this resource.
+    Update_Volume_Payload:
+      required:
+      - environment_name
+      type: object
+      properties:
+        environment_name:
+          type: string
+          description: Name of the [**environment**](https://docs.hyperstack.cloud/docs/resource-management/environments) to which the volume is reassigned. The target environment must exist in the same region as the current one. Retrieve environment names by calling the [**List environments**](https://docs.hyperstack.cloud/docs/api-reference/list-environments) endpoint.
+    Environment_Fields_for_Volume:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the environment.
+          example: example-environment
+        features:
+          type: object
+          properties: {}
+          description: Optional feature flags applicable to the resource.
+        region:
+          type: string
+          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
+          example: NORWAY-1
+    Update_Volume_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Input payload validation failed
+        volume:
+          $ref: '#/components/schemas/Volume_Fields'
+          description: Volume attached to the resource.
+        updates:
+          type: object
+          properties: {}
+          description: Summary of fields that were updated.
+    Create_Volume_Payload:
+      required:
+      - environment_name
+      - name
+      - size
+      - volume_type
+      type: object
+      properties:
+        environment_name:
+          type: string
+          description: Name of the [**environment**](https://docs.hyperstack.cloud/docs/resource-management/environments) within which the volume is created.
+        name:
+          maxLength: 50
+          type: string
+          description: Name of the volume being created.
+        size:
+          type: integer
+          description: Size of the volume in GB. Accepts values from 1 GB to 102,400 GB (100 TB).
+        volume_type:
+          type: string
+          description: Type of volume being created, which determines the storage technology it uses. Call the [**List volume types**](https://docs.hyperstack.cloud/docs/api-reference/list-volume-types) endpoint to retrieve the available types.
+        description:
+          type: string
+          description: Optional brief description of the volume.
+        image_id:
+          type: integer
+          description: ID of an operating system image to install on the volume. Providing an `image_id` creates a [**bootable volume**](https://docs.hyperstack.cloud/docs/storage/volumes/bootable-volumes); when creating a bootable volume, `size` must be at least 100 GB.
+        callback_url:
+          maxLength: 250
+          type: string
+          description: URL that receives action events that occur on the volume.
+    Volumes:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Getting volumes successful
+        page:
+          type:
+          - integer
+          - 'null'
+          description: 1-indexed page number of the current result set.
+        page_size:
+          type:
+          - integer
+          - 'null'
+          description: Number of items per page in the current result set.
+        count:
+          type: integer
+          description: Number of items returned in the current page.
+          example: 5
+        volumes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Volumes_Fields'
+          description: Whether the region supports persistent volumes.
+    Volume_Types:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Retrieved Volume Types.
+        volume_types:
+          type: array
+          items:
+            type: string
+          description: An array containing the names of volume types that can be used in the `volume_type` field in the request to [**create volumes**](https://docs.hyperstack.cloud/docs/api-reference/create-volume).
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Instance is being deleted.
+    Volume:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: Whether the request succeeded.
+          example: true
+        message:
+          type: string
+          description: Human-readable description of the result.
+          example: Volume created successfully
+        volume:
+          $ref: '#/components/schemas/Volume_Fields'
+          description: Volume attached to the resource.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+          description: Whether the request succeeded.
+        message:
+          type: string
+          description: Human-readable description of the result.
+        error_reason:
+          type: string
+          description: Short machine-readable reason code when the request fails.
+    Volume_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 7613
+        name:
+          type: string
+          description: Name of the volume.
+          example: example-volume
+        environment:
+          $ref: '#/components/schemas/Environment_Fields_for_Volume'
+          description: Environment containing the resource.
+        description:
+          type: string
+          description: Human-readable description of the resource.
+          example: example
+        volume_type:
+          type: string
+          description: Storage tier of the volume.
+          example: Cloud-SSD
+        size:
+          type: integer
+          description: Volume capacity in GB.
+          example: 10
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: creating
+        bootable:
+          type: boolean
+          description: Whether the volume is the VM's boot volume.
+          example: false
+        image_id:
+          type:
+          - integer
+          - 'null'
+          description: Identifier of the OS image to install, see [List images](https://docs.hyperstack.cloud/docs/api-reference/list-images).
+        callback_url:
+          type:
+          - string
+          - 'null'
+          description: Webhook URL Hyperstack calls when the resource changes state.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was created.
+          example: '2026-05-06T15:18:42Z'
+        updated_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: ISO 8601 UTC timestamp marking when the resource was last modified.
+          example: '2026-05-06T15:18:42Z'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachments_Fields_for_Volume'
+          description: Attachments associated with this resource.
+        os_image:
+          type: string
+          example: ''
+          description: Operating system image the bootable volume was created from.
+    Attachments_Fields_for_Volume:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique numeric identifier.
+          example: 2058
+        device:
+          type: string
+          description: Device path the volume is attached at on the VM (for example, `/dev/sdb`).
+          example: /dev/disk/by-id/virtio-05ff4fce-957f-486c-b
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: ATTACHING
+        instance_id:
+          type: integer
+          description: Identifier of the virtual machine.
+          example: 1402
+        protected:
+          type: boolean
+          description: When `true`, the resource cannot be deleted while protection is enabled.
+          example: false
+    NameAvailableModel_2:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    Volumes_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        environment:
+          $ref: '#/components/schemas/Environment_Fields_for_Volume_2'
+        description:
+          type: string
+        volume_type:
+          type: string
+        size:
+          type: integer
+        status:
+          type: string
+        bootable:
+          type: boolean
+        image_id:
+          type: integer
+        callback_url:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachments_Fields_for_Volume_2'
+    Update_Volume_Payload_2:
+      required:
+      - environment_name
+      type: object
+      properties:
+        environment_name:
+          type: string
+          description: The name of the target environment to move the volume to. The target environment must be in the same region as the current environment.
+    Environment_Fields_for_Volume_2:
+      type: object
+      properties:
+        name:
+          type: string
+        features:
+          type: object
+          properties: {}
+        region:
+          type: string
+    Update_Volume_Response_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume:
+          $ref: '#/components/schemas/Volume_Fields_2'
+        updates:
+          type: object
+          properties: {}
+          description: Summary of fields that were updated
+    Create_Volume_Payload_2:
+      required:
+      - environment_name
+      - name
+      - size
+      - volume_type
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The name of the volume being created.
+        environment_name:
+          type: string
+          description: The name of the [environment](https://docs.hyperstack.cloud/docs/api-reference/core-resources/environments/) within which the volume is being created.
+        description:
+          type: string
+          description: A brief description or comment about the volume.
+        volume_type:
+          type: string
+          description: Specifies the type of volume being created, which determines the storage technology it will use. Call the [List volume types](https://infrahub-api-doc.nexgencloud.com/#get-/core/volumes) endpoint to retrieve a list of available volume model types.
+        size:
+          type: integer
+          description: The size of the volume in GB. 1048576GB storage capacity per volume.
+        image_id:
+          type: integer
+          description: The ID of the operating system image that will be associated with the volume. By providing an `image_id` in the create volume request, you will create a bootable volume.
+        callback_url:
+          maxLength: 250
+          type: string
+          description: A URL that can be attached to the volume you are creating. This `callback_url` will post any action events that occur to your volume to the provided URL.
+    Volumes_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        page:
+          type: integer
+        page_size:
+          type: integer
+        count:
+          type: integer
+        volumes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Volumes_Fields_2'
+    Volume_Types_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume_types:
+          type: array
+          items:
+            type: string
+    ResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    Volume_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume:
+          $ref: '#/components/schemas/Volume_Fields_2'
+    ErrorResponseModel_2:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Volume_Fields_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        environment:
+          $ref: '#/components/schemas/Environment_Fields_for_Volume_2'
+        description:
+          type: string
+        volume_type:
+          type: string
+        size:
+          type: integer
+        status:
+          type: string
+        bootable:
+          type: boolean
+        image_id:
+          type: integer
+        callback_url:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachments_Fields_for_Volume_2'
+        os_image:
+          type: string
+    Attachments_Fields_for_Volume_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        device:
+          type: string
+        status:
+          type: string
+        instance_id:
+          type: integer
+        protected:
+          type: boolean
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

@@ -1,0 +1,99 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Regions API
+  version: '1.0'
+  description: 'Operations tagged Regions across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Regions
+  description: Regions where object storage is available.
+paths:
+  /object-storage/regions:
+    get:
+      tags:
+      - Regions
+      summary: Get a list of supported regions
+      operationId: listRegionsEndpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object_storage__RegionListResponse'
+              example:
+                regions:
+                - name: CANADA-1
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    regions:
+                    - name: CANADA-1
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              examples: {}
+      description: 'Retrieve a list of supported [**Object Storage**](https://docs.hyperstack.cloud/docs/storage/object-storage) regions. These [**regions**](https://docs.hyperstack.cloud/docs/resource-management/regions) represent geographic data center locations where Object Storage resources can be provisioned and managed.
+
+
+        For a full list of all regions, including those that do not support Object Storage, see the [**List regions**](https://docs.hyperstack.cloud/docs/api-reference/list-regions) endpoint.'
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    object_storage__RegionListResponse:
+      title: RegionListResponse
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/object_storage__RegionResponse'
+          description: Regions where the resource is available.
+    object_storage__RegionResponse:
+      title: RegionResponse
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the region.
+          example: CANADA-1
+    object_storage__RegionListResponse_2:
+      title: RegionListResponse
+      required:
+      - regions
+      type: object
+      properties:
+        regions:
+          title: Regions
+          type: array
+          items:
+            $ref: '#/components/schemas/object_storage__RegionResponse_2'
+    object_storage__RegionResponse_2:
+      title: RegionResponse
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          title: Name
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

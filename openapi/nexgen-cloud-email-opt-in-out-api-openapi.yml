@@ -1,0 +1,195 @@
+openapi: 3.2.0
+info:
+  title: Infrahub Email Opt In Out API
+  version: '1.0'
+  description: User email preference management
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: email-opt-in-out
+  description: User email preference management
+paths:
+  /auth/email/opt-out:
+    get:
+      tags:
+      - email-opt-in-out
+      summary: Get all email preferences for the authenticated user
+      description: Returns all email categories with the user's opt-in status. Categories without an explicit preference default to opted_in=true.
+      operationId: Get_email_preferences_for_a_user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailPreferencesResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+    put:
+      tags:
+      - email-opt-in-out
+      summary: Toggle all optional email preferences for the authenticated user
+      description: Sets opted_in to the given value for every non-required, non-deleted email category. Required categories are not affected.
+      operationId: Toggle_all_optional_email_preferences_for_the_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEmailPreferenceInput'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateEmailPreferenceResponse'
+        '400':
+          description: Bad Request
+          content: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      x-codegen-request-body-name: payload
+  /auth/email/opt-out/{slug}:
+    put:
+      tags:
+      - email-opt-in-out
+      summary: Update email preference opted_in status for a category slug
+      description: Updates the opted_in status for the given email category slug. If the slug belongs to a parent category (email_category_id is null), all non-deleted child categories are updated. If the slug belongs to a child category, only that category is updated.
+      operationId: Update_email_preference_for_a_category_by_slug
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEmailPreferenceInput'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateEmailPreferenceResponse'
+        '400':
+          description: Bad Request
+          content: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Email category not found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      x-codegen-request-body-name: payload
+components:
+  schemas:
+    UpdateEmailPreferenceResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    EmailCategoryChild:
+      type: object
+      properties:
+        email_category_id:
+          type: integer
+        slug:
+          type: string
+        display_name:
+          type: string
+        description:
+          type: string
+        required:
+          type: boolean
+        position:
+          type: integer
+        icon:
+          type: string
+        opted_in:
+          type: boolean
+    EmailPreferencesResponse:
+      type: object
+      properties:
+        email_categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailCategory'
+    EmailCategory:
+      type: object
+      properties:
+        slug:
+          type: string
+        display_name:
+          type: string
+        description:
+          type: string
+        required:
+          type: boolean
+        position:
+          type: integer
+        icon:
+          type: string
+        opted_in:
+          type: boolean
+        childs:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailCategoryChild'
+    UpdateEmailPreferenceInput:
+      required:
+      - opted_in
+      type: object
+      properties:
+        opted_in:
+          type: boolean
+          description: Set opted_in status
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

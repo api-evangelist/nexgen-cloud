@@ -1,0 +1,77 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Health API
+  version: '1.0'
+  description: 'Operations tagged Health across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Health
+  description: Service liveness check for object storage. Use to confirm the object-storage service is reachable.
+paths:
+  /object-storage/healthz:
+    get:
+      tags:
+      - Health
+      summary: Object storage health check
+      operationId: healthzEndpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object_storage__HealthResponse'
+              example:
+                status: alive
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    status: alive
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              examples: {}
+      description: 'Returns the string `"alive"` when the object-storage service is reachable. This endpoint does not use the standard envelope; the response body is `{"status": "alive"}` with `status` as a string.
+
+
+        > **Non-standard envelope:** This endpoint returns `{"status": "alive"}`, note that `status` is a string here, not a boolean as in other endpoints.'
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  schemas:
+    object_storage__HealthResponse:
+      title: HealthResponse
+      type: object
+      properties:
+        status:
+          type: string
+          description: Current lifecycle state of the resource.
+          example: alive
+    object_storage__HealthResponse_2:
+      title: HealthResponse
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          title: Status
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json

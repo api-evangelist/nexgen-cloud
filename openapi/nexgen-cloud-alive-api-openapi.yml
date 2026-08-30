@@ -1,0 +1,66 @@
+openapi: 3.2.0
+info:
+  title: Nexgen Cloud Alive API
+  version: '1.0'
+  description: 'Operations tagged Alive across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+tags:
+- name: Alive
+  description: Service liveness check for the billing API. Use to confirm the billing service is reachable.
+paths:
+  /billing/alive:
+    get:
+      tags:
+      - Alive
+      summary: Alive
+      description: 'Retrieve the billing status of your account to ensure that it is active. An active billing status ensures uninterrupted service.
+
+
+        > **Non-standard envelope:** This endpoint returns only `{"message": "."}`, no `status` field.'
+      operationId: Get_alive
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              example:
+                message: alive
+              examples:
+                default:
+                  summary: Successful response
+                  value:
+                    message: alive
+      security:
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+  /billing/alive/doc:
+    get:
+      tags:
+      - Alive
+      operationId: Get_alive_doc
+      responses:
+        '200':
+          description: Success
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+    servers:
+    - url: https://infrahub-api.nexgencloud.com/v1
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api_key
+      in: header
+      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+x-refined-from:
+- nexgen-cloud-hyperstack-openapi.json
+- nexgen-cloud-infrahub-api-openapi.json
