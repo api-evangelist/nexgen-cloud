@@ -24,6 +24,21 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: enterprise
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Enterprise
+  confidence: high
+  source:
+  - plans
+  - authentication
+  - rate-limits
+  - security
+  generated: '2026-09-03'
+  method: derived
 image: https://www.hyperstack.cloud/hubfs/hyperstack_2023/home/logo.svg
 url: https://raw.githubusercontent.com/api-evangelist/nexgen-cloud/refs/heads/main/apis.yml
 x-api-posture: no-product-api
