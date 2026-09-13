@@ -198,3 +198,17 @@ servers:
       description: Retrieve detailed information about a specific environment.
     - name: check_stocks
       description: Check GPU stock availability across all regions.
+tools_count: 5
+tools:
+- name: search_docs
+  description: ''
+- name: get_page
+  description: ''
+- name: list_sections
+  description: ''
+- name: lookup_error
+  description: ''
+- name: get_flavor_info
+  description: ''
+tools_source: live tools/list via initialize handshake, 2026-09-11 (signals/audit_mcp_authorship.py --probe)
+authorship: provider
