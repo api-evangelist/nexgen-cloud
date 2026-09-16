@@ -705,38 +705,6 @@ apis:
     url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
   - type: APIReference
     url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
-- aid: nexgen-cloud:nexgen-cloud-email-preferences-api
-  name: NexGen Cloud Email Preferences API
-  description: >-
-    Email preference endpoints control which optional email notifications Hyperstack sends to your account.
-    Use them to read your current preferences and change them, individually or all at once. See the [**Email
-    Notification Preferences guide**](https://docs.hyperstack.cloud/docs/resource-management/email-notifications)
-    for the full feature walkthrough.
-  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
-  baseURL: https://infrahub-api.nexgencloud.com/v1
-  tags:
-  - Email Preferences
-  properties:
-  - type: OpenAPI
-    url: openapi/nexgen-cloud-email-preferences-api-openapi.yml
-  - type: Documentation
-    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
-  - type: APIReference
-    url: https://docs.hyperstack.cloud/docs/api-reference/
-  - type: GettingStarted
-    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
-  - type: Authentication
-    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
-  - type: RateLimits
-    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
-  - type: ErrorCatalog
-    url: https://docs.hyperstack.cloud/docs/api-reference/errors
-  - type: Webhooks
-    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
-  - type: Documentation
-    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
-  - type: APIReference
-    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
 - aid: nexgen-cloud:nexgen-cloud-environment-api
   name: NexGen Cloud Environment API
   description: >-
