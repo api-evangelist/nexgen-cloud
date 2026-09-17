@@ -1071,39 +1071,6 @@ apis:
     url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
   - type: APIReference
     url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
-- aid: nexgen-cloud:nexgen-cloud-keypair-api
-  name: NexGen Cloud Keypair API
-  description: >-
-    A keypair is an SSH public/private key pair used to authenticate into virtual machines after deployment.
-    Generate the keypair locally, register the public key with Hyperstack, then reference the keypair
-    name when deploying a VM. Hyperstack never stores private keys.
-  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
-  baseURL: https://infrahub-api.nexgencloud.com/v1
-  tags:
-  - Key Pair
-  tags_raw:
-  - Keypair
-  properties:
-  - type: OpenAPI
-    url: openapi/nexgen-cloud-keypair-api-openapi.yml
-  - type: Documentation
-    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
-  - type: APIReference
-    url: https://docs.hyperstack.cloud/docs/api-reference/
-  - type: GettingStarted
-    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
-  - type: Authentication
-    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
-  - type: RateLimits
-    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
-  - type: ErrorCatalog
-    url: https://docs.hyperstack.cloud/docs/api-reference/errors
-  - type: Webhooks
-    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
-  - type: Documentation
-    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
-  - type: APIReference
-    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
 - aid: nexgen-cloud:nexgen-cloud-knowledge-bases-api
   name: NexGen Cloud Knowledge Bases API
   description: Collections of your own documents that models can search at inference time.
@@ -1969,6 +1936,34 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/nexgen-cloud-vouchers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/
+  - type: GettingStarted
+    url: https://docs.hyperstack.cloud/docs/api-reference/quickstart
+  - type: Authentication
+    url: https://docs.hyperstack.cloud/docs/api-reference/authentication
+  - type: RateLimits
+    url: https://docs.hyperstack.cloud/docs/api-reference/rate-limits
+  - type: ErrorCatalog
+    url: https://docs.hyperstack.cloud/docs/api-reference/errors
+  - type: Webhooks
+    url: https://docs.hyperstack.cloud/docs/api-reference/callbacks
+  - type: Documentation
+    url: https://docs.hyperstack.cloud/docs/ai-studio-api-reference/inference
+  - type: APIReference
+    url: https://docs.hyperstack.cloud/docs/api-reference/section-ai-studio/
+- aid: nexgen-cloud:nexgen-cloud-key-pair-api
+  name: NexGen Cloud Key Pair API
+  description: Keypair APIs
+  humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
+  baseURL: https://infrahub-api.nexgencloud.com/v1
+  tags:
+  - Key Pair
+  properties:
+  - type: OpenAPI
+    url: openapi/nexgen-cloud-key-pair-api-openapi.yml
   - type: Documentation
     url: https://docs.hyperstack.cloud/docs/api-reference/introduction
   - type: APIReference
