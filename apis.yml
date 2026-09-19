@@ -624,6 +624,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Dashboards
+  tags_raw:
   - Dashboard
   properties:
   - type: OpenAPI
@@ -1224,6 +1226,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Payments
+  tags_raw:
   - Payment
   properties:
   - type: OpenAPI
@@ -1341,6 +1345,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Profiles
+  tags_raw:
   - Profile
   properties:
   - type: OpenAPI
@@ -1549,6 +1555,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Stocks
+  tags_raw:
   - Stock
   properties:
   - type: OpenAPI
@@ -1609,6 +1617,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Templates
+  tags_raw:
   - Template
   properties:
   - type: OpenAPI
@@ -1785,6 +1795,8 @@ apis:
   humanURL: https://docs.hyperstack.cloud/docs/api-reference/introduction
   baseURL: https://infrahub-api.nexgencloud.com/v1
   tags:
+  - Virtual Machines
+  tags_raw:
   - Virtual Machine
   properties:
   - type: OpenAPI
