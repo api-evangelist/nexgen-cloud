@@ -1,0 +1,223 @@
+slug: nexgen-cloud
+provider: NexGen Cloud
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Electrical Components & Equipment
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 20
+edges:
+- tag: Virtual Machine
+  spec_file: nexgen-cloud-virtual-machine-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.9
+  evidence: POST /core/virtual-machines  Create_Vms  Create virtual machines; 'Hard reboot virtual machine';
+    'Hibernate virtual machine'; 'Attach firewalls to a virtual machine'
+  reason: Full lifecycle management of GPU/CPU virtual machines (create, delete, reboot, hibernate, firewall
+    attachment) is unambiguously cloud compute infrastructure management.
+- tag: Volume
+  spec_file: nexgen-cloud-volume-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.88
+  evidence: POST /core/volumes  Create_volume; GET /core/volume-types  List_volume_types; schemas Create_Volume_Payload,
+    Volume_Types
+  reason: Provisioning and lifecycle of block storage volumes on the cloud platform — storage infrastructure
+    management; 'Volume' here is a disk, not a business quantity.
+- tag: Buckets
+  spec_file: nexgen-cloud-buckets-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.85
+  evidence: GET /object-storage/buckets  listBucketsEndpoint  List buckets; DELETE /object-storage/buckets/{bucket_name}
+  reason: Lifecycle operations on S3-compatible object-storage buckets are cloud storage infrastructure
+    provisioning and management — IT Infrastructure Management. No business-domain reading fits.
+- tag: Clusters
+  spec_file: nexgen-cloud-clusters-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.85
+  evidence: POST /core/clusters  Create_Cluster  Create Cluster; POST /core/clusters/{cluster_id}/node-groups  Create
+    a node group in a cluster
+  reason: Provisioning and scaling of managed Kubernetes clusters and node groups is compute/cloud infrastructure
+    management. Clear Cross-Industry IT fit for a GPU cloud devtool vendor.
+- tag: Volume Attachment
+  spec_file: nexgen-cloud-volume-attachment-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.85
+  evidence: POST /core/virtual-machines/{vm_id}/attach-volumes  Attach_volumes_to_VM; POST /core/virtual-machines/{vm_id}/detach-volumes  Detach_volumes_from_VM
+  reason: Attaching and detaching block storage to cloud virtual machines is storage/compute infrastructure
+    operation, clearly IT Infrastructure Management.
+- tag: Assigning Member Role
+  spec_file: nexgen-cloud-assigning-member-role-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: PUT /auth/users/{user_id}/assign-roles Assign RBAC role; DELETE /auth/users/{user_id}/roles
+    Remove RBAC role from user; schemas RbacRoleFields, RolePermissionFields
+  reason: Operations grant and revoke RBAC roles and permissions for users — access rights administration,
+    squarely identity and access management.
+  recovered_from: sweep-20260829T005356Z-edges.json
+- tag: RBAC Role
+  spec_file: nexgen-cloud-rbac-role-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: POST /auth/roles "Create RBAC role", PUT /auth/roles/{id} "Update RBAC role"; schemas RolePermissionFields,
+    RolePolicyFields
+  reason: Full CRUD over role-based access control roles binding permissions and policies — plainly identity
+    and access management.
+- tag: Auth
+  spec_file: nexgen-cloud-auth-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: GET /auth/me/mfa Get MFA status for authenticated user; POST /auth/me/mfa/disable Disable
+    MFA on the calling user; GET /auth/token/change-org/{org_id} Switch the active organization on the
+    token
+  reason: Authenticated-user, MFA and token/organisation-context operations are identity and access management
+    surface. Part of it is bare authentication plumbing, so confidence is moderate.
+  recovered_from: sweep-20260829T005356Z-edges.json
+- tag: Keypair
+  spec_file: nexgen-cloud-key-pair-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: POST /core/keypairs  Import_key_pair; GET /core/supported-keypairs  List supported key pair
+    types
+  reason: Lifecycle of SSH public-key credentials used to access cloud instances — credential/access management.
+  recovered_from: sweep-20260829T005356Z-edges.json
+  reanchored_from: nexgen-cloud-keypair-api-openapi.yml
+- tag: Permission
+  spec_file: nexgen-cloud-permission-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: GET /auth/permissions  List_Permissions  List Permissions; schemas PermissionFields
+  reason: The operation lists the permission set under the /auth namespace, alongside policies and RBAC
+    roles — this is access-control metadata for the platform's identity and access management, not a business-domain
+    permission concept.
+  recovered_from: sweep-20260829T005356Z-edges.json
+- tag: Policy
+  spec_file: nexgen-cloud-policy-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: GET /auth/policies  List_Policies  List Policies; schema PolicyPermissionFields
+  reason: Policies here are access-control policies bundling permissions (PolicyPermissionFields) under
+    /auth, i.e. IAM authorisation constructs — not corporate policy management.
+  recovered_from: sweep-20260829T005356Z-edges.json
+- tag: Snapshots
+  spec_file: nexgen-cloud-snapshots-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.72
+  evidence: GET /core/snapshots ... 'Retrieve a snapshot', POST /core/snapshots/{id}/restore 'Restore
+    a snapshot', 'Create an image from a snapshot' with schemas Instance, Volume_Fields_for_Instance
+  reason: Snapshots here are point-in-time images of cloud VM/volume resources on the Hyperstack IaaS
+    platform; lifecycle and restore of compute/storage infrastructure artefacts maps to IT Infrastructure
+    Management, not any business-domain capability.
+- tag: User Consent
+  spec_file: nexgen-cloud-user-consent-api-openapi.yml
+  capability_id: BC-130.50
+  capability_id_l1: BC-130
+  capability_name: Privacy & Data Protection Management
+  confidence: 0.72
+  evidence: POST /auth/user-consent  'Record a consent'; GET /auth/user-consent/templates 'List consent
+    templates'; GET /auth/user-consent-events/{consent_type}/events 'List consent history'
+  reason: Recording, updating and auditing user consents against consent templates is consent management
+    for privacy/data-protection compliance (GDPR-style), a recognisable privacy capability rather than
+    mere authentication plumbing.
+- tag: User Permission
+  spec_file: nexgen-cloud-user-permission-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: GET /auth/users/me/permissions  List_My_User_Permissions; GET /auth/users/{id}/permissions  List_User_Permissions
+    with schema UserPermissionFields
+  reason: Read of a user's authorisation permissions under /auth — access rights inspection, which is
+    Identity & Access Management. Read-only and narrow, hence moderate confidence.
+- tag: Billing
+  spec_file: nexgen-cloud-billing-api-openapi.yml
+  capability_id: BC-4250
+  capability_id_l1: BC-4250
+  capability_name: Subscription Billing & Revenue Management
+  confidence: 0.7
+  evidence: GET /billing/billing/history Retrieve Billing History for a specific Billing Cycle; GET /billing/billing/history/cluster/{cluster_id}/graph
+    Get cluster hourly cost datapoints
+  reason: Consumption-based billing history, per-resource hourly cost datapoints and organisation thresholds
+    for a per-minute-billed cloud service — usage-based billing and revenue management. Sub-capability
+    is ambiguous between metering, rating and statement management, so only the L1 is asserted.
+  recovered_from: sweep-20260829T005356Z-edges.json
+- tag: Inference
+  spec_file: nexgen-cloud-inference-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.7
+  evidence: POST /chat/completions  chatCompletions  Create chat completion; schema InferenceRequestSchema
+  reason: Serving inference on base and fine-tuned LLMs ('Inference runs on base and fine-tuned models,
+    covering text chat') is AI/ML model lifecycle and serving — Artificial Intelligence Management.
+- tag: Invite
+  spec_file: nexgen-cloud-invite-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: POST /auth/invites  Invite_User_to_Organization  Invite user to organization; GET /auth/invites/{id}/accept  Accept
+    Invite
+  reason: User onboarding into an organisation account under /auth — account/user provisioning, i.e. identity
+    and access management, not HR recruiting.
+  recovered_from: sweep-20260829T005356Z-edges.json
+- tag: Payment
+  spec_file: nexgen-cloud-payment-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.7
+  evidence: GET /billing/payment/payment-details "View payment details"; POST /billing/payment/payment-initiate
+    "Initiate payment"; GET /billing/payment/receipt/{payment_id}
+  reason: Endpoints capture payment methods, initiate payment and issue receipts for the provider's per-minute
+    cloud consumption billing — payment collection within a usage-based subscription billing model.
+- tag: VNC URL
+  spec_file: nexgen-cloud-vnc-url-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: GET /core/virtual-machines/{vm_id}/console/{job_id}  Get_VNC_URL  Get VNC console link
+  reason: Provides out-of-band console access to a provisioned virtual machine — an operational access
+    path for cloud compute infrastructure. Maps to IT infrastructure management; narrow single-purpose
+    surface so confidence is moderate.
+  recovered_from: sweep-20260829T005356Z-edges.json
+- tag: auto-topup
+  spec_file: nexgen-cloud-auto-topup-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.7
+  evidence: '"Create an auto top up configuration and initiate Stripe setup"; "Disable auto top up, preventing
+    any future automatic charges"'
+  reason: Operations manage a stored payment method and automatic recurring charges for account balance
+    top-up, which is payment-method management and automated collection rather than metering or rating.
