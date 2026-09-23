@@ -1,13 +1,14 @@
 openapi: 3.2.0
 info:
-  title: Nexgen Cloud Buckets API
+  title: Infrahub Buckets API
   version: '1.0'
-  description: 'Operations tagged Buckets across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
 tags:
 - name: Buckets
-  description: A bucket is an S3-compatible object storage container. Buckets are region-scoped and accessed via standard S3 SDKs once you have access keys. Use these endpoints to list and delete buckets, bucket creation happens through the S3 protocol against the bucket endpoint URL, not this API.
 paths:
   /object-storage/buckets:
     get:
@@ -18,9 +19,7 @@ paths:
       parameters:
       - name: search
         in: query
-        schema:
-          type: string
-        description: Filter results by case-insensitive substring match against the resource name.
+        schema: {}
       responses:
         '200':
           description: OK
@@ -28,25 +27,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/object_storage__BucketListResponse'
-              example:
-                buckets: []
-                failed_regions: []
-              examples:
-                default:
-                  summary: Successful response
-                  value:
-                    buckets: []
-                    failed_regions: []
         '422':
           description: Validation Error
-          content:
-            application/json:
-              examples: {}
-      description: Retrieve a list of all buckets in your [**Object Storage**](https://docs.hyperstack.cloud/docs/storage/object-storage) account, and provides details on each, including their name, region, size, and number of stored objects.
-      security:
-      - apiKey: []
-    servers:
-    - url: https://infrahub-api.nexgencloud.com/v1
+          content: {}
   /object-storage/buckets/{bucket_name}:
     get:
       tags:
@@ -57,15 +40,11 @@ paths:
       - name: bucket_name
         in: path
         required: true
-        schema:
-          type: string
-        description: Name of the bucket.
+        schema: {}
       - name: region
         in: query
         required: true
-        schema:
-          type: string
-        description: Filter results to a specific region (e.g. `CANADA-1`, `NORWAY-1`).
+        schema: {}
       responses:
         '200':
           description: OK
@@ -76,9 +55,6 @@ paths:
         '422':
           description: Validation Error
           content: {}
-      description: Retrieves detailed metadata for a specific bucket in your [**Object Storage**](https://docs.hyperstack.cloud/docs/storage/object-storage) account by name, including region, creation timestamp, object count, and storage usage.
-      security:
-      - apiKey: []
     delete:
       tags:
       - Buckets
@@ -88,15 +64,11 @@ paths:
       - name: bucket_name
         in: path
         required: true
-        schema:
-          type: string
-        description: Name of the bucket.
+        schema: {}
       - name: region
         in: query
         required: true
-        schema:
-          type: string
-        description: Filter results to a specific region (e.g. `CANADA-1`, `NORWAY-1`).
+        schema: {}
       responses:
         '200':
           description: OK
@@ -119,83 +91,9 @@ paths:
         '422':
           description: Validation Error
           content: {}
-      description: 'Deletes a specific bucket from your [**Object Storage**](https://docs.hyperstack.cloud/docs/storage/object-storage) account.
-
-
-        **Irreversible:** This action is irreversible and permanently removes the bucket and all stored objects within it.'
-      security:
-      - apiKey: []
-    servers:
-    - url: https://infrahub-api.nexgencloud.com/v1
 components:
   schemas:
     object_storage__ErrorResponse:
-      title: ErrorResponse
-      type: object
-      properties:
-        error_reason:
-          type: string
-          description: Short machine-readable reason code when the request fails.
-        message:
-          type: string
-          description: Human-readable description of the result.
-        status:
-          type: boolean
-          default: false
-          description: Whether the request succeeded.
-    object_storage__BucketListResponse:
-      title: BucketListResponse
-      type: object
-      properties:
-        buckets:
-          type: array
-          items:
-            $ref: '#/components/schemas/object_storage__BucketResponse'
-          description: Buckets visible to the calling environment.
-        failed_regions:
-          type: array
-          items:
-            type: string
-          description: Regions whose object-storage tier could not be reached during this list call.
-    object_storage__RegionsEnum:
-      type: string
-      enum:
-      - CANADA-1
-      example: CANADA-1
-    object_storage__DeleteResponse:
-      title: DeleteResponse
-      type: object
-      properties:
-        message:
-          type: string
-          description: Human-readable description of the result.
-    object_storage__BucketResponse:
-      title: BucketResponse
-      type: object
-      properties:
-        created_at:
-          type: string
-          format: date-time
-          description: ISO 8601 UTC timestamp marking when the resource was created.
-        endpoint:
-          type: string
-          description: Bucket endpoint URL. Use this with the S3 protocol.
-        name:
-          type: string
-          description: Name of the object storage bucket.
-        num_objects:
-          type: integer
-          description: Number of objects.
-        region:
-          $ref: '#/components/schemas/object_storage__RegionsEnum'
-          description: Region the resource is in (for example, `NORWAY-1`, `CANADA-1`, `US-1`).
-        size_bytes:
-          type: integer
-          description: Accumulated size in bytes.
-        size_bytes_actual:
-          type: integer
-          description: Size utilized in bytes.
-    object_storage__ErrorResponse_2:
       title: ErrorResponse
       required:
       - error_reason
@@ -212,7 +110,21 @@ components:
           title: Status
           type: boolean
           default: false
-    object_storage__BucketListResponse_2:
+    object_storage__RegionsEnum:
+      title: RegionsEnum
+      type: string
+      enum:
+      - CANADA-1
+    object_storage__DeleteResponse:
+      title: DeleteResponse
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          title: Message
+          type: string
+    object_storage__BucketListResponse:
       title: BucketListResponse
       required:
       - buckets
@@ -222,27 +134,13 @@ components:
           title: Buckets
           type: array
           items:
-            $ref: '#/components/schemas/object_storage__BucketResponse_2'
+            $ref: '#/components/schemas/object_storage__BucketResponse'
         failed_regions:
           title: Failed Regions
           type: array
           items:
             type: string
-    object_storage__RegionsEnum_2:
-      title: RegionsEnum
-      type: string
-      enum:
-      - CANADA-1
-    object_storage__DeleteResponse_2:
-      title: DeleteResponse
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          title: Message
-          type: string
-    object_storage__BucketResponse_2:
+    object_storage__BucketResponse:
       title: BucketResponse
       required:
       - created_at
@@ -269,7 +167,7 @@ components:
           type: integer
           description: Number of objects
         region:
-          $ref: '#/components/schemas/object_storage__RegionsEnum_2'
+          $ref: '#/components/schemas/object_storage__RegionsEnum'
         size_bytes:
           title: Size Bytes
           type: integer
@@ -279,16 +177,14 @@ components:
           type: integer
           description: Size utilized in bytes
   securitySchemes:
-    apiKey:
-      type: apiKey
-      name: api_key
-      in: header
-      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
     accessToken:
       type: apiKey
       description: Bearer Token
       name: Authorization
       in: header
-x-refined-from:
-- nexgen-cloud-hyperstack-openapi.json
-- nexgen-cloud-infrahub-api-openapi.json
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

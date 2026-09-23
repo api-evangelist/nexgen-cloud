@@ -17,7 +17,7 @@ paths:
       tags:
       - virtual machine events
       summary: List virtual machine events
-      description: Retrieves a list of all events in a virtual machine's history, which records actions performed on the specified virtual machine. Include the virtual machine ID in the path to retrieve the history of events. For more details on virtual machine events history, [**click here**](https://docs.hyperstack.cloud/docs/virtual-machines/vm-performance-metrics-and-events-history#events-history).
+      description: Retrieves a list of all events in a virtual machine's history, which records actions performed on the specified virtual machine. Include the virtual machine ID in the path to retrieve the history of events. For more details on virtual machine events history, **click here**.
       operationId: List_VM_events
       parameters:
       - name: vm_id
@@ -58,27 +58,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    InstanceEvents:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        instance_events:
-          type: array
-          items:
-            $ref: '#/components/schemas/InstanceEventsFields'
     InstanceEventsFields:
       type: object
       properties:
@@ -98,6 +77,27 @@ components:
         object:
           type: string
         message:
+          type: string
+    InstanceEvents:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        instance_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstanceEventsFields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
           type: string
   securitySchemes:
     accessToken:

@@ -2,32 +2,7 @@ openapi: 3.2.0
 info:
   title: AI Studio Knowledge Bases API
   version: '0.1'
-  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
-
-
-    ## Base URL
-
-
-    All requests are sent to:
-
-
-    ```
-
-    https://console.hyperstack.cloud/ai/api/v1
-
-    ```
-
-
-    ## Authentication
-
-
-    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
-
-
-    ## Request and response format
-
-
-    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference.'
 servers:
 - url: https://console.hyperstack.cloud/ai/api/v1
 security:
@@ -180,7 +155,7 @@ paths:
       tags:
       - Knowledge Bases
       summary: Create a knowledge base
-      description: Creates an empty knowledge base. Add files to it with [**Generate a file upload URL**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-kb-file-upload-url) followed by [**Ingest uploaded files**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/ingest-kb-files).
+      description: Creates an empty knowledge base. Add files to it with **Generate a file upload URL** followed by **Ingest uploaded files**.
       requestBody:
         required: true
         content:
@@ -596,7 +571,7 @@ paths:
       tags:
       - Knowledge Bases
       summary: Generate a file upload URL
-      description: Returns a pre-signed URL for uploading one file, along with the storage key you pass to [**Ingest uploaded files**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/ingest-kb-files). Upload the file to the URL with a `PUT` request before calling that endpoint. The URL is valid for one hour.
+      description: Returns a pre-signed URL for uploading one file, along with the storage key you pass to **Ingest uploaded files**. Upload the file to the URL with a `PUT` request before calling that endpoint. The URL is valid for one hour.
       parameters:
       - name: kb_id
         in: path
@@ -702,7 +677,7 @@ paths:
       tags:
       - Knowledge Bases
       summary: Ingest uploaded files
-      description: Queues one or more uploaded files for indexing. Call this after uploading each file to the pre-signed URL from [**Generate a file upload URL**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-kb-file-upload-url). Indexing runs in the background, so the response returns immediately with a task per file.
+      description: Queues one or more uploaded files for indexing. Call this after uploading each file to the pre-signed URL from **Generate a file upload URL**. Indexing runs in the background, so the response returns immediately with a task per file.
       parameters:
       - name: kb_id
         in: path
@@ -919,7 +894,7 @@ paths:
       tags:
       - Knowledge Bases
       summary: Retrieve ingestion task status
-      description: Returns the state of specific ingestion tasks for a knowledge base. Pass the task IDs returned by [**Ingest uploaded files**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/ingest-kb-files). To check a whole knowledge base instead, use [**Retrieve status for multiple knowledge bases**](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/post-knowledge-bases-status).
+      description: Returns the state of specific ingestion tasks for a knowledge base. Pass the task IDs returned by **Ingest uploaded files**. To check a whole knowledge base instead, use **Retrieve status for multiple knowledge bases**.
       parameters:
       - name: kb_id
         in: path

@@ -2,32 +2,7 @@ openapi: 3.2.0
 info:
   title: AI Studio Models API
   version: '0.1'
-  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
-
-
-    ## Base URL
-
-
-    All requests are sent to:
-
-
-    ```
-
-    https://console.hyperstack.cloud/ai/api/v1
-
-    ```
-
-
-    ## Authentication
-
-
-    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
-
-
-    ## Request and response format
-
-
-    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference.'
 servers:
 - url: https://console.hyperstack.cloud/ai/api/v1
 security:
@@ -250,19 +225,6 @@ components:
       - data
       title: OpenAIModelsListResponseSchema
       type: object
-    ModalityEnum:
-      type: string
-      enum:
-      - text-to-text
-      - text-to-image
-      - image-to-image
-      - image-to-text
-      title: ModalityEnum
-      x-enumDescriptions:
-        '`text-to-text`': Returns models that generate text from a text prompt ([text-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-text-models)).
-        '`text-to-image`': Returns models that generate images from a text prompt ([text-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-image-models)).
-        '`image-to-image`': Returns models that generate images from a source image and a text prompt ([image-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-image-models)).
-        '`image-to-text`': Returns models that generate text from an image and a text prompt ([image-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-text-models)).
     OpenAIModelSchema:
       description: Schema for individual model in OpenAI format.
       properties:
@@ -287,6 +249,19 @@ components:
       - owned_by
       title: OpenAIModelSchema
       type: object
+    ModalityEnum:
+      type: string
+      enum:
+      - text-to-text
+      - text-to-image
+      - image-to-image
+      - image-to-text
+      title: ModalityEnum
+      x-enumDescriptions:
+        '`text-to-text`': Returns models that generate text from a text prompt ([text-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-text-models)).
+        '`text-to-image`': Returns models that generate images from a text prompt ([text-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-image-models)).
+        '`image-to-image`': Returns models that generate images from a source image and a text prompt ([image-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-image-models)).
+        '`image-to-text`': Returns models that generate text from an image and a text prompt ([image-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-text-models)).
     GetModelsChoicesResponseSchema:
       properties:
         models:

@@ -2,32 +2,7 @@ openapi: 3.2.0
 info:
   title: AI Studio Overview API
   version: '0.1'
-  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
-
-
-    ## Base URL
-
-
-    All requests are sent to:
-
-
-    ```
-
-    https://console.hyperstack.cloud/ai/api/v1
-
-    ```
-
-
-    ## Authentication
-
-
-    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
-
-
-    ## Request and response format
-
-
-    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference.'
 servers:
 - url: https://console.hyperstack.cloud/ai/api/v1
 security:
@@ -81,19 +56,6 @@ paths:
       - Overview
 components:
   schemas:
-    OrganizationSummaryResponse:
-      properties:
-        summary:
-          $ref: '#/components/schemas/OrganizationSummary'
-          description: Aggregated counts of the organization's models, datasets, and logs.
-        status:
-          default: success
-          type: string
-          description: Indicates the result of the operation. Typically `"success"`.
-      required:
-      - summary
-      title: OrganizationSummaryResponse
-      type: object
     ErrorSchema:
       properties:
         code:
@@ -130,6 +92,19 @@ components:
       - datasets_count
       - logs_count
       title: OrganizationSummary
+      type: object
+    OrganizationSummaryResponse:
+      properties:
+        summary:
+          $ref: '#/components/schemas/OrganizationSummary'
+          description: Aggregated counts of the organization's models, datasets, and logs.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - summary
+      title: OrganizationSummaryResponse
       type: object
   securitySchemes:
     apiKey:

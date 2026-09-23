@@ -9,13 +9,13 @@ security:
 - accessToken: []
 - apiKey: []
 tags:
-- name: security-rules
+- name: Security Rules
   description: Security Rule APIs
 paths:
   /core/sg-rules-protocols:
     get:
       tags:
-      - security-rules
+      - Security Rules
       summary: List firewall rule protocols
       description: Returns a list of all available protocols that can be used in the creation of firewall rules for your virtual machines.
       operationId: List_firewall_rule_protocols

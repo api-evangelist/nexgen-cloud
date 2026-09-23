@@ -2,32 +2,7 @@ openapi: 3.2.0
 info:
   title: AI Studio System Prompts API
   version: '0.1'
-  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
-
-
-    ## Base URL
-
-
-    All requests are sent to:
-
-
-    ```
-
-    https://console.hyperstack.cloud/ai/api/v1
-
-    ```
-
-
-    ## Authentication
-
-
-    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
-
-
-    ## Request and response format
-
-
-    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference.'
 servers:
 - url: https://console.hyperstack.cloud/ai/api/v1
 security:
@@ -354,6 +329,25 @@ components:
       - organization_id
       title: SystemPromptResponseSchema
       type: object
+    SystemPromptUpdateSchema:
+      description: Schema for updating an existing system prompt.
+      properties:
+        content:
+          minLength: 1
+          type: string
+          default: null
+          description: Replacement text for the system prompt. Overwrites the existing content.
+          example: You are a helpful assistant that responds concisely and accurately.
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
+          default: null
+          description: Name of the system prompt.
+      title: SystemPromptUpdateSchema
+      type: object
+      example:
+        content: Updated content for API test. You are a concise assistant.
     SystemPromptCreateSchema:
       description: Schema for creating a new system prompt.
       properties:
@@ -376,37 +370,6 @@ components:
       example:
         name: example-sysprompt
         content: You are a helpful assistant created for API testing purposes.
-    SystemPromptUpdateSchema:
-      description: Schema for updating an existing system prompt.
-      properties:
-        content:
-          minLength: 1
-          type: string
-          default: null
-          description: Replacement text for the system prompt. Overwrites the existing content.
-          example: You are a helpful assistant that responds concisely and accurately.
-        name:
-          maxLength: 255
-          minLength: 1
-          type: string
-          default: null
-          description: Name of the system prompt.
-      title: SystemPromptUpdateSchema
-      type: object
-      example:
-        content: Updated content for API test. You are a concise assistant.
-    SystemPromptsListSchema:
-      description: Schema for listing system prompts with pagination.
-      properties:
-        prompts:
-          description: List of system prompts.
-          items:
-            $ref: '#/components/schemas/SystemPromptResponseSchema'
-          type: array
-      required:
-      - prompts
-      title: SystemPromptsListSchema
-      type: object
     SuccessSchema:
       properties:
         message:
@@ -422,6 +385,18 @@ components:
           default: null
           description: Number of records deleted by the operation.
       title: SuccessSchema
+      type: object
+    SystemPromptsListSchema:
+      description: Schema for listing system prompts with pagination.
+      properties:
+        prompts:
+          description: List of system prompts.
+          items:
+            $ref: '#/components/schemas/SystemPromptResponseSchema'
+          type: array
+      required:
+      - prompts
+      title: SystemPromptsListSchema
       type: object
   securitySchemes:
     apiKey:

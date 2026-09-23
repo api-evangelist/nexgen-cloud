@@ -57,6 +57,17 @@ paths:
       - apiKey: []
 components:
   schemas:
+    ClusterEvents:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        cluster_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterEventsFields'
     ClusterEventsFields:
       type: object
       properties:
@@ -79,17 +90,6 @@ components:
           type: string
         message:
           type: string
-    ClusterEvents:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        cluster_events:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterEventsFields'
     ErrorResponseModel:
       type: object
       properties:

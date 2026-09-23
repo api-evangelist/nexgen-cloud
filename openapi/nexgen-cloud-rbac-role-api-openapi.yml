@@ -1,20 +1,23 @@
 openapi: 3.2.0
 info:
-  title: Nexgen Cloud RBAC Role API
+  title: Infrahub rbac role API
   version: '1.0'
-  description: 'Operations tagged RBAC Role across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+  description: RBAC Role APIs
 servers:
 - url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
 tags:
-- name: RBAC Role
-  description: RBAC role endpoints create, list, update, and delete custom roles. A role is a named bundle of permissions that you can assign to organization members. Built-in roles (`admin`, `member`, `viewer`) cover most cases, create custom roles for finer control.
+- name: rbac role
+  description: RBAC Role APIs
 paths:
   /auth/roles:
     get:
       tags:
-      - RBAC Role
-      summary: List RBAC roles
-      description: Returns a list of existing [**Role-Based Access Control (RBAC)**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) roles that can be assigned to users, granting them permissions and policies associated with the role, enabling them to execute specific resource actions.
+      - rbac role
+      summary: List RBAC Roles
+      description: Retrieves a list of RBAC roles that can be assigned to the users within an organization. For additional information on RBAC roles, click here.
       operationId: List_RBAC_Roles
       responses:
         '200':
@@ -23,75 +26,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetRbacRolesResponseModel'
-              example:
-                status: true
-                message: Getting RBAC roles success
-                roles:
-                - id: 3287
-                  name: example-role
-                  description: Example role
-                  policies: []
-                  permissions: []
-                  created_at: '2026-05-06T16:04:09Z'
-              examples:
-                default:
-                  summary: Successful response
-                  value:
-                    status: true
-                    message: Getting RBAC roles success
-                    roles:
-                    - id: 3287
-                      name: example-role
-                      description: Example role
-                      policies: []
-                      permissions: []
-                      created_at: '2026-05-06T16:04:09Z'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '500':
           description: Internal Server Error
-          content:
-            application/json:
-              examples: {}
+          content: {}
       security:
+      - accessToken: []
       - apiKey: []
     post:
       tags:
-      - RBAC Role
-      summary: Create RBAC role
-      description: 'Creates a [**Role-Based Access Control (RBAC)**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) role that can be assigned to users in your organization. Provide the role configuration, including its name, description, and list of permission and policy IDs, in the request body.
-
-
-        **Required fields:** The request must include at least one valid ID for either the `policies` or `permissions` field.'
+      - rbac role
+      summary: Create RBAC Role
+      description: Creates an RBAC role that can be assigned to users, granting them access to specific resource actions. Provide the configuration of the RBAC role, including its name, description, and list of permissions and policy IDs in the request body. For additional information on creating RBAC roles, click here.
       operationId: Create_RBAC_Role
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateUpdateRbacRolePayload'
-              example:
-                name: example-role
-                description: Example role
-                policies: []
-                permissions: []
-              properties: {}
-            example:
-              description: Example role
-              name: example-role
-              policies: []
-              permissions: []
         required: true
       responses:
         '201':
@@ -100,65 +63,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RbacRoleDetailResponseModel'
-              example:
-                status: true
-                message: Creating RBAC role success
-                role:
-                  id: 8429
-                  name: example-role
-                  description: Example role
-                  policies: []
-                  permissions: []
-                  created_at: '2026-05-07T09:21:55Z'
-              examples:
-                default:
-                  summary: Successful response
-                  value:
-                    status: true
-                    message: Creating RBAC role success
-                    role:
-                      id: 8429
-                      name: example-role
-                      description: Example role
-                      policies: []
-                      permissions: []
-                      created_at: '2026-05-07T09:21:55Z'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '409':
           description: Conflict
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '500':
           description: Internal Server Error
-          content:
-            application/json:
-              examples: {}
+          content: {}
       security:
+      - accessToken: []
       - apiKey: []
-    servers:
-    - url: https://infrahub-api.nexgencloud.com/v1
+      x-codegen-request-body-name: payload
   /auth/roles/{id}:
     get:
       tags:
-      - RBAC Role
-      summary: Retrieve RBAC role details
-      description: Retrieves the details of a specified [**Role-Based Access Control (RBAC)**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) including the permissions and policies associated with the role. Include the ID of the role in the path to retrieve its details.
+      - rbac role
+      summary: Retrieve RBAC Role Details
+      description: Retrieves the details of a specified RBAC role by providing the RBAC role ID in the path. For additional information, click here.
       operationId: Retrieve_RBAC_Role_Details
       parameters:
       - name: id
@@ -166,7 +101,6 @@ paths:
         required: true
         schema:
           type: integer
-        description: ID of the role.
       responses:
         '200':
           description: Success
@@ -174,65 +108,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RbacRoleDetailResponseModel'
-              example:
-                status: true
-                message: Getting RBAC role detail success
-                roles:
-                  id: 9876
-                  name: example-role
-                  description: Example role
-                  policies: []
-                  permissions: []
-                  created_at: '2026-05-07T09:21:55Z'
-              examples:
-                default:
-                  summary: Successful response
-                  value:
-                    status: true
-                    message: Getting RBAC role detail success
-                    roles:
-                      id: 9876
-                      name: example-role
-                      description: Example role
-                      policies: []
-                      permissions: []
-                      created_at: '2026-05-07T09:21:55Z'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '404':
           description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '500':
           description: Internal Server Error
-          content:
-            application/json:
-              examples: {}
+          content: {}
       security:
+      - accessToken: []
       - apiKey: []
     put:
       tags:
-      - RBAC Role
-      summary: Update RBAC role
-      description: 'Updates the configuration of a specified [**Role-Based Access Control (RBAC)**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) role, including its permissions, policies, name, and description.
-
-
-        **Required fields:** The request must include at least one valid ID for either the `policies` or `permissions` field.'
+      - rbac role
+      summary: Update RBAC Role
+      description: Updates an RBAC role by providing the role ID in the path and the modified role configuration in the request body, including its name, description, and list of permissions and policy IDs. For additional information, click here.
       operationId: Update_RBAC_Role
       parameters:
       - name: id
@@ -240,7 +144,6 @@ paths:
         required: true
         schema:
           type: integer
-        description: ID of the role.
       requestBody:
         content:
           application/json:
@@ -276,12 +179,14 @@ paths:
           description: Internal Server Error
           content: {}
       security:
+      - accessToken: []
       - apiKey: []
+      x-codegen-request-body-name: payload
     delete:
       tags:
-      - RBAC Role
-      summary: Delete RBAC role
-      description: Deletes a specified [**Role-Based Access Control (RBAC)**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) role. Include the ID of the role to be deleted in the path.
+      - rbac role
+      summary: Delete RBAC Role
+      description: Deletes an RBAC role by providing its ID in the path. For additional information, click here.
       operationId: Delete_RBAC_Role
       parameters:
       - name: id
@@ -289,7 +194,6 @@ paths:
         required: true
         schema:
           type: integer
-        description: ID of the role.
       responses:
         '200':
           description: Success
@@ -297,197 +201,88 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResponseModel'
-              example:
-                status: true
-                message: RBAC Role deleted successfully
-              examples:
-                default:
-                  summary: Successful response
-                  value:
-                    status: true
-                    message: RBAC Role deleted successfully
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '404':
           description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseModel'
-              examples: {}
         '500':
           description: Internal Server Error
-          content:
-            application/json:
-              examples: {}
+          content: {}
       security:
+      - accessToken: []
       - apiKey: []
-    servers:
-    - url: https://infrahub-api.nexgencloud.com/v1
 components:
   schemas:
-    CommonResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: Whether the request succeeded.
-          example: false
-        message:
-          type: string
-          description: Human-readable description of the result.
-          example: Not found
-    RbacRoleDetailResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: Whether the request succeeded.
-          example: true
-        message:
-          type: string
-          description: Human-readable description of the result.
-          example: Creating RBAC role success
-        role:
-          $ref: '#/components/schemas/RbacRoleFields'
-          description: Role assigned to nodes in the group, for example, `worker`.
-    CreateUpdateRbacRolePayload:
-      required:
-      - description
-      - name
-      type: object
-      properties:
-        description:
-          type: string
-          description: New description for the RBAC role.
-        name:
-          maxLength: 200
-          type: string
-          description: New name for the RBAC role.
-        policies:
-          type: array
-          items:
-            type: integer
-            description: List of policy IDs.
-          description: IDs of the [**policies**](https://docs.hyperstack.cloud/docs/api-reference/list-policies) to assign to the RBAC role.
-        permissions:
-          type: array
-          items:
-            type: integer
-            description: List of permission IDs.
-          description: IDs of the [**permissions**](https://docs.hyperstack.cloud/docs/api-reference/list-permissions) to assign to the RBAC role.
-    RbacRoleFields:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Unique numeric identifier.
-          example: 7613
-        name:
-          type: string
-          description: Name of the RBAC role.
-          example: example-role
-        description:
-          type: string
-          description: Human-readable description of the resource.
-          example: example
-        policies:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePolicyFields'
-          description: Authorization policies assigned to the role.
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePermissionFields'
-          description: Permissions granted by the role.
-        created_at:
-          type: string
-          format: date-time
-          description: ISO 8601 UTC timestamp marking when the resource was created.
-          example: '2026-05-06T15:18:42Z'
-    RolePermissionFields:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Unique numeric identifier.
-        resource:
-          type: string
-          description: Resource the entry refers to.
-        permission:
-          type: string
-          description: Permission grant on the resource.
-    GetRbacRolesResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: Whether the request succeeded.
-          example: true
-        message:
-          type: string
-          description: Human-readable description of the result.
-          example: Getting RBAC roles success
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/RbacRoleFields'
-          description: An array of `roles` objects containing details about the permissions and policies associated with each role.
     RolePolicyFields:
       type: object
       properties:
         id:
           type: integer
-          description: Unique numeric identifier.
         name:
           type: string
-          description: Name of the policy.
         description:
           type: string
-          description: Human-readable description of the resource.
+    CommonResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    RbacRoleDetailResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        role:
+          $ref: '#/components/schemas/RbacRoleFields'
     ErrorResponseModel:
       type: object
       properties:
         status:
           type: boolean
           default: false
-          description: Whether the request succeeded.
         message:
           type: string
-          description: Human-readable description of the result.
         error_reason:
           type: string
-          description: Short machine-readable reason code when the request fails.
-    CommonResponseModel_2:
+    RbacRoleFields:
       type: object
       properties:
-        status:
-          type: boolean
-        message:
+        id:
+          type: integer
+        name:
           type: string
-    RbacRoleDetailResponseModel_2:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
+        description:
           type: string
-        role:
-          $ref: '#/components/schemas/RbacRoleFields_2'
-    CreateUpdateRbacRolePayload_2:
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolePolicyFields'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolePermissionFields'
+        created_at:
+          type: string
+          format: date-time
+    CreateUpdateRbacRolePayload:
       required:
       - description
       - name
@@ -510,27 +305,7 @@ components:
           items:
             type: integer
             description: List of permission IDs.
-    RbacRoleFields_2:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        policies:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePolicyFields_2'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePermissionFields_2'
-        created_at:
-          type: string
-          format: date-time
-    RolePermissionFields_2:
+    RolePermissionFields:
       type: object
       properties:
         id:
@@ -539,7 +314,7 @@ components:
           type: string
         permission:
           type: string
-    GetRbacRolesResponseModel_2:
+    GetRbacRolesResponseModel:
       type: object
       properties:
         status:
@@ -549,37 +324,16 @@ components:
         roles:
           type: array
           items:
-            $ref: '#/components/schemas/RbacRoleFields_2'
-    RolePolicyFields_2:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-    ErrorResponseModel_2:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
+            $ref: '#/components/schemas/RbacRoleFields'
   securitySchemes:
-    apiKey:
-      type: apiKey
-      name: api_key
-      in: header
-      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
     accessToken:
       type: apiKey
       description: Bearer Token
       name: Authorization
       in: header
-x-refined-from:
-- nexgen-cloud-hyperstack-openapi.json
-- nexgen-cloud-infrahub-api-openapi.json
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

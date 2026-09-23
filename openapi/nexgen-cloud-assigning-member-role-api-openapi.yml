@@ -1,25 +1,23 @@
 openapi: 3.2.0
 info:
-  title: Nexgen Cloud Assigning Member Role API
+  title: Infrahub assigning member role API
   version: '1.0'
-  description: 'Operations tagged Assigning Member Role across 2 of this provider''s published API definitions: nexgen-cloud-hyperstack-openapi.json, nexgen-cloud-infrahub-api-openapi.json. Each path carries the servers of the definition it was published in.'
+  description: Assigning Member Role APIs
 servers:
 - url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
 tags:
-- name: Assigning Member Role
-  description: Bulk role assignments for organization members.
+- name: assigning member role
+  description: Assigning Member Role APIs
 paths:
   /auth/users/{user_id}/assign-roles:
     put:
       tags:
-      - Assigning Member Role
-      summary: Assign RBAC role
-      description: 'Assigns a [**Role-Based Access Control (RBAC)**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) role to a member of your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization), granting them the resource actions permitted by the role''s permissions and policies. Include the user ID in the path and the RBAC role ID in the request body.
-
-
-        - To obtain the user ID, call the [**Retrieve organization information**](https://docs.hyperstack.cloud/docs/api-reference/retrieve-organization-information) endpoint.
-
-        - To obtain the RBAC role ID, call the [**List RBAC roles**](https://docs.hyperstack.cloud/docs/api-reference/list-rbac-roles) endpoint.'
+      - assigning member role
+      summary: Assign RBAC Role
+      description: Assigns a specific RBAC role to a user within your organization, granting them access to the resource actions permitted by the role. Provide the user ID in the path and the role ID in the request body. For additional information, click here.
       operationId: Assign_RBAC_Role_to_User
       parameters:
       - name: user_id
@@ -27,7 +25,6 @@ paths:
         required: true
         schema:
           type: integer
-        description: ID of the user.
       requestBody:
         content:
           application/json:
@@ -63,18 +60,15 @@ paths:
           description: Internal Server Error
           content: {}
       security:
+      - accessToken: []
       - apiKey: []
-    servers:
-    - url: https://infrahub-api.nexgencloud.com/v1
+      x-codegen-request-body-name: payload
   /auth/users/{user_id}/roles:
     delete:
       tags:
-      - Assigning Member Role
-      summary: Remove RBAC role from user
-      description: 'Removes a [**Role-Based Access Control (RBAC)**](https://docs.hyperstack.cloud/docs/resource-management/organization#user-roles) role from a member of your [**organization**](https://docs.hyperstack.cloud/docs/resource-management/organization), revoking the resource actions permitted by the role''s permissions and policies. Include the user ID in the path.
-
-
-        To obtain the user ID, call the [**Retrieve organization information**](https://docs.hyperstack.cloud/docs/api-reference/retrieve-organization-information) endpoint.'
+      - assigning member role
+      summary: Remove RBAC Role From User
+      description: Removes an RBAC role from a user within your organization, revoking the resource permissions they had access to. Provide the user ID in the path. For additional information, click here.
       operationId: Remove_RBAC_Role_From_User
       parameters:
       - name: user_id
@@ -82,7 +76,6 @@ paths:
         required: true
         schema:
           type: integer
-        description: ID of the user.
       responses:
         '200':
           description: Success
@@ -112,36 +105,74 @@ paths:
           description: Internal Server Error
           content: {}
       security:
+      - accessToken: []
       - apiKey: []
-    servers:
-    - url: https://infrahub-api.nexgencloud.com/v1
 components:
   schemas:
+    RolePolicyFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
     CommonResponseModel:
       type: object
       properties:
         status:
           type: boolean
-          description: Whether the request succeeded.
-          example: false
         message:
           type: string
-          description: Human-readable description of the result.
-          example: Not found
     RbacRoleDetailResponseModel:
       type: object
       properties:
         status:
           type: boolean
-          description: Whether the request succeeded.
-          example: true
         message:
           type: string
-          description: Human-readable description of the result.
-          example: Creating RBAC role success
         role:
           $ref: '#/components/schemas/RbacRoleFields'
-          description: Role assigned to nodes in the group, for example, `worker`.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    RbacRoleFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolePolicyFields'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolePermissionFields'
+        created_at:
+          type: string
+          format: date-time
+    RolePermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
+          type: string
     AssignRbacRolePayload:
       required:
       - role_id
@@ -149,156 +180,15 @@ components:
       properties:
         role_id:
           type: integer
-          description: ID of the RBAC role to assign to the organization member.
-    RbacRoleFields:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Unique numeric identifier.
-          example: 7613
-        name:
-          type: string
-          description: Name of the RBAC role.
-          example: example-role
-        description:
-          type: string
-          description: Human-readable description of the resource.
-          example: example
-        policies:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePolicyFields'
-          description: Authorization policies assigned to the role.
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePermissionFields'
-          description: Permissions granted by the role.
-        created_at:
-          type: string
-          format: date-time
-          description: ISO 8601 UTC timestamp marking when the resource was created.
-          example: '2026-05-06T15:18:42Z'
-    RolePermissionFields:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Unique numeric identifier.
-        resource:
-          type: string
-          description: Resource the entry refers to.
-        permission:
-          type: string
-          description: Permission grant on the resource.
-    RolePolicyFields:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Unique numeric identifier.
-        name:
-          type: string
-          description: Name of the policy.
-        description:
-          type: string
-          description: Human-readable description of the resource.
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-          description: Whether the request succeeded.
-        message:
-          type: string
-          description: Human-readable description of the result.
-        error_reason:
-          type: string
-          description: Short machine-readable reason code when the request fails.
-    CommonResponseModel_2:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    RbacRoleDetailResponseModel_2:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        role:
-          $ref: '#/components/schemas/RbacRoleFields_2'
-    AssignRbacRolePayload_2:
-      required:
-      - role_id
-      type: object
-      properties:
-        role_id:
-          type: integer
-    RbacRoleFields_2:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        policies:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePolicyFields_2'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePermissionFields_2'
-        created_at:
-          type: string
-          format: date-time
-    RolePermissionFields_2:
-      type: object
-      properties:
-        id:
-          type: integer
-        resource:
-          type: string
-        permission:
-          type: string
-    RolePolicyFields_2:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-    ErrorResponseModel_2:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
   securitySchemes:
-    apiKey:
-      type: apiKey
-      name: api_key
-      in: header
-      description: 'API-key authentication. Pass your API key as the `api_key` header value (e.g., `api_key: YOUR_API_KEY`, no prefix). [Generate a key in the Hyperstack console](https://console.hyperstack.cloud/api-keys). The key is personal to your user account and works across every environment and region in your organization.'
     accessToken:
       type: apiKey
       description: Bearer Token
       name: Authorization
       in: header
-x-refined-from:
-- nexgen-cloud-hyperstack-openapi.json
-- nexgen-cloud-infrahub-api-openapi.json
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'

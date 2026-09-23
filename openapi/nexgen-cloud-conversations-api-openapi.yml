@@ -2,32 +2,7 @@ openapi: 3.2.0
 info:
   title: AI Studio Conversations API
   version: '0.1'
-  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
-
-
-    ## Base URL
-
-
-    All requests are sent to:
-
-
-    ```
-
-    https://console.hyperstack.cloud/ai/api/v1
-
-    ```
-
-
-    ## Authentication
-
-
-    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
-
-
-    ## Request and response format
-
-
-    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference.'
 servers:
 - url: https://console.hyperstack.cloud/ai/api/v1
 security:
@@ -850,6 +825,45 @@ paths:
                 $ref: '#/components/schemas/ErrorSchema'
 components:
   schemas:
+    ConversationImageUploadResponseSchema:
+      properties:
+        file_reference:
+          type: string
+          description: A reference to the uploaded image. Include this in a message's `image_attachments` when calling [Send message](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/send-message).
+        signed_url:
+          type: string
+          description: A short-lived URL. Upload the image bytes to it with an HTTP PUT before sending the message.
+      required:
+      - signed_url
+      - file_reference
+      type: object
+      description: Presigned upload details for an image attachment.
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
+    ConversationRenameSchema:
+      properties:
+        title:
+          maxLength: 255
+          type: string
+          description: The new conversation title. Maximum 255 characters.
+      required:
+      - title
+      type: object
+      description: Request body for renaming a conversation.
     ConversationSendMessageRequestSchema:
       properties:
         message:
@@ -906,45 +920,6 @@ components:
         message: What did I just say?
         conversation_id: 1001
         stream: false
-    ConversationImageUploadResponseSchema:
-      properties:
-        file_reference:
-          type: string
-          description: A reference to the uploaded image. Include this in a message's `image_attachments` when calling [Send message](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/send-message).
-        signed_url:
-          type: string
-          description: A short-lived URL. Upload the image bytes to it with an HTTP PUT before sending the message.
-      required:
-      - signed_url
-      - file_reference
-      type: object
-      description: Presigned upload details for an image attachment.
-    ConversationRenameSchema:
-      properties:
-        title:
-          maxLength: 255
-          type: string
-          description: The new conversation title. Maximum 255 characters.
-      required:
-      - title
-      type: object
-      description: Request body for renaming a conversation.
-    ErrorSchema:
-      properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
-          type: string
-          default: null
-          description: Human-readable description of the error.
-        status:
-          type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
-      type: object
   securitySchemes:
     apiKey:
       type: apiKey

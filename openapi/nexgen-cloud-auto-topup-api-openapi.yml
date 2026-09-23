@@ -180,7 +180,7 @@ paths:
       tags:
       - auto-topup
       summary: Get auto top-up status and configuration
-      description: Retrieves the current auto top-up configuration and status for your organization. Returns the status (active, disabled, pending_setup, or null if never configured), along with the threshold and top-up amounts. For additional information, [**click here**](None/docs/api-reference/billing-resources/).
+      description: Retrieves the current auto top-up configuration and status for your organization. Returns the status (active, disabled, pending_setup, or null if never configured), along with the threshold and top-up amounts. For additional information, **click here**.
       operationId: Get_auto_top-up_status
       responses:
         '200':
@@ -209,7 +209,7 @@ paths:
       - apiKey: []
 components:
   schemas:
-    UpdateAutoTopupPayload:
+    CreateAutoTopupPayload:
       required:
       - threshold_amount
       - topup_amount
@@ -232,17 +232,18 @@ components:
           description: ''
         auto_topup:
           $ref: '#/components/schemas/auto_topup'
-    CreateAutoTopupResponse:
+    UpdateAutoTopupPayload:
+      required:
+      - threshold_amount
+      - topup_amount
       type: object
       properties:
-        status:
-          type: boolean
+        threshold_amount:
+          type: number
           description: ''
-        message:
-          type: string
+        topup_amount:
+          type: number
           description: ''
-        auto_topup:
-          $ref: '#/components/schemas/auto_topup'
     AutoTopupErrorResponse:
       type: object
       properties:
@@ -255,6 +256,17 @@ components:
         error_reason:
           type: string
           description: ''
+    CreateAutoTopupResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        auto_topup:
+          $ref: '#/components/schemas/auto_topup'
     AutoTopupStatusSchema:
       type: object
       properties:
@@ -267,17 +279,6 @@ components:
         topup_amount:
           type: number
           description: Amount to top up when threshold is reached
-    DisableAutoTopupResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: ''
-        message:
-          type: string
-          description: ''
-        auto_topup:
-          $ref: '#/components/schemas/auto_topup'
     UpdateAutoTopupResponse:
       type: object
       properties:
@@ -307,18 +308,17 @@ components:
         updated_at:
           type: string
           description: ''
-    CreateAutoTopupPayload:
-      required:
-      - threshold_amount
-      - topup_amount
+    DisableAutoTopupResponse:
       type: object
       properties:
-        threshold_amount:
-          type: number
+        status:
+          type: boolean
           description: ''
-        topup_amount:
-          type: number
+        message:
+          type: string
           description: ''
+        auto_topup:
+          $ref: '#/components/schemas/auto_topup'
   securitySchemes:
     accessToken:
       type: apiKey

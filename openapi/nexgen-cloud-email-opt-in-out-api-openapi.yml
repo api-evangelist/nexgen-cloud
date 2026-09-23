@@ -135,6 +135,24 @@ components:
           type: string
         opted_in:
           type: boolean
+    UpdateEmailPreferenceInput:
+      required:
+      - opted_in
+      type: object
+      properties:
+        opted_in:
+          type: boolean
+          description: Set opted_in status
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     EmailPreferencesResponse:
       type: object
       properties:
@@ -163,24 +181,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmailCategoryChild'
-    UpdateEmailPreferenceInput:
-      required:
-      - opted_in
-      type: object
-      properties:
-        opted_in:
-          type: boolean
-          description: Set opted_in status
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

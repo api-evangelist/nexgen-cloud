@@ -75,35 +75,10 @@ paths:
         '500':
           description: Internal Server Error
           content: {}
+      summary: Get partner config by domain
+      x-summary-source: derived
 components:
   schemas:
-    URIs:
-      type: object
-      properties:
-        auth:
-          type: string
-        doc:
-          type: string
-        api_doc:
-          type: string
-        console:
-          type: string
-        api_uri:
-          type: string
-        landing_page:
-          type: string
-        contact_us:
-          type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     PartnerConfig:
       required:
       - name
@@ -124,14 +99,48 @@ components:
           type: string
         colors:
           $ref: '#/components/schemas/Colors'
-    SecondaryColor:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    URIs:
+      type: object
+      properties:
+        auth:
+          type: string
+        doc:
+          type: string
+        api_doc:
+          type: string
+        console:
+          type: string
+        api_uri:
+          type: string
+        landing_page:
+          type: string
+        contact_us:
+          type: string
+    PrimaryColor:
       type: object
       properties:
         light:
           type: string
         dark:
           type: string
-    PrimaryColor:
+    Colors:
+      type: object
+      properties:
+        primary:
+          $ref: '#/components/schemas/PrimaryColor'
+        secondary:
+          $ref: '#/components/schemas/SecondaryColor'
+    SecondaryColor:
       type: object
       properties:
         light:
@@ -149,13 +158,6 @@ components:
           type: string
         favicon:
           type: string
-    Colors:
-      type: object
-      properties:
-        primary:
-          $ref: '#/components/schemas/PrimaryColor'
-        secondary:
-          $ref: '#/components/schemas/SecondaryColor'
   securitySchemes:
     accessToken:
       type: apiKey

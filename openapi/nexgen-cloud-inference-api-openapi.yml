@@ -2,32 +2,7 @@ openapi: 3.2.0
 info:
   title: AI Studio Inference API
   version: '0.1'
-  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference. Inference runs on base and fine-tuned models, covering text chat (OpenAI-compatible chat completions) and image generation and editing.
-
-
-    ## Base URL
-
-
-    All requests are sent to:
-
-
-    ```
-
-    https://console.hyperstack.cloud/ai/api/v1
-
-    ```
-
-
-    ## Authentication
-
-
-    Every request requires an API key. Pass it as the `api_key` request header, with the raw key as the value and no prefix (`api_key: YOUR_API_KEY`). Generate a key on the [API Keys](https://console.hyperstack.cloud/api-keys) page in the Hyperstack console. See [Getting Started with the API](https://docs.hyperstack.cloud/docs/ai-studio/getting-started#getting-started-with-the-api) for the full walkthrough.
-
-
-    ## Request and response format
-
-
-    Requests use standard HTTP methods (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) with `application/json` bodies unless noted otherwise. Responses are `application/json`. The text inference endpoints, such as [chat completions](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/chat-completions), are OpenAI-compatible.'
+  description: 'The AI Studio API is a REST API for the full lifecycle of custom AI models on Hyperstack AI Studio: curate and generate training datasets, fine-tune foundation models on your data, evaluate training results, deploy models, and run inference.'
 servers:
 - url: https://console.hyperstack.cloud/ai/api/v1
 security:
@@ -207,6 +182,22 @@ paths:
       - Inference
 components:
   schemas:
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
     ChatCompletionMessageSchema:
       properties:
         content:
@@ -318,22 +309,6 @@ components:
         - role: user
           content: 'Reply with exactly: OK'
         stream: false
-    ErrorSchema:
-      properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
-          type: string
-          default: null
-          description: Human-readable description of the error.
-        status:
-          type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
-      type: object
   securitySchemes:
     apiKey:
       type: apiKey

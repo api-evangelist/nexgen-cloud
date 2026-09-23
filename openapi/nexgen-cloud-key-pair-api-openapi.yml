@@ -1,0 +1,365 @@
+openapi: 3.2.0
+info:
+  title: Infrahub Keypair API
+  version: '1.0'
+  description: Keypair APIs
+servers:
+- url: https://infrahub-api.nexgencloud.com/v1
+security:
+- accessToken: []
+- apiKey: []
+tags:
+- name: Key Pair
+  description: Keypair APIs
+paths:
+  /core/keypair/{id}:
+    put:
+      tags:
+      - Key Pair
+      summary: Update key pair name
+      description: Updates the name of a specified key pair. Provide the key pair ID in the path, and include the new `name` in the request body.
+      operationId: Update_key_pair_name
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Update_Keypair_Name'
+        required: true
+      responses:
+        '200':
+          description: Keypair name updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Update_Keypair_name_response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+      x-codegen-request-body-name: payload
+    delete:
+      tags:
+      - Key Pair
+      summary: Delete key pair
+      description: Permanently deletes a specified key pair. Provide the key pair ID in the path to remove the designated key pair.
+      operationId: Delete_key_pair
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Keypair successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+  /core/keypairs:
+    get:
+      tags:
+      - Key Pair
+      summary: List key pairs
+      description: Retrieves a list of your existing SSH key pairs, providing details for each. For more information on SSH key pairs, **click here**.
+      operationId: List_key_pairs
+      parameters:
+      - name: page
+        in: query
+        description: Page Number
+        schema: {}
+      - name: pageSize
+        in: query
+        description: Data Per Page
+        schema: {}
+      - name: search
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Retrieval of key pairs list successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Keypairs'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+    post:
+      tags:
+      - Key Pair
+      summary: Import key pair
+      description: Imports a new key pair for secure shell (SSH) access to your resources. Provide the key name, environment name, and public key in the request body. For more details on importing SSH key pairs, **click here**.
+      operationId: Import_key_pair
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Import_Keypair_Payload'
+        required: true
+      responses:
+        '200':
+          description: Keypair is imported successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Import_Keypair_Response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - accessToken: []
+      - apiKey: []
+      x-codegen-request-body-name: payload
+  /core/supported-keypairs:
+    get:
+      tags:
+      - Key Pair
+      summary: List supported key pair types
+      description: Retrieves the SSH public key types supported for import.
+      operationId: List_supported_key_pair_types
+      responses:
+        '200':
+          description: Retrieval of supported key pair types successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supported_Keypair_Public_Key_Types_Response'
+        '500':
+          description: Internal Server Error
+          content: {}
+components:
+  schemas:
+    Keypair_Environment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        region:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        features:
+          $ref: '#/components/schemas/Keypair_Environment_Features'
+    Import_Keypair_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        keypair:
+          $ref: '#/components/schemas/Keypair_Fields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Keypairs:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        keypairs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Keypair_Fields'
+        page:
+          type: integer
+        page_size:
+          type: integer
+        count:
+          type: integer
+    Keypair_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        environment:
+          $ref: '#/components/schemas/Keypair_Environment_Fields'
+        public_key:
+          type: string
+        fingerprint:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Supported_Keypair_Public_Key_Types_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        supported_key_types:
+          type: array
+          items:
+            type: string
+    Update_Keypair_Name:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The new key pair name.
+    Keypair_Environment_Features:
+      type: object
+      properties:
+        network_optimised:
+          type: boolean
+        green_status:
+          type: string
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
+    Update_Keypair_name_response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        keypair:
+          $ref: '#/components/schemas/Keypair_Fields'
+    Import_Keypair_Payload:
+      required:
+      - environment_name
+      - name
+      - public_key
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The name of the key pair that is being created.
+        environment_name:
+          type: string
+          description: The name of the environment where the key pair is being created.
+        public_key:
+          type: string
+          description: The public key that is being used to import an SSH key pair.
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      description: Bearer Token
+      name: Authorization
+      in: header
+    apiKey:
+      type: apiKey
+      description: Send it as api_key in header
+      name: api_key
+      in: header
+x-original-swagger-version: '2.0'
