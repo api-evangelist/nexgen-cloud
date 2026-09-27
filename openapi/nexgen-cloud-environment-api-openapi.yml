@@ -334,15 +334,20 @@ paths:
       - apiKey: []
 components:
   schemas:
-    NameAvailableModel:
+    Environment_Fields:
       type: object
       properties:
+        id:
+          type: integer
         name:
           type: string
-        available:
-          type: boolean
-        message:
+        region:
           type: string
+        created_at:
+          type: string
+          format: date-time
+        features:
+          $ref: '#/components/schemas/Environment_Features'
     Environments:
       type: object
       properties:
@@ -360,20 +365,15 @@ components:
           type: integer
         count:
           type: integer
-    Environment_Fields:
+    NameAvailableModel:
       type: object
       properties:
-        id:
-          type: integer
         name:
           type: string
-        region:
+        available:
+          type: boolean
+        message:
           type: string
-        created_at:
-          type: string
-          format: date-time
-        features:
-          $ref: '#/components/schemas/Environment_Features'
     ErrorResponseModel:
       type: object
       properties:
@@ -383,6 +383,22 @@ components:
         message:
           type: string
         error_reason:
+          type: string
+    Update_Environment:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The new name of the environment.
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
           type: string
     VM_Quota:
       type: object
@@ -413,13 +429,15 @@ components:
           - GREEN
           - PARTIALLY_GREEN
           - NOT_GREEN
-    ResponseModel:
+    Environment:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
+        environment:
+          $ref: '#/components/schemas/Environment_Fields'
     Create_Environment:
       required:
       - name
@@ -433,24 +451,6 @@ components:
         region:
           type: string
           description: The geographic location of the data center where the environment is being created. To learn more about regions, [**click here**]({Config.INFRAHUB_DOCS_BASE}/docs/features/regions).
-    Update_Environment:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          maxLength: 50
-          type: string
-          description: The new name of the environment.
-    Environment:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        environment:
-          $ref: '#/components/schemas/Environment_Fields'
   securitySchemes:
     accessToken:
       type: apiKey

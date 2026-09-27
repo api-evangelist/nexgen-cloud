@@ -107,15 +107,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    VNC_URL:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        vnc_url:
-          $ref: '#/components/schemas/VNC_URL_Fields'
     Request_Console:
       type: object
       properties:
@@ -135,6 +126,15 @@ components:
           type: string
         error_reason:
           type: string
+    VNC_URL:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        vnc_url:
+          $ref: '#/components/schemas/VNC_URL_Fields'
     VNC_URL_Fields:
       type: object
       properties:

@@ -46,26 +46,12 @@ paths:
       - apiKey: []
 components:
   schemas:
-    GPU_List:
+    GPU_Region_Fields:
       type: object
       properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        gpu_list:
-          type: array
-          items:
-            $ref: '#/components/schemas/GPU_Fields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
+        id:
+          type: integer
+        name:
           type: string
     GPU_Fields:
       type: object
@@ -86,12 +72,26 @@ components:
         updated_at:
           type: string
           format: date-time
-    GPU_Region_Fields:
+    GPU_List:
       type: object
       properties:
-        id:
-          type: integer
-        name:
+        status:
+          type: boolean
+        message:
+          type: string
+        gpu_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/GPU_Fields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
           type: string
   securitySchemes:
     accessToken:

@@ -184,6 +184,31 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Update_Volume_Attachment_Payload:
+      type: object
+      properties:
+        protected:
+          type: boolean
+    Attach_Volumes_Payload:
+      type: object
+      properties:
+        volume_ids:
+          type: array
+          items:
+            type: integer
+        protected:
+          type: boolean
+          default: false
     Detach_Volumes_Payload:
       type: object
       properties:
@@ -202,16 +227,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Attach_Volume_Fields'
-    ErrorResponseModel:
+    Attach_Volumes:
       type: object
       properties:
         status:
           type: boolean
-          default: false
         message:
           type: string
-        error_reason:
-          type: string
+        volume_attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attach_Volume_Fields'
     Attach_Volume_Fields:
       type: object
       properties:
@@ -230,32 +256,6 @@ components:
         created_at:
           type: string
           format: date-time
-    Attach_Volumes_Payload:
-      type: object
-      properties:
-        volume_ids:
-          type: array
-          items:
-            type: integer
-        protected:
-          type: boolean
-          default: false
-    Update_Volume_Attachment_Payload:
-      type: object
-      properties:
-        protected:
-          type: boolean
-    Attach_Volumes:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        volume_attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Attach_Volume_Fields'
   securitySchemes:
     accessToken:
       type: apiKey

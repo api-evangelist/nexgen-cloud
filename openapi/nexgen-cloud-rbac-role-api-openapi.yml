@@ -227,31 +227,17 @@ paths:
       - apiKey: []
 components:
   schemas:
-    RolePolicyFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-    CommonResponseModel:
+    GetRbacRolesResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-    RbacRoleDetailResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        role:
-          $ref: '#/components/schemas/RbacRoleFields'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RbacRoleFields'
     ErrorResponseModel:
       type: object
       properties:
@@ -261,6 +247,24 @@ components:
         message:
           type: string
         error_reason:
+          type: string
+    RolePolicyFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+    RolePermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
           type: string
     RbacRoleFields:
       type: object
@@ -305,26 +309,22 @@ components:
           items:
             type: integer
             description: List of permission IDs.
-    RolePermissionFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        resource:
-          type: string
-        permission:
-          type: string
-    GetRbacRolesResponseModel:
+    CommonResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/RbacRoleFields'
+    RbacRoleDetailResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        role:
+          $ref: '#/components/schemas/RbacRoleFields'
   securitySchemes:
     accessToken:
       type: apiKey

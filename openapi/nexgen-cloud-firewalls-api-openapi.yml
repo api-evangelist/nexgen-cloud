@@ -343,6 +343,88 @@ paths:
       - apiKey: []
 components:
   schemas:
+    Firewall_Attachment_VM_Model:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        flavor:
+          type: string
+        environment:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    FirewallDetailResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        firewall:
+          $ref: '#/components/schemas/FirewallDetailFields'
+    FirewallResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        firewall:
+          $ref: '#/components/schemas/FirewallFields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    SecurityGroupRuleFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        direction:
+          type: string
+        protocol:
+          type: string
+        port_range_min:
+          type: integer
+        port_range_max:
+          type: integer
+        ethertype:
+          type: string
+        remote_ip_prefix:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Firewall_Rule:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        firewall_rule:
+          $ref: '#/components/schemas/SecurityGroupRuleFields'
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
     FirewallDetailFields:
       type: object
       properties:
@@ -367,33 +449,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Firewall_Attachment_Model'
-    Firewall_Rule:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        firewall_rule:
-          $ref: '#/components/schemas/SecurityGroupRuleFields'
-    FirewallResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        firewall:
-          $ref: '#/components/schemas/FirewallFields'
-    FirewallDetailResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        firewall:
-          $ref: '#/components/schemas/FirewallDetailFields'
     FirewallsListResponse:
       type: object
       properties:
@@ -411,25 +466,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FirewallDetailFields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    FirewallEnvironmentFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        region:
-          type: string
     CreateFirewallPayload:
       required:
       - environment_id
@@ -445,79 +481,6 @@ components:
         environment_id:
           type: integer
           description: ID of the environment.
-    SecurityGroupRuleFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        direction:
-          type: string
-        protocol:
-          type: string
-        port_range_min:
-          type: integer
-        port_range_max:
-          type: integer
-        ethertype:
-          type: string
-        remote_ip_prefix:
-          type: string
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    Firewall_Attachment_Model:
-      type: object
-      properties:
-        id:
-          type: integer
-        status:
-          type: string
-        vm:
-          $ref: '#/components/schemas/Firewall_Attachment_VM_Model'
-        created_at:
-          type: string
-          format: date-time
-    FirewallFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        environment:
-          $ref: '#/components/schemas/FirewallEnvironmentFields'
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    Firewall_Attachment_VM_Model:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        flavor:
-          type: string
-        environment:
-          type: string
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
     Create_Firewall_Rule_Payload:
       required:
       - direction
@@ -572,6 +535,43 @@ components:
         remote_ip_prefix:
           type: string
           description: The IP address range that is allowed to access the specified port. Use "0.0.0.0/0" to allow any IP address.
+    FirewallEnvironmentFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        region:
+          type: string
+    Firewall_Attachment_Model:
+      type: object
+      properties:
+        id:
+          type: integer
+        status:
+          type: string
+        vm:
+          $ref: '#/components/schemas/Firewall_Attachment_VM_Model'
+        created_at:
+          type: string
+          format: date-time
+    FirewallFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        environment:
+          $ref: '#/components/schemas/FirewallEnvironmentFields'
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
   securitySchemes:
     accessToken:
       type: apiKey

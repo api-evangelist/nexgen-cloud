@@ -227,16 +227,6 @@ components:
           type: array
           items:
             type: integer
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     CompliancePayload:
       required:
       - base_value
@@ -285,6 +275,23 @@ components:
           type: integer
         variation_unit:
           type: integer
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
     CreateUpdateComplianceResponse:
       type: object
       properties:
@@ -294,13 +301,6 @@ components:
           type: string
         compliance:
           $ref: '#/components/schemas/ComplianceModelFields'
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

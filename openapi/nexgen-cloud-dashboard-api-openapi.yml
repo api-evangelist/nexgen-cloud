@@ -46,16 +46,30 @@ paths:
       - apiKey: []
 components:
   schemas:
-    Dashboard_Info_Response:
+    Container_Overview_Fields:
+      type: object
+      properties:
+        count:
+          type: integer
+        vcpus:
+          type: integer
+        gpus:
+          type: integer
+        ram:
+          type: integer
+        cost_per_hour:
+          type: number
+    ErrorResponseModel:
       type: object
       properties:
         status:
           type: boolean
+          default: false
         message:
           type: string
-        overview:
-          $ref: '#/components/schemas/Overview_Info'
-    Container_Overview_Fields:
+        error_reason:
+          type: string
+    Instance_Overview_Fields:
       type: object
       properties:
         count:
@@ -77,16 +91,6 @@ components:
           $ref: '#/components/schemas/Container_Overview_Fields'
         volume:
           $ref: '#/components/schemas/Volume_Overview_Fields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     Volume_Overview_Fields:
       type: object
       properties:
@@ -96,19 +100,15 @@ components:
           type: integer
         cost_per_hour:
           type: number
-    Instance_Overview_Fields:
+    Dashboard_Info_Response:
       type: object
       properties:
-        count:
-          type: integer
-        vcpus:
-          type: integer
-        gpus:
-          type: integer
-        ram:
-          type: integer
-        cost_per_hour:
-          type: number
+        status:
+          type: boolean
+        message:
+          type: string
+        overview:
+          $ref: '#/components/schemas/Overview_Info'
   securitySchemes:
     accessToken:
       type: apiKey

@@ -111,6 +111,52 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
+    EmailPreferencesResponse:
+      type: object
+      properties:
+        email_categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailCategory'
+    UpdateEmailPreferenceInput:
+      required:
+      - opted_in
+      type: object
+      properties:
+        opted_in:
+          type: boolean
+          description: Set opted_in status
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    EmailCategory:
+      type: object
+      properties:
+        slug:
+          type: string
+        display_name:
+          type: string
+        description:
+          type: string
+        required:
+          type: boolean
+        position:
+          type: integer
+        icon:
+          type: string
+        opted_in:
+          type: boolean
+        childs:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailCategoryChild'
     UpdateEmailPreferenceResponse:
       type: object
       properties:
@@ -135,52 +181,6 @@ components:
           type: string
         opted_in:
           type: boolean
-    UpdateEmailPreferenceInput:
-      required:
-      - opted_in
-      type: object
-      properties:
-        opted_in:
-          type: boolean
-          description: Set opted_in status
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    EmailPreferencesResponse:
-      type: object
-      properties:
-        email_categories:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailCategory'
-    EmailCategory:
-      type: object
-      properties:
-        slug:
-          type: string
-        display_name:
-          type: string
-        description:
-          type: string
-        required:
-          type: boolean
-        position:
-          type: integer
-        icon:
-          type: string
-        opted_in:
-          type: boolean
-        childs:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailCategoryChild'
   securitySchemes:
     accessToken:
       type: apiKey

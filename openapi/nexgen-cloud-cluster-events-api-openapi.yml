@@ -57,17 +57,16 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ClusterEvents:
+    ErrorResponseModel:
       type: object
       properties:
         status:
           type: boolean
+          default: false
         message:
           type: string
-        cluster_events:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterEventsFields'
+        error_reason:
+          type: string
     ClusterEventsFields:
       type: object
       properties:
@@ -90,16 +89,17 @@ components:
           type: string
         message:
           type: string
-    ErrorResponseModel:
+    ClusterEvents:
       type: object
       properties:
         status:
           type: boolean
-          default: false
         message:
           type: string
-        error_reason:
-          type: string
+        cluster_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterEventsFields'
   securitySchemes:
     accessToken:
       type: apiKey

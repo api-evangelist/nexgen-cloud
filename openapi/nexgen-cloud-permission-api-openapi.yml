@@ -46,6 +46,16 @@ paths:
       - apiKey: []
 components:
   schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     GetPermissionsResponseModel:
       type: object
       properties:
@@ -57,16 +67,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PermissionFields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     PermissionFields:
       type: object
       properties:

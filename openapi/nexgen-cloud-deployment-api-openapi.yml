@@ -179,24 +179,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    Deployment_Fields_for_start_deployments:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        template:
-          type: string
-        status:
-          type: string
-        variables:
-          type: string
-        created_at:
-          type: string
-          format: date-time
     Start_Deployment:
       type: object
       properties:
@@ -216,22 +198,6 @@ components:
           type: string
         error_reason:
           type: string
-    Deployment_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        template:
-          type: string
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
     Start_Deployment_Payload:
       required:
       - description
@@ -267,6 +233,40 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Deployment_Fields'
+    Deployment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Deployment_Fields_for_start_deployments:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        status:
+          type: string
+        variables:
+          type: string
+        created_at:
+          type: string
+          format: date-time
   securitySchemes:
     accessToken:
       type: apiKey

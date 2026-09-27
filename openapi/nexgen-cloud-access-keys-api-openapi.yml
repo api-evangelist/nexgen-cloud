@@ -105,6 +105,15 @@ paths:
           content: {}
 components:
   schemas:
+    object_storage__DeleteResponse:
+      title: DeleteResponse
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          title: Message
+          type: string
     object_storage__ErrorResponse:
       title: ErrorResponse
       required:
@@ -122,48 +131,6 @@ components:
           title: Status
           type: boolean
           default: false
-    object_storage__RegionsEnum:
-      title: RegionsEnum
-      type: string
-      enum:
-      - CANADA-1
-    object_storage__DeleteResponse:
-      title: DeleteResponse
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          title: Message
-          type: string
-    object_storage__AccessKeyResponse:
-      title: AccessKeyResponse
-      required:
-      - access_key
-      - created_at
-      - id
-      - region
-      - user_id
-      type: object
-      properties:
-        access_key:
-          title: Access Key
-          type: string
-        created_at:
-          title: Created At
-          type: string
-          format: date-time
-        description:
-          title: Description
-          type: object
-        id:
-          title: Id
-          type: integer
-        region:
-          $ref: '#/components/schemas/object_storage__RegionsEnum'
-        user_id:
-          title: User Id
-          type: integer
     object_storage__AccessKeyCreateRequest:
       title: AccessKeyCreateRequest
       required:
@@ -175,6 +142,11 @@ components:
           type: object
         region:
           $ref: '#/components/schemas/object_storage__RegionsEnum'
+    object_storage__RegionsEnum:
+      title: RegionsEnum
+      type: string
+      enum:
+      - CANADA-1
     object_storage__AccessKeyListResponse:
       title: AccessKeyListResponse
       required:
@@ -235,6 +207,34 @@ components:
         secret_key:
           title: Secret Key
           type: string
+        user_id:
+          title: User Id
+          type: integer
+    object_storage__AccessKeyResponse:
+      title: AccessKeyResponse
+      required:
+      - access_key
+      - created_at
+      - id
+      - region
+      - user_id
+      type: object
+      properties:
+        access_key:
+          title: Access Key
+          type: string
+        created_at:
+          title: Created At
+          type: string
+          format: date-time
+        description:
+          title: Description
+          type: object
+        id:
+          title: Id
+          type: integer
+        region:
+          $ref: '#/components/schemas/object_storage__RegionsEnum'
         user_id:
           title: User Id
           type: integer

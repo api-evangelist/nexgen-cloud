@@ -93,53 +93,6 @@ paths:
           content: {}
 components:
   schemas:
-    object_storage__ErrorResponse:
-      title: ErrorResponse
-      required:
-      - error_reason
-      - message
-      type: object
-      properties:
-        error_reason:
-          title: Error Reason
-          type: string
-        message:
-          title: Message
-          type: string
-        status:
-          title: Status
-          type: boolean
-          default: false
-    object_storage__RegionsEnum:
-      title: RegionsEnum
-      type: string
-      enum:
-      - CANADA-1
-    object_storage__DeleteResponse:
-      title: DeleteResponse
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          title: Message
-          type: string
-    object_storage__BucketListResponse:
-      title: BucketListResponse
-      required:
-      - buckets
-      type: object
-      properties:
-        buckets:
-          title: Buckets
-          type: array
-          items:
-            $ref: '#/components/schemas/object_storage__BucketResponse'
-        failed_regions:
-          title: Failed Regions
-          type: array
-          items:
-            type: string
     object_storage__BucketResponse:
       title: BucketResponse
       required:
@@ -176,6 +129,53 @@ components:
           title: Size Bytes Actual
           type: integer
           description: Size utilized in bytes
+    object_storage__DeleteResponse:
+      title: DeleteResponse
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          title: Message
+          type: string
+    object_storage__ErrorResponse:
+      title: ErrorResponse
+      required:
+      - error_reason
+      - message
+      type: object
+      properties:
+        error_reason:
+          title: Error Reason
+          type: string
+        message:
+          title: Message
+          type: string
+        status:
+          title: Status
+          type: boolean
+          default: false
+    object_storage__BucketListResponse:
+      title: BucketListResponse
+      required:
+      - buckets
+      type: object
+      properties:
+        buckets:
+          title: Buckets
+          type: array
+          items:
+            $ref: '#/components/schemas/object_storage__BucketResponse'
+        failed_regions:
+          title: Failed Regions
+          type: array
+          items:
+            type: string
+    object_storage__RegionsEnum:
+      title: RegionsEnum
+      type: string
+      enum:
+      - CANADA-1
   securitySchemes:
     accessToken:
       type: apiKey

@@ -52,6 +52,23 @@ paths:
                 $ref: '#/components/schemas/ErrorResponseModel'
 components:
   schemas:
+    UserConsentEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+        consent_id:
+          type: integer
+        user_id:
+          type: integer
+        action:
+          type: string
+        ip_address:
+          type: string
+        consent_method:
+          type: string
+        created_at:
+          type: string
     ErrorResponseModel:
       type: object
       properties:
@@ -62,6 +79,15 @@ components:
           type: string
         error_reason:
           type: string
+    ConsentEventsResponse:
+      type: object
+      properties:
+        consent:
+          $ref: '#/components/schemas/UserConsent'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserConsentEvent'
     UserConsent:
       type: object
       properties:
@@ -82,32 +108,6 @@ components:
         created_at:
           type: string
         updated_at:
-          type: string
-    ConsentEventsResponse:
-      type: object
-      properties:
-        consent:
-          $ref: '#/components/schemas/UserConsent'
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserConsentEvent'
-    UserConsentEvent:
-      type: object
-      properties:
-        id:
-          type: integer
-        consent_id:
-          type: integer
-        user_id:
-          type: integer
-        action:
-          type: string
-        ip_address:
-          type: string
-        consent_method:
-          type: string
-        created_at:
           type: string
   securitySchemes:
     accessToken:

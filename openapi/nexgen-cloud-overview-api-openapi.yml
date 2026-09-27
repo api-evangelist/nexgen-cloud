@@ -72,6 +72,19 @@ components:
           description: Indicates the result of the operation. Typically `"error"` for failed requests.
       title: ErrorSchema
       type: object
+    OrganizationSummaryResponse:
+      properties:
+        summary:
+          $ref: '#/components/schemas/OrganizationSummary'
+          description: Aggregated counts of the organization's models, datasets, and logs.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - summary
+      title: OrganizationSummaryResponse
+      type: object
     OrganizationSummary:
       properties:
         base_models_count:
@@ -92,19 +105,6 @@ components:
       - datasets_count
       - logs_count
       title: OrganizationSummary
-      type: object
-    OrganizationSummaryResponse:
-      properties:
-        summary:
-          $ref: '#/components/schemas/OrganizationSummary'
-          description: Aggregated counts of the organization's models, datasets, and logs.
-        status:
-          default: success
-          type: string
-          description: Indicates the result of the operation. Typically `"success"`.
-      required:
-      - summary
-      title: OrganizationSummaryResponse
       type: object
   securitySchemes:
     apiKey:

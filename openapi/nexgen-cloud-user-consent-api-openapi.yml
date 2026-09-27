@@ -184,13 +184,39 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    ConsentActionResponse:
+    ConsentBlock:
       type: object
       properties:
-        message:
+        type:
           type: string
-        consent:
-          $ref: '#/components/schemas/UserConsent'
+          description: Block display type
+          example: text
+          enum:
+          - text
+          - warning
+          - info
+          - success
+          - failure
+        text:
+          type: string
+          description: Block text, may contain ${variable} placeholders
+    ConsentTemplatesResponse:
+      type: object
+      properties:
+        templates:
+          type: object
+          properties: {}
+          description: Templates keyed by consent type
+    ConsentTemplate:
+      type: object
+      properties:
+        version:
+          type: string
+          description: Template version identifier
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentBlock'
     RecordConsentRequest:
       required:
       - action
@@ -223,22 +249,6 @@ components:
           type: object
           properties: {}
           description: Consent-type-specific metadata
-    ConsentBlock:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Block display type
-          example: text
-          enum:
-          - text
-          - warning
-          - info
-          - success
-          - failure
-        text:
-          type: string
-          description: Block text, may contain ${variable} placeholders
     ErrorResponseModel:
       type: object
       properties:
@@ -256,23 +266,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserConsent'
-    ConsentTemplate:
+    ConsentActionResponse:
       type: object
       properties:
-        version:
+        message:
           type: string
-          description: Template version identifier
-        blocks:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConsentBlock'
-    ConsentTemplatesResponse:
-      type: object
-      properties:
-        templates:
-          type: object
-          properties: {}
-          description: Templates keyed by consent type
+        consent:
+          $ref: '#/components/schemas/UserConsent'
     UserConsent:
       type: object
       properties:

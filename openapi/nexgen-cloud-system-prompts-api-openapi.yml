@@ -273,22 +273,6 @@ paths:
       - System Prompts
 components:
   schemas:
-    ErrorSchema:
-      properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
-          type: string
-          default: null
-          description: Human-readable description of the error.
-        status:
-          type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
-      type: object
     SystemPromptResponseSchema:
       description: Schema for system prompt response.
       properties:
@@ -328,6 +312,34 @@ components:
       - user_id
       - organization_id
       title: SystemPromptResponseSchema
+      type: object
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
+    SystemPromptsListSchema:
+      description: Schema for listing system prompts with pagination.
+      properties:
+        prompts:
+          description: List of system prompts.
+          items:
+            $ref: '#/components/schemas/SystemPromptResponseSchema'
+          type: array
+      required:
+      - prompts
+      title: SystemPromptsListSchema
       type: object
     SystemPromptUpdateSchema:
       description: Schema for updating an existing system prompt.
@@ -385,18 +397,6 @@ components:
           default: null
           description: Number of records deleted by the operation.
       title: SuccessSchema
-      type: object
-    SystemPromptsListSchema:
-      description: Schema for listing system prompts with pagination.
-      properties:
-        prompts:
-          description: List of system prompts.
-          items:
-            $ref: '#/components/schemas/SystemPromptResponseSchema'
-          type: array
-      required:
-      - prompts
-      title: SystemPromptsListSchema
       type: object
   securitySchemes:
     apiKey:

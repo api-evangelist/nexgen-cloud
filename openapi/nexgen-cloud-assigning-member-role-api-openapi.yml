@@ -109,31 +109,13 @@ paths:
       - apiKey: []
 components:
   schemas:
-    RolePolicyFields:
+    AssignRbacRolePayload:
+      required:
+      - role_id
       type: object
       properties:
-        id:
+        role_id:
           type: integer
-        name:
-          type: string
-        description:
-          type: string
-    CommonResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    RbacRoleDetailResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        role:
-          $ref: '#/components/schemas/RbacRoleFields'
     ErrorResponseModel:
       type: object
       properties:
@@ -143,6 +125,24 @@ components:
         message:
           type: string
         error_reason:
+          type: string
+    RolePolicyFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+    RolePermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
           type: string
     RbacRoleFields:
       type: object
@@ -164,22 +164,22 @@ components:
         created_at:
           type: string
           format: date-time
-    RolePermissionFields:
+    CommonResponseModel:
       type: object
       properties:
-        id:
-          type: integer
-        resource:
+        status:
+          type: boolean
+        message:
           type: string
-        permission:
-          type: string
-    AssignRbacRolePayload:
-      required:
-      - role_id
+    RbacRoleDetailResponseModel:
       type: object
       properties:
-        role_id:
-          type: integer
+        status:
+          type: boolean
+        message:
+          type: string
+        role:
+          $ref: '#/components/schemas/RbacRoleFields'
   securitySchemes:
     accessToken:
       type: apiKey

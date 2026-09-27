@@ -124,6 +124,79 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
+    RbacRoleField:
+      type: object
+      properties:
+        name:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    UpdateOrganizationPayload:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          minLength: 3
+          type: string
+          description: The new name for the organition
+    RemoveMemberPayload:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          maxLength: 64
+          type: string
+          description: The email of the user to be removed.
+    UpdateOrganizationResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    RemoveMemberFromOrganizationResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    OrganizationUserResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+        sub:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        rbac_roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RbacRoleField'
+        joined_at:
+          type: string
+          format: date-time
+        last_login:
+          type: string
+          format: date-time
     OrganizationFields:
       required:
       - id
@@ -162,79 +235,6 @@ components:
           type: string
         organization:
           $ref: '#/components/schemas/OrganizationFields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    UpdateOrganizationPayload:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          maxLength: 50
-          minLength: 3
-          type: string
-          description: The new name for the organition
-    RbacRoleField:
-      type: object
-      properties:
-        name:
-          type: string
-    OrganizationUserResponseModel:
-      type: object
-      properties:
-        id:
-          type: integer
-        sub:
-          type: string
-        email:
-          type: string
-        username:
-          type: string
-        name:
-          type: string
-        role:
-          type: string
-        rbac_roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/RbacRoleField'
-        joined_at:
-          type: string
-          format: date-time
-        last_login:
-          type: string
-          format: date-time
-    RemoveMemberFromOrganizationResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    RemoveMemberPayload:
-      required:
-      - email
-      type: object
-      properties:
-        email:
-          maxLength: 64
-          type: string
-          description: The email of the user to be removed.
-    UpdateOrganizationResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

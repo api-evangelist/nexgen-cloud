@@ -43,37 +43,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    New_Stock_Response:
-      type: object
-      properties:
-        region:
-          type: string
-        stock-type:
-          type: string
-        models:
-          type: array
-          items:
-            $ref: '#/components/schemas/New_Model_Response'
-    New_Stock_Retrive_Response:
-      type: object
-      properties:
-        stocks:
-          type: array
-          items:
-            $ref: '#/components/schemas/New_Stock_Response'
-    New_Configurations_Response:
-      type: object
-      properties:
-        1x:
-          type: integer
-        2x:
-          type: integer
-        4x:
-          type: integer
-        8x:
-          type: integer
-        10x:
-          type: integer
     ErrorResponseModel:
       type: object
       properties:
@@ -99,6 +68,37 @@ components:
           type: string
         configurations:
           $ref: '#/components/schemas/New_Configurations_Response'
+    New_Stock_Retrive_Response:
+      type: object
+      properties:
+        stocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/New_Stock_Response'
+    New_Stock_Response:
+      type: object
+      properties:
+        region:
+          type: string
+        stock-type:
+          type: string
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/New_Model_Response'
+    New_Configurations_Response:
+      type: object
+      properties:
+        1x:
+          type: integer
+        2x:
+          type: integer
+        4x:
+          type: integer
+        8x:
+          type: integer
+        10x:
+          type: integer
   securitySchemes:
     accessToken:
       type: apiKey

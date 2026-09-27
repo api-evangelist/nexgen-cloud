@@ -825,19 +825,6 @@ paths:
                 $ref: '#/components/schemas/ErrorSchema'
 components:
   schemas:
-    ConversationImageUploadResponseSchema:
-      properties:
-        file_reference:
-          type: string
-          description: A reference to the uploaded image. Include this in a message's `image_attachments` when calling [Send message](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/send-message).
-        signed_url:
-          type: string
-          description: A short-lived URL. Upload the image bytes to it with an HTTP PUT before sending the message.
-      required:
-      - signed_url
-      - file_reference
-      type: object
-      description: Presigned upload details for an image attachment.
     ErrorSchema:
       properties:
         code:
@@ -854,16 +841,19 @@ components:
           description: Indicates the result of the operation. Typically `"error"` for failed requests.
       title: ErrorSchema
       type: object
-    ConversationRenameSchema:
+    ConversationImageUploadResponseSchema:
       properties:
-        title:
-          maxLength: 255
+        file_reference:
           type: string
-          description: The new conversation title. Maximum 255 characters.
+          description: A reference to the uploaded image. Include this in a message's `image_attachments` when calling [Send message](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/send-message).
+        signed_url:
+          type: string
+          description: A short-lived URL. Upload the image bytes to it with an HTTP PUT before sending the message.
       required:
-      - title
+      - signed_url
+      - file_reference
       type: object
-      description: Request body for renaming a conversation.
+      description: Presigned upload details for an image attachment.
     ConversationSendMessageRequestSchema:
       properties:
         message:
@@ -920,6 +910,16 @@ components:
         message: What did I just say?
         conversation_id: 1001
         stream: false
+    ConversationRenameSchema:
+      properties:
+        title:
+          maxLength: 255
+          type: string
+          description: The new conversation title. Maximum 255 characters.
+      required:
+      - title
+      type: object
+      description: Request body for renaming a conversation.
   securitySchemes:
     apiKey:
       type: apiKey

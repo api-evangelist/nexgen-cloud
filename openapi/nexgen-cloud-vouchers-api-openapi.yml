@@ -63,31 +63,6 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    voucher:
-      required:
-      - code
-      - id
-      - status
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Voucher ID
-        code:
-          type: string
-          description: Voucher code
-        status:
-          type: string
-          description: Voucher status
-        redemption_count:
-          type: integer
-          description: Current redemption count for a General Voucher
-        max_redemption_count:
-          type: integer
-          description: Max redemption count for a General Voucher
-        remaining_redemptions:
-          type: integer
-          description: Remaining redemptions
     VoucherRedeemResponseSchema:
       required:
       - message
@@ -123,6 +98,31 @@ components:
         voucher_code:
           type: string
           description: The code of the voucher you want to redeem.
+    voucher:
+      required:
+      - code
+      - id
+      - status
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Voucher ID
+        code:
+          type: string
+          description: Voucher code
+        status:
+          type: string
+          description: Voucher status
+        redemption_count:
+          type: integer
+          description: Current redemption count for a General Voucher
+        max_redemption_count:
+          type: integer
+          description: Max redemption count for a General Voucher
+        remaining_redemptions:
+          type: integer
+          description: Remaining redemptions
   securitySchemes:
     accessToken:
       type: apiKey

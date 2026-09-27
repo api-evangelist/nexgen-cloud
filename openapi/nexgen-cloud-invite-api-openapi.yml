@@ -178,17 +178,16 @@ paths:
       - apiKey: []
 components:
   schemas:
-    InviteUserPayload:
-      required:
-      - email
+    ErrorResponseModel:
       type: object
       properties:
-        email:
-          maxLength: 254
-          minLength: 6
-          pattern: ^[A-Za-z0-9](?:[A-Za-z0-9._+-]{0,62}[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$
+        status:
+          type: boolean
+          default: false
+        message:
           type: string
-          description: The email for sending invitation.
+        error_reason:
+          type: string
     GetInvitesResponseModel:
       type: object
       properties:
@@ -200,32 +199,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InviteFields'
-    CommonResponseModel:
+    InviteUserPayload:
+      required:
+      - email
       type: object
       properties:
-        status:
-          type: boolean
-        message:
+        email:
+          maxLength: 254
+          minLength: 6
+          pattern: ^[A-Za-z0-9](?:[A-Za-z0-9._+-]{0,62}[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$
           type: string
-    InviteUserResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        invite:
-          $ref: '#/components/schemas/InviteFields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
+          description: The email for sending invitation.
     InviteFields:
       type: object
       properties:
@@ -238,6 +222,22 @@ components:
         created_at:
           type: string
           format: date-time
+    InviteUserResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        invite:
+          $ref: '#/components/schemas/InviteFields'
+    CommonResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

@@ -306,6 +306,21 @@ paths:
       - Base Models
 components:
   schemas:
+    BaseModelsResponseSchema:
+      properties:
+        models:
+          items:
+            $ref: '#/components/schemas/BaseModelInfoSchema'
+          type: array
+          description: List of available base model objects.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - models
+      title: BaseModelsResponseSchema
+      type: object
     ErrorSchema:
       properties:
         code:
@@ -321,21 +336,6 @@ components:
           default: null
           description: Indicates the result of the operation. Typically `"error"` for failed requests.
       title: ErrorSchema
-      type: object
-    BaseModelsResponseSchema:
-      properties:
-        models:
-          items:
-            $ref: '#/components/schemas/BaseModelInfoSchema'
-          type: array
-          description: List of available base model objects.
-        status:
-          default: success
-          type: string
-          description: Indicates the result of the operation. Typically `"success"`.
-      required:
-      - models
-      title: BaseModelsResponseSchema
       type: object
     BaseModelInfoSchema:
       properties:

@@ -177,6 +177,15 @@ paths:
       - apiKey: []
 components:
   schemas:
+    Create_Profile_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        profile:
+          $ref: '#/components/schemas/Profile_Fields'
     Profile_List_Response:
       type: object
       properties:
@@ -198,6 +207,13 @@ components:
           type: string
         error_reason:
           type: string
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
     Profile_Fields:
       type: object
       properties:
@@ -212,22 +228,6 @@ components:
         created_at:
           type: string
           format: date-time
-    Create_Profile_Response:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        profile:
-          $ref: '#/components/schemas/Profile_Fields'
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
     Create_Profile_Payload:
       required:
       - data

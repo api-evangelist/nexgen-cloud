@@ -182,15 +182,6 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    AddUserInfoSuccessResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        data:
-          $ref: '#/components/schemas/UsersInfoFields'
     User_info_post_payload:
       required:
       - business
@@ -273,6 +264,15 @@ components:
           format: date-time
         stripe_user_id:
           type: string
+    AddUserInfoSuccessResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/UsersInfoFields'
     UsersInfoListResponse:
       type: object
       properties:
