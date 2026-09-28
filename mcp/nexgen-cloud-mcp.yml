@@ -201,14 +201,26 @@ servers:
 tools_count: 5
 tools:
 - name: search_docs
-  description: ''
+  description: Search the Hyperstack documentation in natural language. Use this first for any question
+    about a Hyperstack product, feature, workflow, or API. Returns the best-matching passages, each with
+    its page title, breadcrumb, and the docs URL to ci
 - name: get_page
-  description: ''
+  description: Fetch the content of one documentation page as Markdown, by its docs URL or /docs/... path
+    (as returned by search_docs). Use it when the answer needs the complete parameter table, code example,
+    or step-by-step procedure rather than a passag
 - name: list_sections
-  description: ''
+  description: 'List the documentation table of contents: every page title with its URL, optionally narrowed
+    to one product area (vm, cluster, volume, networking, billing, ai_studio, hardware, api, ai_studio_api).
+    Use it to see what is documented, or to fi'
 - name: lookup_error
-  description: ''
+  description: Look up a Hyperstack API error by HTTP status code, error_reason value, or the error message
+    text, and get when it occurs, the fix, and a link to the reference. Use it when a user pastes an API
+    error or asks why a request failed.
 - name: get_flavor_info
-  description: ''
+  description: 'Get GPU flavor specifications (GPU model and count, CPUs, RAM, disks, regions, and supported
+    features) from a natural-language hardware question or a GPU model filter. Use it before recommending
+    hardware. It documents specifications only: i'
 tools_source: live tools/list via initialize handshake, 2026-09-11 (signals/audit_mcp_authorship.py --probe)
 authorship: provider
+descriptions_source: live tools/list (authorship probe or saved capture); filled by backfill-tools-from-authorship.py
+  --descriptions, 2026-09-28
