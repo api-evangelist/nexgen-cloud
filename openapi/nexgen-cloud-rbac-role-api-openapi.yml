@@ -227,27 +227,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    GetRbacRolesResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/RbacRoleFields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     RolePolicyFields:
       type: object
       properties:
@@ -257,35 +236,13 @@ components:
           type: string
         description:
           type: string
-    RolePermissionFields:
+    CommonResponseModel:
       type: object
       properties:
-        id:
-          type: integer
-        resource:
+        status:
+          type: boolean
+        message:
           type: string
-        permission:
-          type: string
-    RbacRoleFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        policies:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePolicyFields'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePermissionFields'
-        created_at:
-          type: string
-          format: date-time
     CreateUpdateRbacRolePayload:
       required:
       - description
@@ -309,13 +266,17 @@ components:
           items:
             type: integer
             description: List of permission IDs.
-    CommonResponseModel:
+    GetRbacRolesResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RbacRoleFields'
     RbacRoleDetailResponseModel:
       type: object
       properties:
@@ -325,6 +286,45 @@ components:
           type: string
         role:
           $ref: '#/components/schemas/RbacRoleFields'
+    RbacRoleFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolePolicyFields'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolePermissionFields'
+        created_at:
+          type: string
+          format: date-time
+    RolePermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

@@ -116,16 +116,6 @@ components:
           type: string
         url:
           type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     VNC_URL:
       type: object
       properties:
@@ -141,6 +131,16 @@ components:
         id:
           type: integer
         vnc_url:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
           type: string
   securitySchemes:
     accessToken:

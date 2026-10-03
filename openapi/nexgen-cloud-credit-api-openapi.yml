@@ -56,16 +56,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     Get_credit_and_threshold_info_in_response:
       type: object
       properties:
@@ -84,6 +74,16 @@ components:
           type: number
         can_create_instance:
           type: boolean
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

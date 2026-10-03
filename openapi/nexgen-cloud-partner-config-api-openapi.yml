@@ -79,27 +79,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    Logos:
-      type: object
-      properties:
-        light:
-          type: string
-        dark:
-          type: string
-        email:
-          type: string
-        favicon:
-          type: string
     URIs:
       type: object
       properties:
@@ -117,6 +96,13 @@ components:
           type: string
         contact_us:
           type: string
+    Colors:
+      type: object
+      properties:
+        primary:
+          $ref: '#/components/schemas/PrimaryColor'
+        secondary:
+          $ref: '#/components/schemas/SecondaryColor'
     PartnerConfig:
       required:
       - name
@@ -144,13 +130,27 @@ components:
           type: string
         dark:
           type: string
-    Colors:
+    Logos:
       type: object
       properties:
-        primary:
-          $ref: '#/components/schemas/PrimaryColor'
-        secondary:
-          $ref: '#/components/schemas/SecondaryColor'
+        light:
+          type: string
+        dark:
+          type: string
+        email:
+          type: string
+        favicon:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     PrimaryColor:
       type: object
       properties:

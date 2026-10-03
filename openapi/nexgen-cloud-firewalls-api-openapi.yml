@@ -368,119 +368,6 @@ components:
           type: string
         firewall:
           $ref: '#/components/schemas/FirewallDetailFields'
-    FirewallResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        firewall:
-          $ref: '#/components/schemas/FirewallFields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    SecurityGroupRuleFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        direction:
-          type: string
-        protocol:
-          type: string
-        port_range_min:
-          type: integer
-        port_range_max:
-          type: integer
-        ethertype:
-          type: string
-        remote_ip_prefix:
-          type: string
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    Firewall_Rule:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        firewall_rule:
-          $ref: '#/components/schemas/SecurityGroupRuleFields'
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    FirewallDetailFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        environment:
-          $ref: '#/components/schemas/FirewallEnvironmentFields'
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        rules:
-          type: array
-          items:
-            $ref: '#/components/schemas/SecurityGroupRuleFields'
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Firewall_Attachment_Model'
-    FirewallsListResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        page:
-          type: integer
-        page_size:
-          type: integer
-        count:
-          type: integer
-        firewalls:
-          type: array
-          items:
-            $ref: '#/components/schemas/FirewallDetailFields'
-    CreateFirewallPayload:
-      required:
-      - environment_id
-      - name
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the firewall.
-        description:
-          type: string
-          description: Description of the firewall.
-        environment_id:
-          type: integer
-          description: ID of the environment.
     Create_Firewall_Rule_Payload:
       required:
       - direction
@@ -535,6 +422,45 @@ components:
         remote_ip_prefix:
           type: string
           description: The IP address range that is allowed to access the specified port. Use "0.0.0.0/0" to allow any IP address.
+    CreateFirewallPayload:
+      required:
+      - environment_id
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the firewall.
+        description:
+          type: string
+          description: Description of the firewall.
+        environment_id:
+          type: integer
+          description: ID of the environment.
+    FirewallDetailFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        environment:
+          $ref: '#/components/schemas/FirewallEnvironmentFields'
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityGroupRuleFields'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Firewall_Attachment_Model'
     FirewallEnvironmentFields:
       type: object
       properties:
@@ -556,6 +482,15 @@ components:
         created_at:
           type: string
           format: date-time
+    Firewall_Rule:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        firewall_rule:
+          $ref: '#/components/schemas/SecurityGroupRuleFields'
     FirewallFields:
       type: object
       properties:
@@ -572,6 +507,71 @@ components:
         created_at:
           type: string
           format: date-time
+    FirewallResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        firewall:
+          $ref: '#/components/schemas/FirewallFields'
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    SecurityGroupRuleFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        direction:
+          type: string
+        protocol:
+          type: string
+        port_range_min:
+          type: integer
+        port_range_max:
+          type: integer
+        ethertype:
+          type: string
+        remote_ip_prefix:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    FirewallsListResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        page:
+          type: integer
+        page_size:
+          type: integer
+        count:
+          type: integer
+        firewalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/FirewallDetailFields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

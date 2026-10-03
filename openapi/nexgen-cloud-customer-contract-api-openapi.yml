@@ -169,15 +169,13 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ContractGPUAllocationGraphResponse:
+    AllocatedGPUCountGraph:
       type: object
       properties:
-        status:
-          type: boolean
-        message:
+        datetime:
           type: string
-        contract:
-          $ref: '#/components/schemas/Contract'
+        value:
+          type: integer
     ContractDiscountPlanFields:
       type: object
       properties:
@@ -201,16 +199,15 @@ components:
           type: string
         remaining_count:
           type: integer
-    ErrorResponseModel:
+    CustomerContractDetailResponseModel:
       type: object
       properties:
         status:
           type: boolean
-          default: false
         message:
           type: string
-        error_reason:
-          type: string
+        contracts:
+          $ref: '#/components/schemas/CustomerContractFields'
     GetCustomerContractsListResponseModel:
       type: object
       properties:
@@ -224,23 +221,15 @@ components:
             $ref: '#/components/schemas/CustomerContractFields'
         count:
           type: integer
-    Contract:
+    ContractGPUAllocationGraphResponse:
       type: object
       properties:
-        id:
-          type: string
-        org_id:
-          type: integer
         status:
+          type: boolean
+        message:
           type: string
-        granularity:
-          type: integer
-        total_gpu_allocation:
-          type: integer
-        allocated_gpu_count_graph:
-          type: array
-          items:
-            $ref: '#/components/schemas/AllocatedGPUCountGraph'
+        contract:
+          $ref: '#/components/schemas/Contract'
     CustomerContractFields:
       type: object
       properties:
@@ -267,22 +256,33 @@ components:
         created_at:
           type: string
           format: date-time
-    AllocatedGPUCountGraph:
+    Contract:
       type: object
       properties:
-        datetime:
+        id:
           type: string
-        value:
+        org_id:
           type: integer
-    CustomerContractDetailResponseModel:
+        status:
+          type: string
+        granularity:
+          type: integer
+        total_gpu_allocation:
+          type: integer
+        allocated_gpu_count_graph:
+          type: array
+          items:
+            $ref: '#/components/schemas/AllocatedGPUCountGraph'
+    ErrorResponseModel:
       type: object
       properties:
         status:
           type: boolean
+          default: false
         message:
           type: string
-        contracts:
-          $ref: '#/components/schemas/CustomerContractFields'
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

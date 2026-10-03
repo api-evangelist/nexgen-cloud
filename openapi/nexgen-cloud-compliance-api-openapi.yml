@@ -210,23 +210,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ComplianceFields:
-      type: object
-      properties:
-        gpu_model:
-          type: string
-        cpu:
-          type: array
-          items:
-            type: integer
-        ram:
-          type: array
-          items:
-            type: integer
-        hdd:
-          type: array
-          items:
-            type: integer
     CompliancePayload:
       required:
       - base_value
@@ -258,6 +241,32 @@ components:
           type: string
         compliance:
           $ref: '#/components/schemas/ComplianceFields'
+    CreateUpdateComplianceResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        compliance:
+          $ref: '#/components/schemas/ComplianceModelFields'
+    ComplianceFields:
+      type: object
+      properties:
+        gpu_model:
+          type: string
+        cpu:
+          type: array
+          items:
+            type: integer
+        ram:
+          type: array
+          items:
+            type: integer
+        hdd:
+          type: array
+          items:
+            type: integer
     ComplianceModelFields:
       type: object
       properties:
@@ -275,6 +284,13 @@ components:
           type: integer
         variation_unit:
           type: integer
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
     ErrorResponseModel:
       type: object
       properties:
@@ -285,22 +301,6 @@ components:
           type: string
         error_reason:
           type: string
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    CreateUpdateComplianceResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        compliance:
-          $ref: '#/components/schemas/ComplianceModelFields'
   securitySchemes:
     accessToken:
       type: apiKey

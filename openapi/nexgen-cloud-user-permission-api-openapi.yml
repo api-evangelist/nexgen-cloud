@@ -90,6 +90,17 @@ paths:
       - apiKey: []
 components:
   schemas:
+    GetUserPermissionsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPermissionFields'
     UserPermissionFields:
       type: object
       properties:
@@ -109,17 +120,6 @@ components:
           type: string
         error_reason:
           type: string
-    GetUserPermissionsResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserPermissionFields'
   securitySchemes:
     accessToken:
       type: apiKey

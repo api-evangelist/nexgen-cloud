@@ -177,57 +177,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    Create_Profile_Response:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        profile:
-          $ref: '#/components/schemas/Profile_Fields'
-    Profile_List_Response:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        profiles:
-          type: array
-          items:
-            $ref: '#/components/schemas/Profile_Fields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    Profile_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        data:
-          type: string
-        created_at:
-          type: string
-          format: date-time
     Create_Profile_Payload:
       required:
       - data
@@ -247,6 +196,57 @@ components:
           additionalProperties:
             type: string
           description: The data object containing the configuration details of the virtual machine profile being created.
+    Profile_List_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Profile_Fields'
+    Profile_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        data:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    Create_Profile_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        profile:
+          $ref: '#/components/schemas/Profile_Fields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

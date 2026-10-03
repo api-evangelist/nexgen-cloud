@@ -825,22 +825,6 @@ paths:
                 $ref: '#/components/schemas/ErrorSchema'
 components:
   schemas:
-    ErrorSchema:
-      properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
-          type: string
-          default: null
-          description: Human-readable description of the error.
-        status:
-          type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
-      type: object
     ConversationImageUploadResponseSchema:
       properties:
         file_reference:
@@ -854,6 +838,16 @@ components:
       - file_reference
       type: object
       description: Presigned upload details for an image attachment.
+    ConversationRenameSchema:
+      properties:
+        title:
+          maxLength: 255
+          type: string
+          description: The new conversation title. Maximum 255 characters.
+      required:
+      - title
+      type: object
+      description: Request body for renaming a conversation.
     ConversationSendMessageRequestSchema:
       properties:
         message:
@@ -910,16 +904,22 @@ components:
         message: What did I just say?
         conversation_id: 1001
         stream: false
-    ConversationRenameSchema:
+    ErrorSchema:
       properties:
-        title:
-          maxLength: 255
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
           type: string
-          description: The new conversation title. Maximum 255 characters.
-      required:
-      - title
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
       type: object
-      description: Request body for renaming a conversation.
   securitySchemes:
     apiKey:
       type: apiKey

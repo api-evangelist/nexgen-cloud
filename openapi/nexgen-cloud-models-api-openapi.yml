@@ -139,6 +139,30 @@ paths:
       - Models
 components:
   schemas:
+    OpenAIModelSchema:
+      description: Schema for individual model in OpenAI format.
+      properties:
+        created:
+          type: integer
+          description: Unix timestamp indicating when the model was created.
+        id:
+          type: string
+          description: Identifier of the model, used as the `model` value in inference requests.
+        owned_by:
+          type: string
+          description: Identifier of the owner of the model.
+        object:
+          default: model
+          enum:
+          - model
+          type: string
+          description: Object type, always `"model"`.
+      required:
+      - id
+      - created
+      - owned_by
+      title: OpenAIModelSchema
+      type: object
     ErrorSchema:
       properties:
         code:
@@ -173,6 +197,34 @@ components:
       - data
       title: OpenAIModelsListResponseSchema
       type: object
+    GetModelsChoicesResponseSchema:
+      properties:
+        models:
+          items:
+            $ref: '#/components/schemas/ModelOptionSchema'
+          type: array
+          description: List of model objects available for inference selection.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - models
+      title: GetModelsChoicesResponseSchema
+      type: object
+    ModalityEnum:
+      type: string
+      enum:
+      - text-to-text
+      - text-to-image
+      - image-to-image
+      - image-to-text
+      title: ModalityEnum
+      x-enumDescriptions:
+        '`text-to-text`': Returns models that generate text from a text prompt ([text-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-text-models)).
+        '`text-to-image`': Returns models that generate images from a text prompt ([text-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-image-models)).
+        '`image-to-image`': Returns models that generate images from a source image and a text prompt ([image-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-image-models)).
+        '`image-to-text`': Returns models that generate text from an image and a text prompt ([image-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-text-models)).
     ModelOptionSchema:
       properties:
         display_name:
@@ -224,58 +276,6 @@ components:
       - display_name
       - is_finetuned_model
       title: ModelOptionSchema
-      type: object
-    GetModelsChoicesResponseSchema:
-      properties:
-        models:
-          items:
-            $ref: '#/components/schemas/ModelOptionSchema'
-          type: array
-          description: List of model objects available for inference selection.
-        status:
-          default: success
-          type: string
-          description: Indicates the result of the operation. Typically `"success"`.
-      required:
-      - models
-      title: GetModelsChoicesResponseSchema
-      type: object
-    ModalityEnum:
-      type: string
-      enum:
-      - text-to-text
-      - text-to-image
-      - image-to-image
-      - image-to-text
-      title: ModalityEnum
-      x-enumDescriptions:
-        '`text-to-text`': Returns models that generate text from a text prompt ([text-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-text-models)).
-        '`text-to-image`': Returns models that generate images from a text prompt ([text-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-image-models)).
-        '`image-to-image`': Returns models that generate images from a source image and a text prompt ([image-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-image-models)).
-        '`image-to-text`': Returns models that generate text from an image and a text prompt ([image-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-text-models)).
-    OpenAIModelSchema:
-      description: Schema for individual model in OpenAI format.
-      properties:
-        created:
-          type: integer
-          description: Unix timestamp indicating when the model was created.
-        id:
-          type: string
-          description: Identifier of the model, used as the `model` value in inference requests.
-        owned_by:
-          type: string
-          description: Identifier of the owner of the model.
-        object:
-          default: model
-          enum:
-          - model
-          type: string
-          description: Object type, always `"model"`.
-      required:
-      - id
-      - created
-      - owned_by
-      title: OpenAIModelSchema
       type: object
   securitySchemes:
     apiKey:

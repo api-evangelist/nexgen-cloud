@@ -306,13 +306,18 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    Attach_Callback_Response:
+    ResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
+    Attach_Callback_Payload:
+      required:
+      - url
+      type: object
+      properties:
         url:
           type: string
     ErrorResponseModel:
@@ -325,19 +330,14 @@ components:
           type: string
         error_reason:
           type: string
-    Attach_Callback_Payload:
-      required:
-      - url
-      type: object
-      properties:
-        url:
-          type: string
-    ResponseModel:
+    Attach_Callback_Response:
       type: object
       properties:
         status:
           type: boolean
         message:
+          type: string
+        url:
           type: string
   securitySchemes:
     accessToken:

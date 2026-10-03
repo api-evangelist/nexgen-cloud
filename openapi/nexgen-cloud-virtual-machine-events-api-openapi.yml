@@ -58,16 +58,17 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ErrorResponseModel:
+    InstanceEvents:
       type: object
       properties:
         status:
           type: boolean
-          default: false
         message:
           type: string
-        error_reason:
-          type: string
+        instance_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstanceEventsFields'
     InstanceEventsFields:
       type: object
       properties:
@@ -88,17 +89,16 @@ components:
           type: string
         message:
           type: string
-    InstanceEvents:
+    ErrorResponseModel:
       type: object
       properties:
         status:
           type: boolean
+          default: false
         message:
           type: string
-        instance_events:
-          type: array
-          items:
-            $ref: '#/components/schemas/InstanceEventsFields'
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

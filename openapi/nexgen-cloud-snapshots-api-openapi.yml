@@ -292,169 +292,6 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    Instance:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        instance:
-          $ref: '#/components/schemas/Instance_Fields'
-    SnapshotFields:
-      required:
-      - created_at
-      - description
-      - id
-      - is_image
-      - name
-      - region_id
-      - size
-      - status
-      - updated_at
-      - vm_id
-      type: object
-      properties:
-        id:
-          type: integer
-          description: Snapshot ID
-        name:
-          type: string
-          description: Snapshot name
-        description:
-          type: string
-          description: Description of the snapshot
-        vm_id:
-          type: integer
-          description: ID of the VM from which the snapshot is created
-        region_id:
-          type: integer
-          description: Region where the snapshot will be available
-        status:
-          type: string
-          description: Status of the snapshot
-        is_image:
-          type: boolean
-          description: Indicates if the snapshot is an image
-        size:
-          type: integer
-          description: Size in GB of the snapshot
-        has_floating_ip:
-          type: boolean
-          description: Indicates if the VM had a floating IP assigned
-        labels:
-          type: array
-          description: Labels associated with snapshot
-          items:
-            type: string
-            description: ''
-        created_at:
-          type: string
-          description: Creation timestamp
-          format: date-time
-        updated_at:
-          type: string
-          description: Last update timestamp
-          format: date-time
-    Instance_Enhanced_Metrics_Fields:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-    FlavorLabelFields:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: ''
-        label:
-          type: string
-          description: ''
-    CreateImagePayload:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name for the new custom image
-        labels:
-          type: array
-          description: List of labels to attach to the image
-          items:
-            type: string
-            description: ''
-    SnapshotRestoreRequest:
-      required:
-      - new_vm_name
-      type: object
-      properties:
-        new_vm_name:
-          type: string
-          description: The name of the newly restored VM
-        contract_id:
-          type: integer
-          description: Contract ID to assign to the newly restored VM
-    Instance_Keypair_Fields:
-      type: object
-      properties:
-        name:
-          type: string
-    Security_Rules_Fields_for_Instance:
-      type: object
-      properties:
-        id:
-          type: integer
-        direction:
-          type: string
-        protocol:
-          type: string
-        port_range_min:
-          type: integer
-        port_range_max:
-          type: integer
-        ethertype:
-          type: string
-        remote_ip_prefix:
-          type: string
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    Instance_Flavor_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        cpu:
-          type: integer
-        ram:
-          type: integer
-        disk:
-          type: integer
-        ephemeral:
-          type: integer
-        gpu:
-          type: string
-        gpu_count:
-          type: integer
-        labels:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlavorLabelFields'
-        features:
-          type: object
-          properties: {}
     SnapshotRetrieveFields:
       required:
       - created_at
@@ -537,33 +374,76 @@ components:
         custom_image:
           type: string
           description: ''
-    Instance_Environment_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        org_id:
-          type: integer
-        region:
-          type: string
-        features:
-          $ref: '#/components/schemas/Environment_Features'
     Instance_Image_Fields:
       type: object
       properties:
         name:
           type: string
-    NameAvailableModel:
+    Snapshots:
       type: object
       properties:
-        name:
-          type: string
-        available:
+        status:
           type: boolean
         message:
           type: string
+        snapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/SnapshotFields'
+        count:
+          type: integer
+        page:
+          type: integer
+        page_size:
+          type: integer
+    Environment_Features:
+      type: object
+      properties:
+        network_optimised:
+          type: boolean
+        green_status:
+          type: string
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
+    SnapshotRetrieve:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        snapshot:
+          $ref: '#/components/schemas/SnapshotRetrieveFields'
+    Instance:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        instance:
+          $ref: '#/components/schemas/Instance_Fields'
+    Create_Image:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        id:
+          type: integer
+    FlavorLabelFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+        label:
+          type: string
+          description: ''
     Volume_Fields_for_Instance:
       type: object
       properties:
@@ -579,6 +459,77 @@ components:
           type: boolean
         size:
           type: integer
+    SnapshotRestoreRequest:
+      required:
+      - new_vm_name
+      type: object
+      properties:
+        new_vm_name:
+          type: string
+          description: The name of the newly restored VM
+        contract_id:
+          type: integer
+          description: Contract ID to assign to the newly restored VM
+    Volume_Attachment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        volume:
+          $ref: '#/components/schemas/Volume_Fields_for_Instance'
+        status:
+          type: string
+        device:
+          type: string
+        protected:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    Instance_Environment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        org_id:
+          type: integer
+        region:
+          type: string
+        features:
+          $ref: '#/components/schemas/Environment_Features'
+    Instance_Keypair_Fields:
+      type: object
+      properties:
+        name:
+          type: string
+    Instance_Flavor_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        cpu:
+          type: integer
+        ram:
+          type: integer
+        disk:
+          type: integer
+        ephemeral:
+          type: integer
+        gpu:
+          type: string
+        gpu_count:
+          type: integer
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlavorLabelFields'
+        features:
+          type: object
+          properties: {}
     Instance_Fields:
       type: object
       properties:
@@ -640,15 +591,118 @@ components:
           type: boolean
         enhanced_metrics:
           $ref: '#/components/schemas/Instance_Enhanced_Metrics_Fields'
-    Create_Image:
+    Security_Rules_Fields_for_Instance:
+      type: object
+      properties:
+        id:
+          type: integer
+        direction:
+          type: string
+        protocol:
+          type: string
+        port_range_min:
+          type: integer
+        port_range_max:
+          type: integer
+        ethertype:
+          type: string
+        remote_ip_prefix:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Instance_Enhanced_Metrics_Fields:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    CreateImagePayload:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name for the new custom image
+        labels:
+          type: array
+          description: List of labels to attach to the image
+          items:
+            type: string
+            description: ''
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    SnapshotFields:
+      required:
+      - created_at
+      - description
+      - id
+      - is_image
+      - name
+      - region_id
+      - size
+      - status
+      - updated_at
+      - vm_id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Snapshot ID
+        name:
+          type: string
+          description: Snapshot name
+        description:
+          type: string
+          description: Description of the snapshot
+        vm_id:
+          type: integer
+          description: ID of the VM from which the snapshot is created
+        region_id:
+          type: integer
+          description: Region where the snapshot will be available
+        status:
+          type: string
+          description: Status of the snapshot
+        is_image:
+          type: boolean
+          description: Indicates if the snapshot is an image
+        size:
+          type: integer
+          description: Size in GB of the snapshot
+        has_floating_ip:
+          type: boolean
+          description: Indicates if the VM had a floating IP assigned
+        labels:
+          type: array
+          description: Labels associated with snapshot
+          items:
+            type: string
+            description: ''
+        created_at:
+          type: string
+          description: Creation timestamp
+          format: date-time
+        updated_at:
+          type: string
+          description: Last update timestamp
+          format: date-time
+    ResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        id:
-          type: integer
     ErrorResponseModel:
       type: object
       properties:
@@ -659,60 +713,6 @@ components:
           type: string
         error_reason:
           type: string
-    Environment_Features:
-      type: object
-      properties:
-        network_optimised:
-          type: boolean
-        green_status:
-          type: string
-          example: GREEN
-          enum:
-          - GREEN
-          - PARTIALLY_GREEN
-          - NOT_GREEN
-    Snapshots:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        snapshots:
-          type: array
-          items:
-            $ref: '#/components/schemas/SnapshotFields'
-        count:
-          type: integer
-        page:
-          type: integer
-        page_size:
-          type: integer
-    SnapshotRetrieve:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        snapshot:
-          $ref: '#/components/schemas/SnapshotRetrieveFields'
-    Volume_Attachment_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        volume:
-          $ref: '#/components/schemas/Volume_Fields_for_Instance'
-        status:
-          type: string
-        device:
-          type: string
-        protected:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
   securitySchemes:
     accessToken:
       type: apiKey

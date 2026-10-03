@@ -2414,15 +2414,189 @@ paths:
       - apiKey: []
 components:
   schemas:
-    OrganizationLevelBillingHistoryResponseModel:
+    ResourceLevelBillingDetailsAttributes:
+      type: object
+      properties:
+        id:
+          type: string
+        infrahub_id:
+          type: integer
+        resource_name:
+          type: string
+    Organization_threshold_update_response:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
+        threshold:
+          $ref: '#/components/schemas/Organization_Threshold_fields'
+    pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: ''
+        per_page:
+          type: integer
+          description: ''
+        pages:
+          type: integer
+          description: ''
+    ResourceLevelBillingHistoryResponseMetrics:
+      type: object
+      properties:
+        incurred_bill:
+          type: number
+        price_per_hour:
+          type: number
+        usage_time:
+          type: number
+    ResourceLevelVmGraphBillingDetailsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_history_vm_details:
+          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailsVM'
+    ResourceLevelVolumeGraphBillingDetailsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_history_snapshot_details:
+          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailVolume'
+    ModelEvaluationBillingHistoryDetailsResponseSchema:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        billing_history_model_evalutation_details:
+          $ref: '#/components/schemas/billing_history_model_evalutation_details'
+    attributes:
+      type: object
+      properties:
+        infrahub_id:
+          type: integer
+          description: ''
+        resource_name:
+          type: string
+          description: ''
+        status:
+          type: string
+          description: ''
+        base_model:
+          type: string
+          description: ''
+        base_model_display_name:
+          type: string
+          description: ''
+        lora_adapter:
+          type: string
+          description: ''
+    ResourceLevelClusterGraphBillingDetailsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_history_cluster_details:
+          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailVolume'
+    billing_history_serverless_inference:
+      type: object
+      properties:
+        org_id:
+          type: integer
+          description: ''
+        total_count:
+          type: integer
+          description: ''
+        pagination:
+          $ref: '#/components/schemas/pagination'
         billing_history:
-          $ref: '#/components/schemas/OrganizationLevelBillingHistory'
+          type: array
+          description: ''
+          items:
+            $ref: '#/components/schemas/billing_history'
+    DataSynthesisBillingHistoryDetailsResponseSchema:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        billing_history_data_synthesis_details:
+          $ref: '#/components/schemas/billing_history_data_synthesis_details'
+    ResourceLevelBucketBillingHistoryResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_history_bucket:
+          $ref: '#/components/schemas/ResourceLevelBillingHistory'
+    billing_history_model_evalutation_details:
+      type: object
+      properties:
+        org_id:
+          type: integer
+          description: ''
+        total_count:
+          type: integer
+          description: ''
+        pagination:
+          $ref: '#/components/schemas/pagination'
+        billing_history:
+          type: array
+          description: ''
+          items:
+            $ref: '#/components/schemas/billing_history'
+    ResourceLevelBillingHistoryResourcesCluster:
+      type: object
+      properties:
+        attributes:
+          $ref: '#/components/schemas/ResourceLevelBillingHistoryResponseAttributes'
+        metrics:
+          $ref: '#/components/schemas/ResourceLevelBillingHistoryResponseMetrics'
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceLevelBillingHistoryResources'
+    TokenBasedBillingHistoryResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        billing_history_serverless_inference:
+          $ref: '#/components/schemas/billing_history_serverless_inference'
+    ServerlessInferencedBillingHistoryDetailsResponseSchema:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        billing_history_serverless_inference_details:
+          $ref: '#/components/schemas/billing_history_serverless_inference_details'
     ResourceLevelBillingDetailsVolumeMetrics:
       type: object
       properties:
@@ -2436,13 +2610,51 @@ components:
           type: number
         non_discounted_bill:
           type: number
-    ResourceLevelBillingHistoryResources:
+    ResourceLevelVMBillingDetailsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_history_vm_details:
+          $ref: '#/components/schemas/ResourceLevelBillingDetailsVM'
+    GraphDatetimeValueModel:
+      type: object
+      properties:
+        datetime:
+          type: string
+        value:
+          type: number
+    Organization_thresholds_response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        thresholds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization_Threshold_fields'
+    Last_day_cost_fields:
+      type: object
+      properties:
+        instances_cost:
+          type: number
+        volumes_cost:
+          type: number
+        clusters_cost:
+          type: number
+        total_cost:
+          type: number
+    ResourceLevelBillingBucketDetailsResources:
       type: object
       properties:
         attributes:
-          $ref: '#/components/schemas/ResourceLevelBillingHistoryResponseAttributes'
+          $ref: '#/components/schemas/ResourceLevelBillingDetailsAttributes'
         metrics:
-          $ref: '#/components/schemas/ResourceLevelBillingHistoryResponseMetrics'
+          $ref: '#/components/schemas/ResourceLevelBillingDetailsMetrics'
     billing_history_image_generation_details:
       type: object
       properties:
@@ -2459,6 +2671,394 @@ components:
           description: ''
           items:
             $ref: '#/components/schemas/billing_history'
+    SubResourcesGraphBillingHistoryFields:
+      type: object
+      properties:
+        attributes:
+          $ref: '#/components/schemas/ResourceLevelBillingDetailsAttributes'
+        metrics:
+          $ref: '#/components/schemas/SubResourceGraphBillingDetailsMetrics'
+    ResourceLevelGraphBillingVMDetailsResources:
+      type: object
+      properties:
+        attributes:
+          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailsAttributes'
+        metrics:
+          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailsMetrics'
+    ResourceLevelBillingVolumeDetailsResources:
+      type: object
+      properties:
+        attributes:
+          $ref: '#/components/schemas/ResourceLevelBillingDetailsVolumeAttributes'
+        metrics:
+          $ref: '#/components/schemas/ResourceLevelBillingDetailsVolumeMetrics'
+    Organization_Threshold_fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        threshold:
+          type: integer
+        interface_title:
+          type: string
+        interface_tooltip:
+          type: string
+        subscribed:
+          type: boolean
+    ResourceBillingEventsHistoryResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_events_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceBillingEventsHistoryMetrics'
+    billing_history_fine_tuning:
+      type: object
+      properties:
+        org_id:
+          type: integer
+          description: ''
+        total_count:
+          type: integer
+          description: ''
+        pagination:
+          $ref: '#/components/schemas/pagination'
+        billing_history:
+          type: array
+          description: ''
+          items:
+            $ref: '#/components/schemas/billing_history'
+    OrganizationLevelBillingHistory:
+      type: object
+      properties:
+        org_id:
+          type: integer
+        billing_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationLevelBillingHistoryResources'
+        total_count:
+          type: integer
+    OrganizationLevelBillingHistoryResponseMetrics:
+      type: object
+      properties:
+        incurred_bill:
+          type: number
+        non_discounted_bill:
+          type: number
+        vm_cost:
+          type: number
+        volume_cost:
+          type: number
+        contract_cost:
+          type: number
+        snapshot_cost:
+          type: number
+    ResourceLevelGraphBillingDetailsBucket:
+      type: object
+      properties:
+        org_id:
+          type: integer
+        billing_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceLevelBillingBucketDetailsResources'
+        total_count:
+          type: integer
+        granularity:
+          type: integer
+    ResourceLevelClusterBillingDetailsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_history_cluster_details:
+          $ref: '#/components/schemas/ResourceLevelBillingHistoryResourcesCluster'
+    WorkloadBillingHistoryResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        billing_history_fine_tuning:
+          $ref: '#/components/schemas/billing_history_fine_tuning'
+    ResourceLevelBillingDetailsVolume:
+      type: object
+      properties:
+        org_id:
+          type: integer
+        billing_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceLevelBillingVolumeDetailsResources'
+        total_count:
+          type: integer
+    ResourceLevelVolumeBillingHistoryResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_history_volume:
+          $ref: '#/components/schemas/ResourceLevelBillingHistory'
+    ResourceLevelBillingVMDetailsResources:
+      type: object
+      properties:
+        attributes:
+          $ref: '#/components/schemas/ResourceLevelBillingDetailsAttributes'
+        metrics:
+          $ref: '#/components/schemas/ResourceLevelBillingDetailsMetrics'
+    ResourceBillingEventsHistoryMetrics:
+      type: object
+      properties:
+        start:
+          type: string
+        event:
+          type: string
+        event_duration:
+          type: number
+        price_per_hour:
+          type: number
+        total_cost:
+          type: number
+    SubResourcesCostsResponseModel:
+      type: object
+      properties:
+        org_id:
+          type: integer
+        billing_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubResourcesGraphBillingHistoryFields'
+        total_count:
+          type: integer
+        granularity:
+          type: integer
+    ResourceLevelBillingHistoryResources:
+      type: object
+      properties:
+        attributes:
+          $ref: '#/components/schemas/ResourceLevelBillingHistoryResponseAttributes'
+        metrics:
+          $ref: '#/components/schemas/ResourceLevelBillingHistoryResponseMetrics'
+    OrganizationLevelBillingHistoryResources:
+      type: object
+      properties:
+        attributes:
+          $ref: '#/components/schemas/OrganizationLevelBillingHistoryResponseAttributes'
+        metrics:
+          $ref: '#/components/schemas/OrganizationLevelBillingHistoryResponseMetrics'
+    Billing_metrices_response:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Billing_metrices_fields'
+    SubResourcesGraphResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        sub_resources_costs:
+          $ref: '#/components/schemas/SubResourcesCostsResponseModel'
+    ResourceLevelBucketBillingDetailsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_history_bucket_details:
+          $ref: '#/components/schemas/ResourceLevelBillingBucketDetailsResources'
+    Billing_metrices_fields:
+      type: object
+      properties:
+        resource_id:
+          type: integer
+        resource_type:
+          type: string
+        name:
+          type: string
+        organization_id:
+          type: integer
+        bill_per_minute:
+          type: number
+        create_time:
+          type: string
+          format: date-time
+        terminate_time:
+          type: string
+          format: date-time
+        total_up_time:
+          type: number
+        total_bill:
+          type: number
+        active:
+          type: boolean
+        exclude_billing:
+          type: boolean
+    ResourceLevelVmBillingHistoryResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_history_vm:
+          $ref: '#/components/schemas/ResourceLevelBillingHistory'
+    ResourceLevelBillingDetailsVM:
+      type: object
+      properties:
+        org_id:
+          type: integer
+        billing_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceLevelBillingVMDetailsResources'
+        total_count:
+          type: integer
+    ResourceLevelBillingHistory:
+      type: object
+      properties:
+        org_id:
+          type: integer
+        billing_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceLevelBillingHistoryResources'
+        total_count:
+          type: integer
+        pagination:
+          $ref: '#/components/schemas/PaginationData'
+    ResourceLevelVolumeBillingDetailsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        billing_history_volume_details:
+          $ref: '#/components/schemas/ResourceLevelBillingDetailsVolume'
+    metrics:
+      type: object
+      properties:
+        incurred_bill:
+          type: number
+          description: ''
+        non_discounted_bill:
+          type: number
+          description: ''
+        input_tokens:
+          type: number
+          description: ''
+        input_tokens_incurred_bill:
+          type: number
+          description: ''
+        input_tokens_non_discounted_bill:
+          type: number
+          description: ''
+        output_tokens:
+          type: number
+          description: ''
+        output_tokens_incurred_bill:
+          type: number
+          description: ''
+        output_tokens_non_discounted_bill:
+          type: number
+          description: ''
+    OrganizationLevelBillingHistoryResponseAttributes:
+      type: object
+      properties:
+        id:
+          type: string
+    ResourceLevelBillingDetailsVolumeAttributes:
+      type: object
+      properties:
+        id:
+          type: string
+        infrahub_id:
+          type: integer
+        resource_name:
+          type: string
+        subresource_type:
+          type: string
+        subresource_amount:
+          type: integer
+    billing_history_serverless_inference_details:
+      type: object
+      properties:
+        org_id:
+          type: integer
+          description: ''
+        total_count:
+          type: integer
+          description: ''
+        pagination:
+          $ref: '#/components/schemas/pagination'
+        billing_history:
+          type: array
+          description: ''
+          items:
+            $ref: '#/components/schemas/billing_history'
+    billing_history_data_synthesis_details:
+      type: object
+      properties:
+        org_id:
+          type: integer
+          description: ''
+        total_count:
+          type: integer
+          description: ''
+        pagination:
+          $ref: '#/components/schemas/pagination'
+        billing_history:
+          type: array
+          description: ''
+          items:
+            $ref: '#/components/schemas/billing_history'
+    ResourceLevelGraphBillingDetailVolume:
+      type: object
+      properties:
+        org_id:
+          type: integer
+        billing_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceLevelGraphBillingVolumeDetailsResources'
+        total_count:
+          type: integer
+        granularity:
+          type: integer
+    ResourceLevelGraphBillingDetailsVM:
+      type: object
+      properties:
+        org_id:
+          type: integer
+        billing_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceLevelGraphBillingVMDetailsResources'
+        total_count:
+          type: integer
+        granularity:
+          type: integer
     SubResourceGraphBillingDetailsMetrics:
       type: object
       properties:
@@ -2498,95 +3098,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GraphDatetimeValueModel'
-    ResourceLevelClusterBillingDetailsResponseModel:
+    billing_history:
       type: object
       properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_history_cluster_details:
-          $ref: '#/components/schemas/ResourceLevelBillingHistoryResourcesCluster'
-    ResourceLevelBillingHistory:
+        attributes:
+          $ref: '#/components/schemas/attributes'
+        metrics:
+          $ref: '#/components/schemas/metrics'
+    ResourceLevelGraphBillingVolumeDetailsResources:
       type: object
       properties:
-        org_id:
-          type: integer
-        billing_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceLevelBillingHistoryResources'
-        total_count:
-          type: integer
-        pagination:
-          $ref: '#/components/schemas/PaginationData'
-    ResourceLevelBillingDetailsVM:
-      type: object
-      properties:
-        org_id:
-          type: integer
-        billing_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceLevelBillingVMDetailsResources'
-        total_count:
-          type: integer
-    ResourceBillingEventsHistoryMetrics:
-      type: object
-      properties:
-        start:
-          type: string
-        event:
-          type: string
-        event_duration:
-          type: number
-        price_per_hour:
-          type: number
-        total_cost:
-          type: number
-    ResourceLevelGraphBillingDetailVolume:
-      type: object
-      properties:
-        org_id:
-          type: integer
-        billing_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceLevelGraphBillingVolumeDetailsResources'
-        total_count:
-          type: integer
-        granularity:
-          type: integer
-    pagination:
-      type: object
-      properties:
-        page:
-          type: integer
-          description: ''
-        per_page:
-          type: integer
-          description: ''
-        pages:
-          type: integer
-          description: ''
-    OrganizationLevelBillingHistoryResponseAttributes:
-      type: object
-      properties:
-        id:
-          type: string
-    ResourceLevelBillingHistoryResponseAttributes:
-      type: object
-      properties:
-        id:
-          type: string
-        infrahub_id:
-          type: integer
-        resource_name:
-          type: string
-        status:
-          type: string
-        contract_id:
-          type: integer
+        attributes:
+          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailsAttributes'
+        metrics:
+          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailsMetrics'
     ResourceLevelBillingDetailsMetrics:
       type: object
       properties:
@@ -2606,38 +3131,64 @@ components:
           type: number
         usage_time_HIBERNATED:
           type: number
-    ResourceLevelVolumeBillingHistoryResponseModel:
+    ResourceLevelClusterBillingHistoryResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        billing_history_volume:
+        billing_history_cluster:
           $ref: '#/components/schemas/ResourceLevelBillingHistory'
-    SubResourcesGraphResponseModel:
+    Last_day_cost_response:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/Last_day_cost_fields'
+    ResourceLevelBillingHistoryResponseAttributes:
+      type: object
+      properties:
+        id:
+          type: string
+        infrahub_id:
+          type: integer
+        resource_name:
+          type: string
+        status:
+          type: string
+        contract_id:
+          type: integer
+    ResourceLevelGraphBillingDetailsAttributes:
+      type: object
+      properties:
+        id:
+          type: string
+        infrahub_id:
+          type: integer
+        resource_name:
+          type: string
+    OrganizationLevelBillingHistoryResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        sub_resources_costs:
-          $ref: '#/components/schemas/SubResourcesCostsResponseModel'
-    ResourceLevelGraphBillingVMDetailsResources:
+        billing_history:
+          $ref: '#/components/schemas/OrganizationLevelBillingHistory'
+    PaginationData:
       type: object
       properties:
-        attributes:
-          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailsAttributes'
-        metrics:
-          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailsMetrics'
-    ResourceLevelBillingVolumeDetailsResources:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/ResourceLevelBillingDetailsVolumeAttributes'
-        metrics:
-          $ref: '#/components/schemas/ResourceLevelBillingDetailsVolumeMetrics'
+        per_page:
+          type: integer
+        page:
+          type: integer
+        pages:
+          type: integer
     ImageGenerationBillingHistoryDetailsResponseSchema:
       type: object
       properties:
@@ -2649,6 +3200,14 @@ components:
           description: ''
         billing_history_image_generation_details:
           $ref: '#/components/schemas/billing_history_image_generation_details'
+    Subscribe_or_unsubscribe_update_payload:
+      required:
+      - subscribe
+      type: object
+      properties:
+        subscribe:
+          type: boolean
+          description: '`false` indicates that the user will no longer receive notifications for this specific threshold, whereas `true` signifies that the user will receive notification emails.'
     ResourceLevelGraphBillingDetailsMetrics:
       type: object
       properties:
@@ -2658,439 +3217,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GraphDatetimeValueModel'
-    ResourceLevelVolumeGraphBillingDetailsResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_history_snapshot_details:
-          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailVolume'
-    ResourceLevelBillingDetailsVolume:
-      type: object
-      properties:
-        org_id:
-          type: integer
-        billing_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceLevelBillingVolumeDetailsResources'
-        total_count:
-          type: integer
-    billing_history_model_evalutation_details:
-      type: object
-      properties:
-        org_id:
-          type: integer
-          description: ''
-        total_count:
-          type: integer
-          description: ''
-        pagination:
-          $ref: '#/components/schemas/pagination'
-        billing_history:
-          type: array
-          description: ''
-          items:
-            $ref: '#/components/schemas/billing_history'
-    billing_history_data_synthesis_details:
-      type: object
-      properties:
-        org_id:
-          type: integer
-          description: ''
-        total_count:
-          type: integer
-          description: ''
-        pagination:
-          $ref: '#/components/schemas/pagination'
-        billing_history:
-          type: array
-          description: ''
-          items:
-            $ref: '#/components/schemas/billing_history'
-    billing_history_serverless_inference_details:
-      type: object
-      properties:
-        org_id:
-          type: integer
-          description: ''
-        total_count:
-          type: integer
-          description: ''
-        pagination:
-          $ref: '#/components/schemas/pagination'
-        billing_history:
-          type: array
-          description: ''
-          items:
-            $ref: '#/components/schemas/billing_history'
-    ResourceLevelVmGraphBillingDetailsResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_history_vm_details:
-          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailsVM'
-    ResourceLevelVmBillingHistoryResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_history_vm:
-          $ref: '#/components/schemas/ResourceLevelBillingHistory'
-    WorkloadBillingHistoryResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: ''
-        message:
-          type: string
-          description: ''
-        billing_history_fine_tuning:
-          $ref: '#/components/schemas/billing_history_fine_tuning'
-    ResourceLevelVMBillingDetailsResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_history_vm_details:
-          $ref: '#/components/schemas/ResourceLevelBillingDetailsVM'
-    ResourceLevelGraphBillingDetailsBucket:
-      type: object
-      properties:
-        org_id:
-          type: integer
-        billing_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceLevelBillingBucketDetailsResources'
-        total_count:
-          type: integer
-        granularity:
-          type: integer
-    ResourceLevelBucketBillingHistoryResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_history_bucket:
-          $ref: '#/components/schemas/ResourceLevelBillingHistory'
-    ResourceLevelBucketBillingDetailsResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_history_bucket_details:
-          $ref: '#/components/schemas/ResourceLevelBillingBucketDetailsResources'
-    ResourceLevelGraphBillingDetailsAttributes:
-      type: object
-      properties:
-        id:
-          type: string
-        infrahub_id:
-          type: integer
-        resource_name:
-          type: string
-    ModelEvaluationBillingHistoryDetailsResponseSchema:
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: ''
-        message:
-          type: string
-          description: ''
-        billing_history_model_evalutation_details:
-          $ref: '#/components/schemas/billing_history_model_evalutation_details'
-    ResourceLevelVolumeBillingDetailsResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_history_volume_details:
-          $ref: '#/components/schemas/ResourceLevelBillingDetailsVolume'
-    ResourceLevelClusterBillingHistoryResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_history_cluster:
-          $ref: '#/components/schemas/ResourceLevelBillingHistory'
-    Organization_threshold_update_response:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        threshold:
-          $ref: '#/components/schemas/Organization_Threshold_fields'
-    ResourceLevelBillingHistoryResourcesCluster:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/ResourceLevelBillingHistoryResponseAttributes'
-        metrics:
-          $ref: '#/components/schemas/ResourceLevelBillingHistoryResponseMetrics'
-        nodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceLevelBillingHistoryResources'
-    GraphDatetimeValueModel:
-      type: object
-      properties:
-        datetime:
-          type: string
-        value:
-          type: number
-    attributes:
-      type: object
-      properties:
-        infrahub_id:
-          type: integer
-          description: ''
-        resource_name:
-          type: string
-          description: ''
-        status:
-          type: string
-          description: ''
-        base_model:
-          type: string
-          description: ''
-        base_model_display_name:
-          type: string
-          description: ''
-        lora_adapter:
-          type: string
-          description: ''
-    metrics:
-      type: object
-      properties:
-        incurred_bill:
-          type: number
-          description: ''
-        non_discounted_bill:
-          type: number
-          description: ''
-        input_tokens:
-          type: number
-          description: ''
-        input_tokens_incurred_bill:
-          type: number
-          description: ''
-        input_tokens_non_discounted_bill:
-          type: number
-          description: ''
-        output_tokens:
-          type: number
-          description: ''
-        output_tokens_incurred_bill:
-          type: number
-          description: ''
-        output_tokens_non_discounted_bill:
-          type: number
-          description: ''
-    OrganizationLevelBillingHistory:
-      type: object
-      properties:
-        org_id:
-          type: integer
-        billing_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationLevelBillingHistoryResources'
-        total_count:
-          type: integer
-    ResourceLevelBillingDetailsVolumeAttributes:
-      type: object
-      properties:
-        id:
-          type: string
-        infrahub_id:
-          type: integer
-        resource_name:
-          type: string
-        subresource_type:
-          type: string
-        subresource_amount:
-          type: integer
-    ServerlessInferencedBillingHistoryDetailsResponseSchema:
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: ''
-        message:
-          type: string
-          description: ''
-        billing_history_serverless_inference_details:
-          $ref: '#/components/schemas/billing_history_serverless_inference_details'
-    TokenBasedBillingHistoryResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: ''
-        message:
-          type: string
-          description: ''
-        billing_history_serverless_inference:
-          $ref: '#/components/schemas/billing_history_serverless_inference'
-    ResourceLevelBillingVMDetailsResources:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/ResourceLevelBillingDetailsAttributes'
-        metrics:
-          $ref: '#/components/schemas/ResourceLevelBillingDetailsMetrics'
-    Billing_metrices_response:
-      type: object
-      properties:
-        message:
-          type: string
-        status:
-          type: boolean
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Billing_metrices_fields'
-    OrganizationLevelBillingHistoryResources:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/OrganizationLevelBillingHistoryResponseAttributes'
-        metrics:
-          $ref: '#/components/schemas/OrganizationLevelBillingHistoryResponseMetrics'
-    Billing_metrices_fields:
-      type: object
-      properties:
-        resource_id:
-          type: integer
-        resource_type:
-          type: string
-        name:
-          type: string
-        organization_id:
-          type: integer
-        bill_per_minute:
-          type: number
-        create_time:
-          type: string
-          format: date-time
-        terminate_time:
-          type: string
-          format: date-time
-        total_up_time:
-          type: number
-        total_bill:
-          type: number
-        active:
-          type: boolean
-        exclude_billing:
-          type: boolean
-    Organization_thresholds_response:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        thresholds:
-          type: array
-          items:
-            $ref: '#/components/schemas/Organization_Threshold_fields'
-    DataSynthesisBillingHistoryDetailsResponseSchema:
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: ''
-        message:
-          type: string
-          description: ''
-        billing_history_data_synthesis_details:
-          $ref: '#/components/schemas/billing_history_data_synthesis_details'
-    ResourceLevelGraphBillingVolumeDetailsResources:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailsAttributes'
-        metrics:
-          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailsMetrics'
-    Last_day_cost_response:
-      type: object
-      properties:
-        message:
-          type: string
-        status:
-          type: boolean
-        data:
-          $ref: '#/components/schemas/Last_day_cost_fields'
-    PaginationData:
-      type: object
-      properties:
-        per_page:
-          type: integer
-        page:
-          type: integer
-        pages:
-          type: integer
-    billing_history_serverless_inference:
-      type: object
-      properties:
-        org_id:
-          type: integer
-          description: ''
-        total_count:
-          type: integer
-          description: ''
-        pagination:
-          $ref: '#/components/schemas/pagination'
-        billing_history:
-          type: array
-          description: ''
-          items:
-            $ref: '#/components/schemas/billing_history'
-    ResourceLevelBillingHistoryResponseMetrics:
-      type: object
-      properties:
-        incurred_bill:
-          type: number
-        price_per_hour:
-          type: number
-        usage_time:
-          type: number
-    SubResourcesCostsResponseModel:
-      type: object
-      properties:
-        org_id:
-          type: integer
-        billing_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubResourcesGraphBillingHistoryFields'
-        total_count:
-          type: integer
-        granularity:
-          type: integer
     ErrorResponseModel:
       type: object
       properties:
@@ -3101,132 +3227,6 @@ components:
           type: string
         error_reason:
           type: string
-    ResourceLevelGraphBillingDetailsVM:
-      type: object
-      properties:
-        org_id:
-          type: integer
-        billing_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceLevelGraphBillingVMDetailsResources'
-        total_count:
-          type: integer
-        granularity:
-          type: integer
-    billing_history:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/attributes'
-        metrics:
-          $ref: '#/components/schemas/metrics'
-    Organization_Threshold_fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        threshold:
-          type: integer
-        interface_title:
-          type: string
-        interface_tooltip:
-          type: string
-        subscribed:
-          type: boolean
-    OrganizationLevelBillingHistoryResponseMetrics:
-      type: object
-      properties:
-        incurred_bill:
-          type: number
-        non_discounted_bill:
-          type: number
-        vm_cost:
-          type: number
-        volume_cost:
-          type: number
-        contract_cost:
-          type: number
-        snapshot_cost:
-          type: number
-    SubResourcesGraphBillingHistoryFields:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/ResourceLevelBillingDetailsAttributes'
-        metrics:
-          $ref: '#/components/schemas/SubResourceGraphBillingDetailsMetrics'
-    ResourceBillingEventsHistoryResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_events_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceBillingEventsHistoryMetrics'
-    Subscribe_or_unsubscribe_update_payload:
-      required:
-      - subscribe
-      type: object
-      properties:
-        subscribe:
-          type: boolean
-          description: '`false` indicates that the user will no longer receive notifications for this specific threshold, whereas `true` signifies that the user will receive notification emails.'
-    billing_history_fine_tuning:
-      type: object
-      properties:
-        org_id:
-          type: integer
-          description: ''
-        total_count:
-          type: integer
-          description: ''
-        pagination:
-          $ref: '#/components/schemas/pagination'
-        billing_history:
-          type: array
-          description: ''
-          items:
-            $ref: '#/components/schemas/billing_history'
-    ResourceLevelBillingBucketDetailsResources:
-      type: object
-      properties:
-        attributes:
-          $ref: '#/components/schemas/ResourceLevelBillingDetailsAttributes'
-        metrics:
-          $ref: '#/components/schemas/ResourceLevelBillingDetailsMetrics'
-    Last_day_cost_fields:
-      type: object
-      properties:
-        instances_cost:
-          type: number
-        volumes_cost:
-          type: number
-        clusters_cost:
-          type: number
-        total_cost:
-          type: number
-    ResourceLevelBillingDetailsAttributes:
-      type: object
-      properties:
-        id:
-          type: string
-        infrahub_id:
-          type: integer
-        resource_name:
-          type: string
-    ResourceLevelClusterGraphBillingDetailsResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        billing_history_cluster_details:
-          $ref: '#/components/schemas/ResourceLevelGraphBillingDetailVolume'
   securitySchemes:
     accessToken:
       type: apiKey

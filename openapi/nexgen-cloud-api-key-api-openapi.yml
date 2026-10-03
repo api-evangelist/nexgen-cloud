@@ -190,24 +190,12 @@ paths:
       - apiKey: []
 components:
   schemas:
-    GenerateUpdateApiKeyResponseModel:
+    CommonResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
-          type: string
-        api_key:
-          $ref: '#/components/schemas/ApiKeyFields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
           type: string
     GenerateUpdateApiKeyPayload:
       required:
@@ -220,6 +208,15 @@ components:
           type: string
         description:
           type: string
+    GenerateUpdateApiKeyResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        api_key:
+          $ref: '#/components/schemas/ApiKeyFields'
     GetApiKeysResponseModel:
       type: object
       properties:
@@ -245,12 +242,15 @@ components:
         created_at:
           type: string
           format: date-time
-    CommonResponseModel:
+    ErrorResponseModel:
       type: object
       properties:
         status:
           type: boolean
+          default: false
         message:
+          type: string
+        error_reason:
           type: string
   securitySchemes:
     accessToken:

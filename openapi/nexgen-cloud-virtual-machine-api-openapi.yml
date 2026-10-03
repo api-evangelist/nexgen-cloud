@@ -1108,70 +1108,84 @@ paths:
       - apiKey: []
 components:
   schemas:
-    LableResonse:
+    Instance_Image_Fields:
+      type: object
+      properties:
+        name:
+          type: string
+    MetricsFields:
+      type: object
+      properties:
+        cpu:
+          $ref: '#/components/schemas/MetricItemFields'
+        memory.usages:
+          $ref: '#/components/schemas/MetricItemFields'
+        network.in:
+          $ref: '#/components/schemas/MetricItemFields'
+        network.out:
+          $ref: '#/components/schemas/MetricItemFields'
+        disk.read:
+          $ref: '#/components/schemas/MetricItemFields'
+        disk.write:
+          $ref: '#/components/schemas/MetricItemFields'
+    RequestInstanceLogsResponse:
+      type: object
+      properties:
+        request_id:
+          type: integer
+    Security_Group_Rule_Fields:
       type: object
       properties:
         id:
           type: integer
-        label:
-          type: string
-    Create_Security_Rule_Payload:
-      required:
-      - direction
-      - ethertype
-      - protocol
-      - remote_ip_prefix
-      type: object
-      properties:
         direction:
           type: string
-          description: The direction of traffic that the firewall rule applies to.
         protocol:
           type: string
-          description: The network protocol associated with the rule. Call the [`GET /core/sg-rules-protocols`](https://infrahub-api-doc.nexgencloud.com/#get-/core/sg-rules-protocols) endpoint to retrieve a list of permitted network protocols.
-          example: any
-          enum:
-          - any
-          - ah
-          - dccp
-          - egp
-          - esp
-          - gre
-          - hopopt
-          - icmp
-          - igmp
-          - ip
-          - ipip
-          - ipv6-encap
-          - ipv6-frag
-          - ipv6-icmp
-          - icmpv6
-          - ipv6-nonxt
-          - ipv6-opts
-          - ipv6-route
-          - ospf
-          - pgm
-          - rsvp
-          - sctp
-          - tcp
-          - udp
-          - udplite
-          - vrrp
+        port_range_min:
+          type: integer
+        port_range_max:
+          type: integer
         ethertype:
           type: string
-          description: The Ethernet type associated with the rule.
         remote_ip_prefix:
           type: string
-          description: The IP address range that is allowed to access the specified port. Use "0.0.0.0/0" to allow any IP address.
-    Instance:
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    ClusterNodeInstanceFields:
       type: object
       properties:
-        status:
-          type: boolean
-        message:
+        id:
+          type: integer
+        name:
           type: string
-        instance:
-          $ref: '#/components/schemas/Instance_Fields'
+        status:
+          type: string
+        fixed_ip:
+          type: string
+        floating_ip:
+          type: string
+        floating_ip_status:
+          type: string
+        contract_id:
+          type: integer
+        image_id:
+          type: integer
+    Environment_Features:
+      type: object
+      properties:
+        network_optimised:
+          type: boolean
+        green_status:
+          type: string
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
     ClusterFields:
       type: object
       properties:
@@ -1208,88 +1222,37 @@ components:
         created_at:
           type: string
           format: date-time
-    UserEnhancedMetricsResponseFields:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-    UserEnhancedMetricsPayload:
-      required:
-      - enabled
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Set to true to opt this VM into Enhanced Metrics, false to opt out.
-    SnapshotFields:
-      required:
-      - created_at
-      - description
-      - id
-      - is_image
-      - name
-      - region_id
-      - size
-      - status
-      - updated_at
-      - vm_id
+    ClusterNodeGroupFields:
       type: object
       properties:
         id:
           type: integer
-          description: Snapshot ID
         name:
           type: string
-          description: Snapshot name
-        description:
+        role:
           type: string
-          description: Description of the snapshot
-        vm_id:
+        flavor:
+          $ref: '#/components/schemas/Cluster_Flavor_Fields'
+        count:
           type: integer
-          description: ID of the VM from which the snapshot is created
-        region_id:
+        min_count:
           type: integer
-          description: Region where the snapshot will be available
-        status:
-          type: string
-          description: Status of the snapshot
-        is_image:
-          type: boolean
-          description: Indicates if the snapshot is an image
-        size:
+        max_count:
           type: integer
-          description: Size in GB of the snapshot
-        has_floating_ip:
-          type: boolean
-          description: Indicates if the VM had a floating IP assigned
-        labels:
+        firewall_ids:
           type: array
-          description: Labels associated with snapshot
           items:
-            type: string
-            description: ''
+            type: integer
+        firewalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeGroupFirewallFields'
         created_at:
           type: string
-          description: Creation timestamp
           format: date-time
         updated_at:
           type: string
-          description: Last update timestamp
           format: date-time
-    Instance_Enhanced_Metrics_Fields:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-    FlavorLabelFields:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: ''
-        label:
-          type: string
-          description: ''
     InstanceResizePayload:
       type: object
       properties:
@@ -1297,56 +1260,19 @@ components:
           type: string
         flavor:
           $ref: '#/components/schemas/Flavor_Object_Fields'
-    Instance_Keypair_Fields:
-      type: object
-      properties:
-        name:
-          type: string
-    MetricsFields:
-      type: object
-      properties:
-        cpu:
-          $ref: '#/components/schemas/MetricItemFields'
-        memory.usages:
-          $ref: '#/components/schemas/MetricItemFields'
-        network.in:
-          $ref: '#/components/schemas/MetricItemFields'
-        network.out:
-          $ref: '#/components/schemas/MetricItemFields'
-        disk.read:
-          $ref: '#/components/schemas/MetricItemFields'
-        disk.write:
-          $ref: '#/components/schemas/MetricItemFields'
-    Security_Rules_Fields_for_Instance:
-      type: object
-      properties:
-        id:
-          type: integer
-        direction:
-          type: string
-        protocol:
-          type: string
-        port_range_min:
-          type: integer
-        port_range_max:
-          type: integer
-        ethertype:
-          type: string
-        remote_ip_prefix:
-          type: string
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    ResponseModel:
+    UserEnhancedMetricsResponse:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-    Instance_Flavor_Fields:
+        metrics:
+          $ref: '#/components/schemas/UserEnhancedMetricsResponseFields'
+        install_command:
+          type: string
+          description: One-liner the user can run inside the VM to install the agent when enabling. Omitted when disabling.
+    Cluster_Flavor_Fields:
       type: object
       properties:
         id:
@@ -1356,7 +1282,7 @@ components:
         cpu:
           type: integer
         ram:
-          type: integer
+          type: number
         disk:
           type: integer
         ephemeral:
@@ -1365,139 +1291,29 @@ components:
           type: string
         gpu_count:
           type: integer
-        labels:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlavorLabelFields'
         features:
           type: object
           properties: {}
-    Security_Group_Rule:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        security_rule:
-          $ref: '#/components/schemas/Security_Group_Rule_Fields'
-    RequestInstanceLogsPayload:
-      type: object
-      properties:
-        length:
-          type: integer
-          description: The amount of lines to fetch
-    Profile_Object_Fields:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-    Instances:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        page:
-          type: integer
-        page_size:
-          type: integer
-        count:
-          type: integer
-        instances:
+        labels:
           type: array
           items:
-            $ref: '#/components/schemas/Instance_Fields'
-    MetricItemFields:
+            $ref: '#/components/schemas/LableResonse'
+    UserEnhancedMetricsPayload:
+      required:
+      - enabled
       type: object
       properties:
-        unit:
-          type: string
-        columns:
+        enabled:
+          type: boolean
+          description: Set to true to opt this VM into Enhanced Metrics, false to opt out.
+    Edit_label_of_an_existing_VM_Payload:
+      type: object
+      properties:
+        labels:
           type: array
-          example:
-          - time
-          - granularity
-          - value
+          description: Multiple labels can be added by separating with spaces
           items:
             type: string
-        data:
-          type: array
-          example:
-          - - '2023-09-01T01:19:00+00:00'
-            - 60
-            - 1041433070000000
-          - - '2023-09-01T01:24:00+00:00'
-            - 60
-            - 1041441320000000
-          items:
-            type: array
-            items:
-              type: object
-              properties: {}
-    Instance_Environment_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        org_id:
-          type: integer
-        region:
-          type: string
-        features:
-          $ref: '#/components/schemas/Environment_Features'
-    ClusterNodeGroupFirewallFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        status:
-          type: string
-    Instance_Image_Fields:
-      type: object
-      properties:
-        name:
-          type: string
-    NameAvailableModel:
-      type: object
-      properties:
-        name:
-          type: string
-        available:
-          type: boolean
-        message:
-          type: string
-    Security_Group_Rule_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        direction:
-          type: string
-        protocol:
-          type: string
-        port_range_min:
-          type: integer
-        port_range_max:
-          type: integer
-        ethertype:
-          type: string
-        remote_ip_prefix:
-          type: string
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
     Create_Instances_Payload:
       required:
       - count
@@ -1562,6 +1378,15 @@ components:
           type: boolean
           description: When true, the Hyperstack VM Agent is opted in for this VM and metrics ingestion is allowed by the prom-gateway. The agent must still be installed on the VM (typically via user_data cloud-init).
           default: false
+    CreateSnapshotResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        snapshot:
+          $ref: '#/components/schemas/SnapshotFields'
     Flavor_Object_Fields:
       type: object
       properties:
@@ -1575,11 +1400,138 @@ components:
           type: string
         gpu_count:
           type: integer
-    GetInstanceLogsResponse:
+    ClusterNodeFields:
       type: object
       properties:
-        logs:
+        id:
+          type: integer
+        role:
           type: string
+        node_group_id:
+          type: integer
+        node_group_name:
+          type: string
+        instance:
+          $ref: '#/components/schemas/ClusterNodeInstanceFields'
+        status:
+          type: string
+        status_reason:
+          type: string
+        is_bastion:
+          type: boolean
+        requires_public_ip:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Create_Security_Rule_Payload:
+      required:
+      - direction
+      - ethertype
+      - protocol
+      - remote_ip_prefix
+      type: object
+      properties:
+        direction:
+          type: string
+          description: The direction of traffic that the firewall rule applies to.
+        protocol:
+          type: string
+          description: The network protocol associated with the rule. Call the [`GET /core/sg-rules-protocols`](https://infrahub-api-doc.nexgencloud.com/#get-/core/sg-rules-protocols) endpoint to retrieve a list of permitted network protocols.
+          example: any
+          enum:
+          - any
+          - ah
+          - dccp
+          - egp
+          - esp
+          - gre
+          - hopopt
+          - icmp
+          - igmp
+          - ip
+          - ipip
+          - ipv6-encap
+          - ipv6-frag
+          - ipv6-icmp
+          - icmpv6
+          - ipv6-nonxt
+          - ipv6-opts
+          - ipv6-route
+          - ospf
+          - pgm
+          - rsvp
+          - sctp
+          - tcp
+          - udp
+          - udplite
+          - vrrp
+        ethertype:
+          type: string
+          description: The Ethernet type associated with the rule.
+        remote_ip_prefix:
+          type: string
+          description: The IP address range that is allowed to access the specified port. Use "0.0.0.0/0" to allow any IP address.
+    Instance:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        instance:
+          $ref: '#/components/schemas/Instance_Fields'
+    FlavorLabelFields:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+        label:
+          type: string
+          description: ''
+    UserEnhancedMetricsResponseFields:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    RequestInstanceLogsPayload:
+      type: object
+      properties:
+        length:
+          type: integer
+          description: The amount of lines to fetch
+    ContractInstancesResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        instances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractInstanceFields'
+    Instances:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        page:
+          type: integer
+        page_size:
+          type: integer
+        count:
+          type: integer
+        instances:
+          type: array
+          items:
+            $ref: '#/components/schemas/Instance_Fields'
     Volume_Fields_for_Instance:
       type: object
       properties:
@@ -1595,7 +1547,106 @@ components:
           type: boolean
         size:
           type: integer
-    Cluster_Flavor_Fields:
+    CreateSnapshotPayload:
+      required:
+      - description
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Snapshot name
+        description:
+          type: string
+          description: description
+        labels:
+          type: array
+          description: Labels associated with snapshot
+          items:
+            type: string
+            description: label
+    Volume_Attachment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        volume:
+          $ref: '#/components/schemas/Volume_Fields_for_Instance'
+        status:
+          type: string
+        device:
+          type: string
+        protected:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    Security_Group_Rule:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        security_rule:
+          $ref: '#/components/schemas/Security_Group_Rule_Fields'
+    CreateInstancesResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        instances:
+          type: array
+          items:
+            $ref: '#/components/schemas/Instance_Fields'
+    Instance_Environment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        org_id:
+          type: integer
+        region:
+          type: string
+        features:
+          $ref: '#/components/schemas/Environment_Features'
+    MetricItemFields:
+      type: object
+      properties:
+        unit:
+          type: string
+        columns:
+          type: array
+          example:
+          - time
+          - granularity
+          - value
+          items:
+            type: string
+        data:
+          type: array
+          example:
+          - - '2023-09-01T01:19:00+00:00'
+            - 60
+            - 1041433070000000
+          - - '2023-09-01T01:24:00+00:00'
+            - 60
+            - 1041441320000000
+          items:
+            type: array
+            items:
+              type: object
+              properties: {}
+    Instance_Keypair_Fields:
+      type: object
+      properties:
+        name:
+          type: string
+    Instance_Flavor_Fields:
       type: object
       properties:
         id:
@@ -1605,7 +1656,7 @@ components:
         cpu:
           type: integer
         ram:
-          type: number
+          type: integer
         disk:
           type: integer
         ephemeral:
@@ -1614,13 +1665,27 @@ components:
           type: string
         gpu_count:
           type: integer
-        features:
-          type: object
-          properties: {}
         labels:
           type: array
           items:
-            $ref: '#/components/schemas/LableResonse'
+            $ref: '#/components/schemas/FlavorLabelFields'
+        features:
+          type: object
+          properties: {}
+    Profile_Object_Fields:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    GetInstanceLogsResponse:
+      type: object
+      properties:
+        logs:
+          type: string
     Instance_Fields:
       type: object
       properties:
@@ -1682,52 +1747,28 @@ components:
           type: boolean
         enhanced_metrics:
           $ref: '#/components/schemas/Instance_Enhanced_Metrics_Fields'
-    ClusterNodeInstanceFields:
+    Security_Rules_Fields_for_Instance:
       type: object
       properties:
         id:
           type: integer
-        name:
+        direction:
+          type: string
+        protocol:
+          type: string
+        port_range_min:
+          type: integer
+        port_range_max:
+          type: integer
+        ethertype:
+          type: string
+        remote_ip_prefix:
           type: string
         status:
           type: string
-        fixed_ip:
+        created_at:
           type: string
-        floating_ip:
-          type: string
-        floating_ip_status:
-          type: string
-        contract_id:
-          type: integer
-        image_id:
-          type: integer
-    CreateSnapshotResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        snapshot:
-          $ref: '#/components/schemas/SnapshotFields'
-    CreateSnapshotPayload:
-      required:
-      - description
-      - name
-      type: object
-      properties:
-        name:
-          type: string
-          description: Snapshot name
-        description:
-          type: string
-          description: description
-        labels:
-          type: array
-          description: Labels associated with snapshot
-          items:
-            type: string
-            description: label
+          format: date-time
     AttachFirewallsToVMPayload:
       required:
       - firewalls
@@ -1738,37 +1779,36 @@ components:
           description: Ids of the firewalls to be attached with a virtual machine.
           items:
             type: integer
-    ClusterNodeGroupFields:
+    Instance_Enhanced_Metrics_Fields:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    LableResonse:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+    ClusterNodeGroupFirewallFields:
       type: object
       properties:
         id:
           type: integer
         name:
           type: string
-        role:
+        status:
           type: string
-        flavor:
-          $ref: '#/components/schemas/Cluster_Flavor_Fields'
-        count:
-          type: integer
-        min_count:
-          type: integer
-        max_count:
-          type: integer
-        firewall_ids:
-          type: array
-          items:
-            type: integer
-        firewalls:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterNodeGroupFirewallFields'
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
     ContractInstanceFields:
       type: object
       properties:
@@ -1792,23 +1832,68 @@ components:
           format: date-time
         cluster:
           $ref: '#/components/schemas/ClusterFields'
-    RequestInstanceLogsResponse:
-      type: object
-      properties:
-        request_id:
-          type: integer
-    UserEnhancedMetricsResponse:
+    ResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        metrics:
-          $ref: '#/components/schemas/UserEnhancedMetricsResponseFields'
-        install_command:
+    SnapshotFields:
+      required:
+      - created_at
+      - description
+      - id
+      - is_image
+      - name
+      - region_id
+      - size
+      - status
+      - updated_at
+      - vm_id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Snapshot ID
+        name:
           type: string
-          description: One-liner the user can run inside the VM to install the agent when enabling. Omitted when disabling.
+          description: Snapshot name
+        description:
+          type: string
+          description: Description of the snapshot
+        vm_id:
+          type: integer
+          description: ID of the VM from which the snapshot is created
+        region_id:
+          type: integer
+          description: Region where the snapshot will be available
+        status:
+          type: string
+          description: Status of the snapshot
+        is_image:
+          type: boolean
+          description: Indicates if the snapshot is an image
+        size:
+          type: integer
+          description: Size in GB of the snapshot
+        has_floating_ip:
+          type: boolean
+          description: Indicates if the VM had a floating IP assigned
+        labels:
+          type: array
+          description: Labels associated with snapshot
+          items:
+            type: string
+            description: ''
+        created_at:
+          type: string
+          description: Creation timestamp
+          format: date-time
+        updated_at:
+          type: string
+          description: Last update timestamp
+          format: date-time
     ErrorResponseModel:
       type: object
       properties:
@@ -1819,91 +1904,6 @@ components:
           type: string
         error_reason:
           type: string
-    ClusterNodeFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        role:
-          type: string
-        node_group_id:
-          type: integer
-        node_group_name:
-          type: string
-        instance:
-          $ref: '#/components/schemas/ClusterNodeInstanceFields'
-        status:
-          type: string
-        status_reason:
-          type: string
-        is_bastion:
-          type: boolean
-        requires_public_ip:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    CreateInstancesResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        instances:
-          type: array
-          items:
-            $ref: '#/components/schemas/Instance_Fields'
-    Environment_Features:
-      type: object
-      properties:
-        network_optimised:
-          type: boolean
-        green_status:
-          type: string
-          example: GREEN
-          enum:
-          - GREEN
-          - PARTIALLY_GREEN
-          - NOT_GREEN
-    ContractInstancesResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        instances:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContractInstanceFields'
-    Volume_Attachment_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        volume:
-          $ref: '#/components/schemas/Volume_Fields_for_Instance'
-        status:
-          type: string
-        device:
-          type: string
-        protected:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-    Edit_label_of_an_existing_VM_Payload:
-      type: object
-      properties:
-        labels:
-          type: array
-          description: Multiple labels can be added by separating with spaces
-          items:
-            type: string
   securitySchemes:
     accessToken:
       type: apiKey

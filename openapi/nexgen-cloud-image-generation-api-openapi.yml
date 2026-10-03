@@ -176,29 +176,18 @@ paths:
           description: Validation Error
 components:
   schemas:
-    ImageJobAcceptedSchema:
+    ImageData:
       type: object
       properties:
-        job_id:
-          type: integer
-          description: Identifier of the asynchronous image job. Poll [Get image result](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-image-result) to retrieve the result.
-        status:
+        url:
           type: string
-          description: Initial job status, such as `queued`.
-      title: ImageJobAcceptedSchema
-    ImageUploadUrlSchema:
-      type: object
-      required:
-      - signed_url
-      - filename
-      properties:
-        signed_url:
+          default: null
+          description: URL of the generated image. Populated when the output is returned as a URL.
+        b64_json:
           type: string
-          description: Presigned S3 URL. Upload the image bytes with an HTTP PUT to this URL.
-        filename:
-          type: string
-          description: S3 key for the uploaded image. Pass this as `image_url` in [Generate image from image](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/generate-image-from-image).
-      title: ImageUploadUrlSchema
+          default: null
+          description: Base64-encoded image. Populated instead of `url` when base64 output is requested.
+      title: ImageData
     ErrorSchema:
       properties:
         code:
@@ -215,6 +204,70 @@ components:
           description: Indicates the result of the operation. Typically `"error"` for failed requests.
       title: ErrorSchema
       type: object
+    ImageGenerationRequestSchema:
+      type: object
+      required:
+      - model
+      - prompt
+      properties:
+        model:
+          type: string
+          description: ID of the text-to-image model to use, such as `FLUX.1-schnell`. Use the `model_name` from [List base models](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-base-models); the model must support the `text-to-image` modality.
+        prompt:
+          type: string
+          description: Text description of the image to generate.
+        negative_prompt:
+          type: string
+          default: null
+          description: Text describing what to exclude from the generated image.
+        image_size:
+          type: string
+          default: square_hd
+          description: Output image size, as an aspect-ratio preset or an explicit `WIDTHxHEIGHT` value.
+          x-enumDescriptions:
+            '`square_hd`': Square output, high resolution.
+            '`square`': Square output (1:1).
+            '`portrait_4_3`': Portrait output, 3:4 aspect ratio.
+            '`portrait_16_9`': Portrait output, 9:16 aspect ratio.
+            '`landscape_4_3`': Landscape output, 4:3 aspect ratio.
+            '`landscape_16_9`': Landscape output, 16:9 aspect ratio.
+        num_images:
+          type: integer
+          default: 1
+          description: Number of images to generate.
+        num_inference_steps:
+          type: integer
+          default: null
+          description: Number of denoising steps. Higher values can improve quality at the cost of speed.
+        guidance_scale:
+          type: number
+          default: null
+          description: How closely the result follows the prompt. Higher values follow the prompt more strictly.
+        seed:
+          type: integer
+          default: null
+          description: Random seed for reproducible results.
+        scheduler:
+          type: string
+          default: null
+          description: Sampler or scheduler to use, when supported by the model.
+        output_format:
+          type: string
+          enum:
+          - png
+          - jpeg
+          - webp
+          default: null
+          description: Format of the returned image.
+          x-enumDescriptions:
+            '`png`': Returns a lossless PNG image.
+            '`jpeg`': Returns a smaller, lossy JPEG image.
+            '`webp`': Returns a compact WebP image.
+        preset:
+          type: string
+          default: null
+          description: Named quality or style preset, when supported by the model.
+      title: ImageGenerationRequestSchema
     ImageEditRequestSchema:
       type: object
       required:
@@ -281,18 +334,41 @@ components:
           default: null
           description: Named quality or style preset, when supported by the model.
       title: ImageEditRequestSchema
-    ImageData:
+    ImageTaskResultSchema:
       type: object
       properties:
-        url:
+        created:
           type: string
-          default: null
-          description: URL of the generated image. Populated when the output is returned as a URL.
-        b64_json:
+          description: Timestamp when the result was produced.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageData'
+          description: Generated images.
+      title: ImageTaskResultSchema
+    ImageJobAcceptedSchema:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          description: Identifier of the asynchronous image job. Poll [Get image result](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-image-result) to retrieve the result.
+        status:
           type: string
-          default: null
-          description: Base64-encoded image. Populated instead of `url` when base64 output is requested.
-      title: ImageData
+          description: Initial job status, such as `queued`.
+      title: ImageJobAcceptedSchema
+    ImageUploadUrlSchema:
+      type: object
+      required:
+      - signed_url
+      - filename
+      properties:
+        signed_url:
+          type: string
+          description: Presigned S3 URL. Upload the image bytes with an HTTP PUT to this URL.
+        filename:
+          type: string
+          description: S3 key for the uploaded image. Pass this as `image_url` in [Generate image from image](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/generate-image-from-image).
+      title: ImageUploadUrlSchema
     ImageTaskStatusSchema:
       type: object
       properties:
@@ -309,82 +385,6 @@ components:
           default: null
           description: Generation result. Present once `status` is `completed`.
       title: ImageTaskStatusSchema
-    ImageGenerationRequestSchema:
-      type: object
-      required:
-      - model
-      - prompt
-      properties:
-        model:
-          type: string
-          description: ID of the text-to-image model to use, such as `FLUX.1-schnell`. Use the `model_name` from [List base models](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-base-models); the model must support the `text-to-image` modality.
-        prompt:
-          type: string
-          description: Text description of the image to generate.
-        negative_prompt:
-          type: string
-          default: null
-          description: Text describing what to exclude from the generated image.
-        image_size:
-          type: string
-          default: square_hd
-          description: Output image size, as an aspect-ratio preset or an explicit `WIDTHxHEIGHT` value.
-          x-enumDescriptions:
-            '`square_hd`': Square output, high resolution.
-            '`square`': Square output (1:1).
-            '`portrait_4_3`': Portrait output, 3:4 aspect ratio.
-            '`portrait_16_9`': Portrait output, 9:16 aspect ratio.
-            '`landscape_4_3`': Landscape output, 4:3 aspect ratio.
-            '`landscape_16_9`': Landscape output, 16:9 aspect ratio.
-        num_images:
-          type: integer
-          default: 1
-          description: Number of images to generate.
-        num_inference_steps:
-          type: integer
-          default: null
-          description: Number of denoising steps. Higher values can improve quality at the cost of speed.
-        guidance_scale:
-          type: number
-          default: null
-          description: How closely the result follows the prompt. Higher values follow the prompt more strictly.
-        seed:
-          type: integer
-          default: null
-          description: Random seed for reproducible results.
-        scheduler:
-          type: string
-          default: null
-          description: Sampler or scheduler to use, when supported by the model.
-        output_format:
-          type: string
-          enum:
-          - png
-          - jpeg
-          - webp
-          default: null
-          description: Format of the returned image.
-          x-enumDescriptions:
-            '`png`': Returns a lossless PNG image.
-            '`jpeg`': Returns a smaller, lossy JPEG image.
-            '`webp`': Returns a compact WebP image.
-        preset:
-          type: string
-          default: null
-          description: Named quality or style preset, when supported by the model.
-      title: ImageGenerationRequestSchema
-    ImageTaskResultSchema:
-      type: object
-      properties:
-        created:
-          type: string
-          description: Timestamp when the result was produced.
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ImageData'
-          description: Generated images.
-      title: ImageTaskResultSchema
   securitySchemes:
     apiKey:
       type: apiKey

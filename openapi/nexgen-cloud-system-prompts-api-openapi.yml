@@ -329,17 +329,21 @@ components:
           description: Indicates the result of the operation. Typically `"error"` for failed requests.
       title: ErrorSchema
       type: object
-    SystemPromptsListSchema:
-      description: Schema for listing system prompts with pagination.
+    SuccessSchema:
       properties:
-        prompts:
-          description: List of system prompts.
-          items:
-            $ref: '#/components/schemas/SystemPromptResponseSchema'
-          type: array
-      required:
-      - prompts
-      title: SystemPromptsListSchema
+        message:
+          default: null
+          type: string
+          description: Human-readable message describing the operation result.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+        deleted_count:
+          type: integer
+          default: null
+          description: Number of records deleted by the operation.
+      title: SuccessSchema
       type: object
     SystemPromptUpdateSchema:
       description: Schema for updating an existing system prompt.
@@ -360,6 +364,18 @@ components:
       type: object
       example:
         content: Updated content for API test. You are a concise assistant.
+    SystemPromptsListSchema:
+      description: Schema for listing system prompts with pagination.
+      properties:
+        prompts:
+          description: List of system prompts.
+          items:
+            $ref: '#/components/schemas/SystemPromptResponseSchema'
+          type: array
+      required:
+      - prompts
+      title: SystemPromptsListSchema
+      type: object
     SystemPromptCreateSchema:
       description: Schema for creating a new system prompt.
       properties:
@@ -382,22 +398,6 @@ components:
       example:
         name: example-sysprompt
         content: You are a helpful assistant created for API testing purposes.
-    SuccessSchema:
-      properties:
-        message:
-          default: null
-          type: string
-          description: Human-readable message describing the operation result.
-        status:
-          default: success
-          type: string
-          description: Indicates the result of the operation. Typically `"success"`.
-        deleted_count:
-          type: integer
-          default: null
-          description: Number of records deleted by the operation.
-      title: SuccessSchema
-      type: object
   securitySchemes:
     apiKey:
       type: apiKey

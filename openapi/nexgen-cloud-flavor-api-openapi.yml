@@ -57,24 +57,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    LableResonse:
-      type: object
-      properties:
-        id:
-          type: integer
-        label:
-          type: string
-    Flavor_List_Response:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Flavor_Item_Get_Response'
     Flavor_Fields:
       type: object
       properties:
@@ -110,16 +92,6 @@ components:
         features:
           type: object
           properties: {}
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     Flavor_Item_Get_Response:
       type: object
       properties:
@@ -131,6 +103,34 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Flavor_Fields'
+    LableResonse:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+    Flavor_List_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Flavor_Item_Get_Response'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

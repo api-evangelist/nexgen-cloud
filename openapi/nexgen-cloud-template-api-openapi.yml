@@ -250,6 +250,15 @@ paths:
       - apiKey: []
 components:
   schemas:
+    Template:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        template:
+          $ref: '#/components/schemas/Template_Fields'
     Template_Fields:
       type: object
       properties:
@@ -266,41 +275,6 @@ components:
         created_at:
           type: string
           format: date-time
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    Template:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        template:
-          $ref: '#/components/schemas/Template_Fields'
-    Update_Template:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        is_public:
-          type: boolean
     Templates:
       type: object
       properties:
@@ -312,6 +286,32 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Template_Fields'
+    Update_Template:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        is_public:
+          type: boolean
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

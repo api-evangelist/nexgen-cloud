@@ -46,27 +46,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    Regions:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        regions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Region_Fields'
     Region_Fields:
       type: object
       properties:
@@ -89,6 +68,27 @@ components:
         features:
           type: object
           properties: {}
+    Regions:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Region_Fields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

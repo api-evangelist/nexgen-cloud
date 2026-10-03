@@ -344,6 +344,71 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
+    Update_Volume_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume:
+          $ref: '#/components/schemas/Volume_Fields'
+        updates:
+          type: object
+          properties: {}
+          description: Summary of fields that were updated
+    Volumes_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        environment:
+          $ref: '#/components/schemas/Environment_Fields_for_Volume'
+        description:
+          type: string
+        volume_type:
+          type: string
+        size:
+          type: integer
+        status:
+          type: string
+        bootable:
+          type: boolean
+        image_id:
+          type: integer
+        callback_url:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachments_Fields_for_Volume'
+    Volume:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume:
+          $ref: '#/components/schemas/Volume_Fields'
+    Environment_Fields_for_Volume:
+      type: object
+      properties:
+        name:
+          type: string
+        features:
+          type: object
+          properties: {}
+        region:
+          type: string
     Volumes:
       type: object
       properties:
@@ -361,41 +426,38 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Volumes_Fields'
-    NameAvailableModel:
+    Attachments_Fields_for_Volume:
       type: object
       properties:
-        name:
+        id:
+          type: integer
+        device:
           type: string
-        available:
+        status:
+          type: string
+        instance_id:
+          type: integer
+        protected:
           type: boolean
-        message:
-          type: string
-    Volume:
+    Volume_Types:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        volume:
-          $ref: '#/components/schemas/Volume_Fields'
-    ErrorResponseModel:
+        volume_types:
+          type: array
+          items:
+            type: string
+    Update_Volume_Payload:
+      required:
+      - environment_name
       type: object
       properties:
-        status:
-          type: boolean
-          default: false
-        message:
+        environment_name:
           type: string
-        error_reason:
-          type: string
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
+          description: The name of the target environment to move the volume to. The target environment must be in the same region as the current environment.
     Create_Volume_Payload:
       required:
       - environment_name
@@ -427,37 +489,6 @@ components:
           maxLength: 250
           type: string
           description: A URL that can be attached to the volume you are creating. This `callback_url` will post any action events that occur to your volume to the provided URL.
-    Environment_Fields_for_Volume:
-      type: object
-      properties:
-        name:
-          type: string
-        features:
-          type: object
-          properties: {}
-        region:
-          type: string
-    Update_Volume_Payload:
-      required:
-      - environment_name
-      type: object
-      properties:
-        environment_name:
-          type: string
-          description: The name of the target environment to move the volume to. The target environment must be in the same region as the current environment.
-    Attachments_Fields_for_Volume:
-      type: object
-      properties:
-        id:
-          type: integer
-        device:
-          type: string
-        status:
-          type: string
-        instance_id:
-          type: integer
-        protected:
-          type: boolean
     Volume_Fields:
       type: object
       properties:
@@ -493,63 +524,32 @@ components:
             $ref: '#/components/schemas/Attachments_Fields_for_Volume'
         os_image:
           type: string
-    Volumes_Fields:
+    NameAvailableModel:
       type: object
       properties:
-        id:
-          type: integer
         name:
           type: string
-        environment:
-          $ref: '#/components/schemas/Environment_Fields_for_Volume'
-        description:
-          type: string
-        volume_type:
-          type: string
-        size:
-          type: integer
-        status:
-          type: string
-        bootable:
+        available:
           type: boolean
-        image_id:
-          type: integer
-        callback_url:
+        message:
           type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Attachments_Fields_for_Volume'
-    Update_Volume_Response:
+    ResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        volume:
-          $ref: '#/components/schemas/Volume_Fields'
-        updates:
-          type: object
-          properties: {}
-          description: Summary of fields that were updated
-    Volume_Types:
+    ErrorResponseModel:
       type: object
       properties:
         status:
           type: boolean
+          default: false
         message:
           type: string
-        volume_types:
-          type: array
-          items:
-            type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

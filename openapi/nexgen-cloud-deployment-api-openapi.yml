@@ -179,6 +179,40 @@ paths:
       - apiKey: []
 components:
   schemas:
+    Deployment_Fields_for_start_deployments:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        status:
+          type: string
+        variables:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Deployment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
     Start_Deployment:
       type: object
       properties:
@@ -188,16 +222,17 @@ components:
           type: string
         deployment:
           $ref: '#/components/schemas/Deployment_Fields_for_start_deployments'
-    ErrorResponseModel:
+    Deployments:
       type: object
       properties:
         status:
           type: boolean
-          default: false
         message:
           type: string
-        error_reason:
-          type: string
+        deployments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deployment_Fields'
     Start_Deployment_Payload:
       required:
       - description
@@ -222,51 +257,16 @@ components:
           type: boolean
         message:
           type: string
-    Deployments:
+    ErrorResponseModel:
       type: object
       properties:
         status:
           type: boolean
+          default: false
         message:
           type: string
-        deployments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Deployment_Fields'
-    Deployment_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
+        error_reason:
           type: string
-        description:
-          type: string
-        template:
-          type: string
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    Deployment_Fields_for_start_deployments:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        template:
-          type: string
-        status:
-          type: string
-        variables:
-          type: string
-        created_at:
-          type: string
-          format: date-time
   securitySchemes:
     accessToken:
       type: apiKey

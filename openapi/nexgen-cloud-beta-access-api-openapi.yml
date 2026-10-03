@@ -149,28 +149,18 @@ components:
           type: string
         beta_access_request:
           $ref: '#/components/schemas/BetaAccessRequestFields'
-    BetaAccessRequestPayload:
-      required:
-      - program
-      type: object
-      properties:
-        program:
-          type: string
-          description: Name of the beta program
-        metadata:
-          type: object
-          properties: {}
-          description: Optional metadata for the request
-    ErrorResponseModel:
+    BetaAccessStatusResponseModel:
       type: object
       properties:
         status:
           type: boolean
-          default: false
         message:
           type: string
-        error_reason:
-          type: string
+        beta_access_requests:
+          type: array
+          description: List of beta access requests
+          items:
+            $ref: '#/components/schemas/BetaAccessStatusItem'
     BetaAccessRequestFields:
       type: object
       properties:
@@ -199,18 +189,6 @@ components:
           type: string
           description: When the request was made
           format: date-time
-    BetaAccessStatusResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        beta_access_requests:
-          type: array
-          description: List of beta access requests
-          items:
-            $ref: '#/components/schemas/BetaAccessStatusItem'
     BetaAccessStatusItem:
       type: object
       properties:
@@ -230,6 +208,28 @@ components:
           type: string
           description: When the request was made
           format: date-time
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    BetaAccessRequestPayload:
+      required:
+      - program
+      type: object
+      properties:
+        program:
+          type: string
+          description: Name of the beta program
+        metadata:
+          type: object
+          properties: {}
+          description: Optional metadata for the request
   securitySchemes:
     accessToken:
       type: apiKey

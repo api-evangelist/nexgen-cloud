@@ -59,16 +59,24 @@ components:
           type: integer
         cost_per_hour:
           type: number
-    ErrorResponseModel:
+    Volume_Overview_Fields:
       type: object
       properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
+        count:
+          type: integer
+        using:
+          type: integer
+        cost_per_hour:
+          type: number
+    Overview_Info:
+      type: object
+      properties:
+        instance:
+          $ref: '#/components/schemas/Instance_Overview_Fields'
+        container:
+          $ref: '#/components/schemas/Container_Overview_Fields'
+        volume:
+          $ref: '#/components/schemas/Volume_Overview_Fields'
     Instance_Overview_Fields:
       type: object
       properties:
@@ -82,24 +90,6 @@ components:
           type: integer
         cost_per_hour:
           type: number
-    Overview_Info:
-      type: object
-      properties:
-        instance:
-          $ref: '#/components/schemas/Instance_Overview_Fields'
-        container:
-          $ref: '#/components/schemas/Container_Overview_Fields'
-        volume:
-          $ref: '#/components/schemas/Volume_Overview_Fields'
-    Volume_Overview_Fields:
-      type: object
-      properties:
-        count:
-          type: integer
-        using:
-          type: integer
-        cost_per_hour:
-          type: number
     Dashboard_Info_Response:
       type: object
       properties:
@@ -109,6 +99,16 @@ components:
           type: string
         overview:
           $ref: '#/components/schemas/Overview_Info'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

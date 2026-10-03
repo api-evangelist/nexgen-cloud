@@ -817,13 +817,57 @@ paths:
       - apiKey: []
 components:
   schemas:
-    LableResonse:
+    ClusterVersion:
       type: object
       properties:
         id:
           type: integer
-        label:
+          description: ''
+        version:
           type: string
+          description: ''
+        region:
+          $ref: '#/components/schemas/region'
+        image:
+          $ref: '#/components/schemas/image'
+        created_at:
+          type: string
+          description: ''
+          format: date-time
+        updated_at:
+          type: string
+          description: ''
+          format: date-time
+    ClusterListResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterFields'
+    ClusterNodeInstanceFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+        fixed_ip:
+          type: string
+        floating_ip:
+          type: string
+        floating_ip_status:
+          type: string
+        contract_id:
+          type: integer
+        image_id:
+          type: integer
     ClusterFields:
       type: object
       properties:
@@ -860,7 +904,156 @@ components:
         created_at:
           type: string
           format: date-time
-    image:
+    Update_ClusterNodeGroup_payload:
+      type: object
+      properties:
+        min_count:
+          minimum: 1
+          type: integer
+        max_count:
+          maximum: 20
+          type: integer
+        firewall_ids:
+          type: array
+          description: IDs of the firewalls to apply to all nodes in this node group
+          items:
+            type: integer
+    ClusterNodeGroupFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        role:
+          type: string
+        flavor:
+          $ref: '#/components/schemas/Cluster_Flavor_Fields'
+        count:
+          type: integer
+        min_count:
+          type: integer
+        max_count:
+          type: integer
+        firewall_ids:
+          type: array
+          items:
+            type: integer
+        firewalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeGroupFirewallFields'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ClusterVersions:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterVersion'
+    Cluster_Flavor_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        cpu:
+          type: integer
+        ram:
+          type: number
+        disk:
+          type: integer
+        ephemeral:
+          type: integer
+        gpu:
+          type: string
+        gpu_count:
+          type: integer
+        features:
+          type: object
+          properties: {}
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LableResonse'
+    ClusterNodeGroupsCreateResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        node_group:
+          $ref: '#/components/schemas/ClusterNodeGroupFields'
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeFields'
+    ClusterNodeGroupsListResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        node_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeGroupFields'
+    ClusterNodeFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        role:
+          type: string
+        node_group_id:
+          type: integer
+        node_group_name:
+          type: string
+        instance:
+          $ref: '#/components/schemas/ClusterNodeInstanceFields'
+        status:
+          type: string
+        status_reason:
+          type: string
+        is_bastion:
+          type: boolean
+        requires_public_ip:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ClusterNodeGroupsGetResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        node_group:
+          $ref: '#/components/schemas/ClusterNodeGroupFields'
+    DeleteClusterNodesFields:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+    region:
       type: object
     CreateClusterNodeFields:
       type: object
@@ -876,17 +1069,17 @@ components:
         count:
           minimum: 1
           type: integer
-    ClusterNodeGroupsListResponse:
+    ClusterResponse:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        node_groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterNodeGroupFields'
+        cluster:
+          $ref: '#/components/schemas/ClusterFields'
+    image:
+      type: object
     ManualReconciliationModel:
       type: object
       properties:
@@ -896,14 +1089,84 @@ components:
           type: string
         cluster:
           $ref: '#/components/schemas/ClusterFields'
-    region:
-      type: object
-    ResponseModel:
+    ClusterNodesListResponse:
       type: object
       properties:
         status:
           type: boolean
         message:
+          type: string
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterNodeFields'
+    MasterFlavorsResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        flavors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cluster_Flavor_Fields'
+    Create_ClusterNodeGroup_payload:
+      required:
+      - flavor_name
+      - name
+      - role
+      type: object
+      properties:
+        name:
+          maxLength: 20
+          type: string
+        flavor_name:
+          type: string
+        count:
+          minimum: 1
+          type: integer
+        role:
+          type: string
+          example: worker
+          default: worker
+          enum:
+          - worker
+        min_count:
+          minimum: 1
+          type: integer
+        max_count:
+          maximum: 20
+          type: integer
+        firewall_ids:
+          type: array
+          description: IDs of the firewalls to apply to all nodes in this node group
+          items:
+            type: integer
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    LableResonse:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+    ClusterNodeGroupFirewallFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
           type: string
     Create_Cluster_Payload:
       required:
@@ -943,184 +1206,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Create_ClusterNodeGroup_payload'
-    ClusterResponse:
+    ResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        cluster:
-          $ref: '#/components/schemas/ClusterFields'
-    ClusterNodeGroupFirewallFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        status:
-          type: string
-    NameAvailableModel:
-      type: object
-      properties:
-        name:
-          type: string
-        available:
-          type: boolean
-        message:
-          type: string
-    Create_ClusterNodeGroup_payload:
-      required:
-      - flavor_name
-      - name
-      - role
-      type: object
-      properties:
-        name:
-          maxLength: 20
-          type: string
-        flavor_name:
-          type: string
-        count:
-          minimum: 1
-          type: integer
-        role:
-          type: string
-          example: worker
-          default: worker
-          enum:
-          - worker
-        min_count:
-          minimum: 1
-          type: integer
-        max_count:
-          maximum: 20
-          type: integer
-        firewall_ids:
-          type: array
-          description: IDs of the firewalls to apply to all nodes in this node group
-          items:
-            type: integer
-    Cluster_Flavor_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        cpu:
-          type: integer
-        ram:
-          type: number
-        disk:
-          type: integer
-        ephemeral:
-          type: integer
-        gpu:
-          type: string
-        gpu_count:
-          type: integer
-        features:
-          type: object
-          properties: {}
-        labels:
-          type: array
-          items:
-            $ref: '#/components/schemas/LableResonse'
-    MasterFlavorsResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        flavors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Cluster_Flavor_Fields'
-    ClusterNodeInstanceFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        status:
-          type: string
-        fixed_ip:
-          type: string
-        floating_ip:
-          type: string
-        floating_ip_status:
-          type: string
-        contract_id:
-          type: integer
-        image_id:
-          type: integer
-    ClusterListResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        clusters:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterFields'
-    ClusterNodeGroupFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        role:
-          type: string
-        flavor:
-          $ref: '#/components/schemas/Cluster_Flavor_Fields'
-        count:
-          type: integer
-        min_count:
-          type: integer
-        max_count:
-          type: integer
-        firewall_ids:
-          type: array
-          items:
-            type: integer
-        firewalls:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterNodeGroupFirewallFields'
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    ClusterVersion:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: ''
-        version:
-          type: string
-          description: ''
-        region:
-          $ref: '#/components/schemas/region'
-        image:
-          $ref: '#/components/schemas/image'
-        created_at:
-          type: string
-          description: ''
-          format: date-time
-        updated_at:
-          type: string
-          description: ''
-          format: date-time
     ErrorResponseModel:
       type: object
       properties:
@@ -1131,98 +1223,6 @@ components:
           type: string
         error_reason:
           type: string
-    ClusterNodeGroupsCreateResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        node_group:
-          $ref: '#/components/schemas/ClusterNodeGroupFields'
-        nodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterNodeFields'
-    Update_ClusterNodeGroup_payload:
-      type: object
-      properties:
-        min_count:
-          minimum: 1
-          type: integer
-        max_count:
-          maximum: 20
-          type: integer
-        firewall_ids:
-          type: array
-          description: IDs of the firewalls to apply to all nodes in this node group
-          items:
-            type: integer
-    ClusterVersions:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        versions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterVersion'
-    ClusterNodeFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        role:
-          type: string
-        node_group_id:
-          type: integer
-        node_group_name:
-          type: string
-        instance:
-          $ref: '#/components/schemas/ClusterNodeInstanceFields'
-        status:
-          type: string
-        status_reason:
-          type: string
-        is_bastion:
-          type: boolean
-        requires_public_ip:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    DeleteClusterNodesFields:
-      type: object
-      properties:
-        ids:
-          type: array
-          items:
-            type: integer
-    ClusterNodesListResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        nodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterNodeFields'
-    ClusterNodeGroupsGetResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        node_group:
-          $ref: '#/components/schemas/ClusterNodeGroupFields'
   securitySchemes:
     accessToken:
       type: apiKey

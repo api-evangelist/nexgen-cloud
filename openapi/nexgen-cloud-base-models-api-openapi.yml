@@ -321,22 +321,6 @@ components:
       - models
       title: BaseModelsResponseSchema
       type: object
-    ErrorSchema:
-      properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
-          type: string
-          default: null
-          description: Human-readable description of the error.
-        status:
-          type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
-      type: object
     BaseModelInfoSchema:
       properties:
         available_for_finetuning:
@@ -433,6 +417,22 @@ components:
       - training_time_per_log
       - training_time_y_intercept
       title: BaseModelInfoSchema
+      type: object
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
       type: object
     GetModelResponseSchema:
       properties:

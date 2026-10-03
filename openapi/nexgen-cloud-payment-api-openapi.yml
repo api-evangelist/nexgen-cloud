@@ -154,6 +154,15 @@ paths:
       - apiKey: []
 components:
   schemas:
+    Payment_Initiate_Response:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/Payment_Initiate_Fields'
     Payment_Details_Fields:
       type: object
       properties:
@@ -191,16 +200,6 @@ components:
         updated_at:
           type: string
           format: date-time
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     Payment_Initiate_Fields:
       type: object
       properties:
@@ -222,15 +221,16 @@ components:
       properties:
         amount:
           type: number
-    Payment_Initiate_Response:
+    ErrorResponseModel:
       type: object
       properties:
-        message:
-          type: string
         status:
           type: boolean
-        data:
-          $ref: '#/components/schemas/Payment_Initiate_Fields'
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

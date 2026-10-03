@@ -63,6 +63,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserDefaultChoiceForUserFields'
+    UserDefaultChoiceForUserFields:
+      type: object
+      properties:
+        keypair_id:
+          type: integer
+        flavor_id:
+          type: integer
+        image_id:
+          type: integer
     ErrorResponseModel:
       type: object
       properties:
@@ -73,15 +82,6 @@ components:
           type: string
         error_reason:
           type: string
-    UserDefaultChoiceForUserFields:
-      type: object
-      properties:
-        keypair_id:
-          type: integer
-        flavor_id:
-          type: integer
-        image_id:
-          type: integer
   securitySchemes:
     accessToken:
       type: apiKey

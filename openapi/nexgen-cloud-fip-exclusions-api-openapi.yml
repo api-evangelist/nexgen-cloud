@@ -65,6 +65,13 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
     ErrorResponseModel:
       type: object
       properties:
@@ -74,13 +81,6 @@ components:
         message:
           type: string
         error_reason:
-          type: string
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
           type: string
   securitySchemes:
     accessToken:

@@ -46,16 +46,22 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ErrorResponseModel:
+    PolicyFields:
       type: object
       properties:
-        status:
-          type: boolean
-          default: false
-        message:
+        id:
+          type: integer
+        name:
           type: string
-        error_reason:
+        description:
           type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyPermissionFields'
+        created_at:
+          type: string
+          format: date-time
     PolicyPermissionFields:
       type: object
       properties:
@@ -76,22 +82,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PolicyFields'
-    PolicyFields:
+    ErrorResponseModel:
       type: object
       properties:
-        id:
-          type: integer
-        name:
+        status:
+          type: boolean
+          default: false
+        message:
           type: string
-        description:
+        error_reason:
           type: string
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/PolicyPermissionFields'
-        created_at:
-          type: string
-          format: date-time
   securitySchemes:
     accessToken:
       type: apiKey

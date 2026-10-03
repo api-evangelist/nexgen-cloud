@@ -182,66 +182,6 @@ paths:
       - Inference
 components:
   schemas:
-    ErrorSchema:
-      properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
-          type: string
-          default: null
-          description: Human-readable description of the error.
-        status:
-          type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
-      type: object
-    ChatCompletionMessageSchema:
-      properties:
-        content:
-          type: array
-          nullable: true
-          description: The message content. For image-to-text models, pass an array of content parts, each a `text` part or an `image_url` part (shown below). For plain text-only messages, you can also pass `content` as a single string.
-          items:
-            type: object
-            required:
-            - type
-            properties:
-              type:
-                type: string
-                enum:
-                - text
-                - image_url
-                description: The content part type.
-              text:
-                type: string
-                description: The text of this part. Provide when `type` is `text`.
-              image_url:
-                type: object
-                description: The image for this part. Provide when `type` is `image_url`.
-                required:
-                - url
-                properties:
-                  url:
-                    type: string
-                    description: The image as a data URI (base64-encoded) or a publicly reachable URL.
-                  detail:
-                    type: string
-                    enum:
-                    - auto
-                    - high
-                    - low
-                    default: auto
-                    description: How much detail the model uses when processing the image.
-        role:
-          type: string
-          description: 'The role of the message author: `system`, `user`, or `assistant`.'
-      required:
-      - role
-      type: object
-      description: A single chat message. For image-to-text models, `content` may be an array of text and image parts.
     InferenceRequestSchema:
       properties:
         messages:
@@ -309,6 +249,66 @@ components:
         - role: user
           content: 'Reply with exactly: OK'
         stream: false
+    ChatCompletionMessageSchema:
+      properties:
+        content:
+          type: array
+          nullable: true
+          description: The message content. For image-to-text models, pass an array of content parts, each a `text` part or an `image_url` part (shown below). For plain text-only messages, you can also pass `content` as a single string.
+          items:
+            type: object
+            required:
+            - type
+            properties:
+              type:
+                type: string
+                enum:
+                - text
+                - image_url
+                description: The content part type.
+              text:
+                type: string
+                description: The text of this part. Provide when `type` is `text`.
+              image_url:
+                type: object
+                description: The image for this part. Provide when `type` is `image_url`.
+                required:
+                - url
+                properties:
+                  url:
+                    type: string
+                    description: The image as a data URI (base64-encoded) or a publicly reachable URL.
+                  detail:
+                    type: string
+                    enum:
+                    - auto
+                    - high
+                    - low
+                    default: auto
+                    description: How much detail the model uses when processing the image.
+        role:
+          type: string
+          description: 'The role of the message author: `system`, `user`, or `assistant`.'
+      required:
+      - role
+      type: object
+      description: A single chat message. For image-to-text models, `content` may be an array of text and image parts.
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
   securitySchemes:
     apiKey:
       type: apiKey

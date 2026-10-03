@@ -178,6 +178,45 @@ paths:
       - apiKey: []
 components:
   schemas:
+    InviteFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    CommonResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    InviteUserResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        invite:
+          $ref: '#/components/schemas/InviteFields'
+    InviteUserPayload:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          maxLength: 254
+          minLength: 6
+          pattern: ^[A-Za-z0-9](?:[A-Za-z0-9._+-]{0,62}[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$
+          type: string
+          description: The email for sending invitation.
     ErrorResponseModel:
       type: object
       properties:
@@ -199,45 +238,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InviteFields'
-    InviteUserPayload:
-      required:
-      - email
-      type: object
-      properties:
-        email:
-          maxLength: 254
-          minLength: 6
-          pattern: ^[A-Za-z0-9](?:[A-Za-z0-9._+-]{0,62}[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$
-          type: string
-          description: The email for sending invitation.
-    InviteFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        email:
-          type: string
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    InviteUserResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        invite:
-          $ref: '#/components/schemas/InviteFields'
-    CommonResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

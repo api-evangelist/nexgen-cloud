@@ -219,22 +219,33 @@ paths:
       - apiKey: []
 components:
   schemas:
-    LableResonse:
+    Image_Get_Response:
       type: object
       properties:
-        id:
-          type: integer
-        label:
+        region_name:
           type: string
-    NameAvailableModel:
+        type:
+          type: string
+        logo:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image_Fields'
+    FlavorRestrictions:
       type: object
       properties:
-        name:
-          type: string
-        available:
+        has_flavor_restrictions:
           type: boolean
-        message:
+          description: Whether the image has any flavor restrictions
+        restriction_type:
           type: string
+          description: Either 'hard', 'soft', or null if no restrictions
+        compatible_flavors:
+          type: array
+          description: List of compatible flavors with their link metadata
+          items:
+            $ref: '#/components/schemas/CompatibleFlavor'
     Images:
       type: object
       properties:
@@ -246,6 +257,27 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Image_Get_Response'
+    Image:
+      type: object
+      properties:
+        image:
+          $ref: '#/components/schemas/Image_Fields'
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    LableResonse:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
     Image_Fields:
       type: object
       properties:
@@ -276,42 +308,6 @@ components:
           description: Flavor compatibility restrictions for this image
           allOf:
           - $ref: '#/components/schemas/FlavorRestrictions'
-    Image:
-      type: object
-      properties:
-        image:
-          $ref: '#/components/schemas/Image_Fields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    FlavorRestrictions:
-      type: object
-      properties:
-        has_flavor_restrictions:
-          type: boolean
-          description: Whether the image has any flavor restrictions
-        restriction_type:
-          type: string
-          description: Either 'hard', 'soft', or null if no restrictions
-        compatible_flavors:
-          type: array
-          description: List of compatible flavors with their link metadata
-          items:
-            $ref: '#/components/schemas/CompatibleFlavor'
     CompatibleFlavor:
       type: object
       properties:
@@ -328,19 +324,23 @@ components:
           description: JSON constraints object
         reason:
           type: string
-    Image_Get_Response:
+    ResponseModel:
       type: object
       properties:
-        region_name:
+        status:
+          type: boolean
+        message:
           type: string
-        type:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
           type: string
-        logo:
+        error_reason:
           type: string
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/Image_Fields'
   securitySchemes:
     accessToken:
       type: apiKey

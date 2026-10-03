@@ -109,23 +109,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    AssignRbacRolePayload:
-      required:
-      - role_id
-      type: object
-      properties:
-        role_id:
-          type: integer
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     RolePolicyFields:
       type: object
       properties:
@@ -135,15 +118,22 @@ components:
           type: string
         description:
           type: string
-    RolePermissionFields:
+    CommonResponseModel:
       type: object
       properties:
-        id:
-          type: integer
-        resource:
+        status:
+          type: boolean
+        message:
           type: string
-        permission:
+    RbacRoleDetailResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
           type: string
+        role:
+          $ref: '#/components/schemas/RbacRoleFields'
     RbacRoleFields:
       type: object
       properties:
@@ -164,22 +154,32 @@ components:
         created_at:
           type: string
           format: date-time
-    CommonResponseModel:
+    AssignRbacRolePayload:
+      required:
+      - role_id
+      type: object
+      properties:
+        role_id:
+          type: integer
+    RolePermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
+          type: string
+    ErrorResponseModel:
       type: object
       properties:
         status:
           type: boolean
+          default: false
         message:
           type: string
-    RbacRoleDetailResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
+        error_reason:
           type: string
-        role:
-          $ref: '#/components/schemas/RbacRoleFields'
   securitySchemes:
     accessToken:
       type: apiKey
