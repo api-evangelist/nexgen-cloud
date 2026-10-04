@@ -306,21 +306,6 @@ paths:
       - Base Models
 components:
   schemas:
-    BaseModelsResponseSchema:
-      properties:
-        models:
-          items:
-            $ref: '#/components/schemas/BaseModelInfoSchema'
-          type: array
-          description: List of available base model objects.
-        status:
-          default: success
-          type: string
-          description: Indicates the result of the operation. Typically `"success"`.
-      required:
-      - models
-      title: BaseModelsResponseSchema
-      type: object
     BaseModelInfoSchema:
       properties:
         available_for_finetuning:
@@ -418,21 +403,20 @@ components:
       - training_time_y_intercept
       title: BaseModelInfoSchema
       type: object
-    ErrorSchema:
+    BaseModelsResponseSchema:
       properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
-          type: string
-          default: null
-          description: Human-readable description of the error.
+        models:
+          items:
+            $ref: '#/components/schemas/BaseModelInfoSchema'
+          type: array
+          description: List of available base model objects.
         status:
+          default: success
           type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - models
+      title: BaseModelsResponseSchema
       type: object
     GetModelResponseSchema:
       properties:
@@ -461,6 +445,22 @@ components:
         '`text-to-image`': Returns models that generate images from a text prompt ([text-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-image-models)).
         '`image-to-image`': Returns models that generate images from a source image and a text prompt ([image-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-image-models)).
         '`image-to-text`': Returns models that generate text from an image and a text prompt ([image-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-text-models)).
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
   securitySchemes:
     apiKey:
       type: apiKey

@@ -63,6 +63,14 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
+    Redeem_voucher_payload:
+      required:
+      - voucher_code
+      type: object
+      properties:
+        voucher_code:
+          type: string
+          description: The code of the voucher you want to redeem.
     voucher:
       required:
       - code
@@ -105,14 +113,6 @@ components:
           description: Redeemed voucher details
           allOf:
           - $ref: '#/components/schemas/voucher'
-    Redeem_voucher_payload:
-      required:
-      - voucher_code
-      type: object
-      properties:
-        voucher_code:
-          type: string
-          description: The code of the voucher you want to redeem.
     ErrorResponseModel:
       type: object
       properties:

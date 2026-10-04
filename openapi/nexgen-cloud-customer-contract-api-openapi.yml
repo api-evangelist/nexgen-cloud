@@ -169,67 +169,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    AllocatedGPUCountGraph:
-      type: object
-      properties:
-        datetime:
-          type: string
-        value:
-          type: integer
-    ContractDiscountPlanFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        resource_id:
-          type: integer
-        resource_name:
-          type: string
-        resource_count:
-          type: integer
-        discount_type:
-          type: string
-        discount_code:
-          type: string
-        discount_percent:
-          type: number
-        discount_amount:
-          type: number
-        discount_status:
-          type: string
-        remaining_count:
-          type: integer
-    CustomerContractDetailResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        contracts:
-          $ref: '#/components/schemas/CustomerContractFields'
-    GetCustomerContractsListResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        contracts:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerContractFields'
-        count:
-          type: integer
-    ContractGPUAllocationGraphResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        contract:
-          $ref: '#/components/schemas/Contract'
     CustomerContractFields:
       type: object
       properties:
@@ -256,6 +195,68 @@ components:
         created_at:
           type: string
           format: date-time
+    ContractDiscountPlanFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource_id:
+          type: integer
+        resource_name:
+          type: string
+        resource_count:
+          type: integer
+        discount_type:
+          type: string
+        discount_code:
+          type: string
+        discount_percent:
+          type: number
+        discount_amount:
+          type: number
+        discount_status:
+          type: string
+        remaining_count:
+          type: integer
+    ContractGPUAllocationGraphResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        contract:
+          $ref: '#/components/schemas/Contract'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    GetCustomerContractsListResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        contracts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerContractFields'
+        count:
+          type: integer
+    AllocatedGPUCountGraph:
+      type: object
+      properties:
+        datetime:
+          type: string
+        value:
+          type: integer
     Contract:
       type: object
       properties:
@@ -273,16 +274,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AllocatedGPUCountGraph'
-    ErrorResponseModel:
+    CustomerContractDetailResponseModel:
       type: object
       properties:
         status:
           type: boolean
-          default: false
         message:
           type: string
-        error_reason:
-          type: string
+        contracts:
+          $ref: '#/components/schemas/CustomerContractFields'
   securitySchemes:
     accessToken:
       type: apiKey

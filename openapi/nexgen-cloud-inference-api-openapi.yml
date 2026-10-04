@@ -182,6 +182,22 @@ paths:
       - Inference
 components:
   schemas:
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
+      type: object
     InferenceRequestSchema:
       properties:
         messages:
@@ -293,22 +309,6 @@ components:
       - role
       type: object
       description: A single chat message. For image-to-text models, `content` may be an array of text and image parts.
-    ErrorSchema:
-      properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
-          type: string
-          default: null
-          description: Human-readable description of the error.
-        status:
-          type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
-      type: object
   securitySchemes:
     apiKey:
       type: apiKey

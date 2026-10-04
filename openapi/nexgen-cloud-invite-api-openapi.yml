@@ -190,22 +190,6 @@ components:
         created_at:
           type: string
           format: date-time
-    CommonResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    InviteUserResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        invite:
-          $ref: '#/components/schemas/InviteFields'
     InviteUserPayload:
       required:
       - email
@@ -238,6 +222,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InviteFields'
+    InviteUserResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        invite:
+          $ref: '#/components/schemas/InviteFields'
+    CommonResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

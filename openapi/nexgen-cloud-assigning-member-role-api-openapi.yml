@@ -109,6 +109,41 @@ paths:
       - apiKey: []
 components:
   schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    AssignRbacRolePayload:
+      required:
+      - role_id
+      type: object
+      properties:
+        role_id:
+          type: integer
+    RolePermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
+          type: string
+    RbacRoleDetailResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        role:
+          $ref: '#/components/schemas/RbacRoleFields'
     RolePolicyFields:
       type: object
       properties:
@@ -125,15 +160,6 @@ components:
           type: boolean
         message:
           type: string
-    RbacRoleDetailResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        role:
-          $ref: '#/components/schemas/RbacRoleFields'
     RbacRoleFields:
       type: object
       properties:
@@ -154,32 +180,6 @@ components:
         created_at:
           type: string
           format: date-time
-    AssignRbacRolePayload:
-      required:
-      - role_id
-      type: object
-      properties:
-        role_id:
-          type: integer
-    RolePermissionFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        resource:
-          type: string
-        permission:
-          type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

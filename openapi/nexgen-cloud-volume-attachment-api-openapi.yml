@@ -184,43 +184,6 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    Update_Volume_Attachment_Payload:
-      type: object
-      properties:
-        protected:
-          type: boolean
-    Attach_Volumes:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        volume_attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Attach_Volume_Fields'
-    Detach_Volumes:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        volume_attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Attach_Volume_Fields'
-    Attach_Volumes_Payload:
-      type: object
-      properties:
-        volume_ids:
-          type: array
-          items:
-            type: integer
-        protected:
-          type: boolean
-          default: false
     Attach_Volume_Fields:
       type: object
       properties:
@@ -256,6 +219,43 @@ components:
           type: string
         error_reason:
           type: string
+    Attach_Volumes:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume_attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attach_Volume_Fields'
+    Update_Volume_Attachment_Payload:
+      type: object
+      properties:
+        protected:
+          type: boolean
+    Attach_Volumes_Payload:
+      type: object
+      properties:
+        volume_ids:
+          type: array
+          items:
+            type: integer
+        protected:
+          type: boolean
+          default: false
+    Detach_Volumes:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume_attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attach_Volume_Fields'
   securitySchemes:
     accessToken:
       type: apiKey

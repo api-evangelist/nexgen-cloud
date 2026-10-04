@@ -46,6 +46,17 @@ paths:
       - apiKey: []
 components:
   schemas:
+    GetPermissionsResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionFields'
     PermissionFields:
       type: object
       properties:
@@ -62,17 +73,6 @@ components:
         created_at:
           type: string
           format: date-time
-    GetPermissionsResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/PermissionFields'
     ErrorResponseModel:
       type: object
       properties:

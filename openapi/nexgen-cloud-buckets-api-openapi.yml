@@ -129,11 +129,15 @@ components:
           title: Size Bytes Actual
           type: integer
           description: Size utilized in bytes
-    object_storage__RegionsEnum:
-      title: RegionsEnum
-      type: string
-      enum:
-      - CANADA-1
+    object_storage__DeleteResponse:
+      title: DeleteResponse
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          title: Message
+          type: string
     object_storage__ErrorResponse:
       title: ErrorResponse
       required:
@@ -151,15 +155,11 @@ components:
           title: Status
           type: boolean
           default: false
-    object_storage__DeleteResponse:
-      title: DeleteResponse
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          title: Message
-          type: string
+    object_storage__RegionsEnum:
+      title: RegionsEnum
+      type: string
+      enum:
+      - CANADA-1
     object_storage__BucketListResponse:
       title: BucketListResponse
       required:

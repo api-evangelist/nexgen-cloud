@@ -52,17 +52,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    UserDefaultChoicesForUserResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        user_default_choices:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserDefaultChoiceForUserFields'
     UserDefaultChoiceForUserFields:
       type: object
       properties:
@@ -82,6 +71,17 @@ components:
           type: string
         error_reason:
           type: string
+    UserDefaultChoicesForUserResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        user_default_choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDefaultChoiceForUserFields'
   securitySchemes:
     accessToken:
       type: apiKey

@@ -139,6 +139,24 @@ paths:
       - Models
 components:
   schemas:
+    OpenAIModelsListResponseSchema:
+      description: OpenAI-compliant response schema for GET /api/v1/models.
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/OpenAIModelSchema'
+          type: array
+          description: Array of model objects in OpenAI-compatible format.
+        object:
+          default: list
+          enum:
+          - list
+          type: string
+          description: Object type identifier. Always `"list"`.
+      required:
+      - data
+      title: OpenAIModelsListResponseSchema
+      type: object
     OpenAIModelSchema:
       description: Schema for individual model in OpenAI format.
       properties:
@@ -163,68 +181,6 @@ components:
       - owned_by
       title: OpenAIModelSchema
       type: object
-    ErrorSchema:
-      properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
-          type: string
-          default: null
-          description: Human-readable description of the error.
-        status:
-          type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
-      type: object
-    OpenAIModelsListResponseSchema:
-      description: OpenAI-compliant response schema for GET /api/v1/models.
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/OpenAIModelSchema'
-          type: array
-          description: Array of model objects in OpenAI-compatible format.
-        object:
-          default: list
-          enum:
-          - list
-          type: string
-          description: Object type identifier. Always `"list"`.
-      required:
-      - data
-      title: OpenAIModelsListResponseSchema
-      type: object
-    GetModelsChoicesResponseSchema:
-      properties:
-        models:
-          items:
-            $ref: '#/components/schemas/ModelOptionSchema'
-          type: array
-          description: List of model objects available for inference selection.
-        status:
-          default: success
-          type: string
-          description: Indicates the result of the operation. Typically `"success"`.
-      required:
-      - models
-      title: GetModelsChoicesResponseSchema
-      type: object
-    ModalityEnum:
-      type: string
-      enum:
-      - text-to-text
-      - text-to-image
-      - image-to-image
-      - image-to-text
-      title: ModalityEnum
-      x-enumDescriptions:
-        '`text-to-text`': Returns models that generate text from a text prompt ([text-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-text-models)).
-        '`text-to-image`': Returns models that generate images from a text prompt ([text-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-image-models)).
-        '`image-to-image`': Returns models that generate images from a source image and a text prompt ([image-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-image-models)).
-        '`image-to-text`': Returns models that generate text from an image and a text prompt ([image-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-text-models)).
     ModelOptionSchema:
       properties:
         display_name:
@@ -276,6 +232,50 @@ components:
       - display_name
       - is_finetuned_model
       title: ModelOptionSchema
+      type: object
+    GetModelsChoicesResponseSchema:
+      properties:
+        models:
+          items:
+            $ref: '#/components/schemas/ModelOptionSchema'
+          type: array
+          description: List of model objects available for inference selection.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - models
+      title: GetModelsChoicesResponseSchema
+      type: object
+    ModalityEnum:
+      type: string
+      enum:
+      - text-to-text
+      - text-to-image
+      - image-to-image
+      - image-to-text
+      title: ModalityEnum
+      x-enumDescriptions:
+        '`text-to-text`': Returns models that generate text from a text prompt ([text-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-text-models)).
+        '`text-to-image`': Returns models that generate images from a text prompt ([text-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#text-to-image-models)).
+        '`image-to-image`': Returns models that generate images from a source image and a text prompt ([image-to-image models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-image-models)).
+        '`image-to-text`': Returns models that generate text from an image and a text prompt ([image-to-text models](https://docs.hyperstack.cloud/docs/ai-studio/models/third-party-hosted-models#image-to-text-models)).
+    ErrorSchema:
+      properties:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
       type: object
   securitySchemes:
     apiKey:

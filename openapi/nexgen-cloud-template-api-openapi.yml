@@ -250,6 +250,25 @@ paths:
       - apiKey: []
 components:
   schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Update_Template:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        is_public:
+          type: boolean
     Template:
       type: object
       properties:
@@ -259,6 +278,24 @@ components:
           type: string
         template:
           $ref: '#/components/schemas/Template_Fields'
+    Templates:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Template_Fields'
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
     Template_Fields:
       type: object
       properties:
@@ -275,43 +312,6 @@ components:
         created_at:
           type: string
           format: date-time
-    Templates:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        templates:
-          type: array
-          items:
-            $ref: '#/components/schemas/Template_Fields'
-    Update_Template:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        is_public:
-          type: boolean
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

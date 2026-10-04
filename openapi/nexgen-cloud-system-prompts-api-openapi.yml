@@ -313,37 +313,17 @@ components:
       - organization_id
       title: SystemPromptResponseSchema
       type: object
-    ErrorSchema:
+    SystemPromptsListSchema:
+      description: Schema for listing system prompts with pagination.
       properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
-          type: string
-          default: null
-          description: Human-readable description of the error.
-        status:
-          type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
-      type: object
-    SuccessSchema:
-      properties:
-        message:
-          default: null
-          type: string
-          description: Human-readable message describing the operation result.
-        status:
-          default: success
-          type: string
-          description: Indicates the result of the operation. Typically `"success"`.
-        deleted_count:
-          type: integer
-          default: null
-          description: Number of records deleted by the operation.
-      title: SuccessSchema
+        prompts:
+          description: List of system prompts.
+          items:
+            $ref: '#/components/schemas/SystemPromptResponseSchema'
+          type: array
+      required:
+      - prompts
+      title: SystemPromptsListSchema
       type: object
     SystemPromptUpdateSchema:
       description: Schema for updating an existing system prompt.
@@ -364,17 +344,21 @@ components:
       type: object
       example:
         content: Updated content for API test. You are a concise assistant.
-    SystemPromptsListSchema:
-      description: Schema for listing system prompts with pagination.
+    ErrorSchema:
       properties:
-        prompts:
-          description: List of system prompts.
-          items:
-            $ref: '#/components/schemas/SystemPromptResponseSchema'
-          type: array
-      required:
-      - prompts
-      title: SystemPromptsListSchema
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
+          type: string
+          default: null
+          description: Human-readable description of the error.
+        status:
+          type: string
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
       type: object
     SystemPromptCreateSchema:
       description: Schema for creating a new system prompt.
@@ -398,6 +382,22 @@ components:
       example:
         name: example-sysprompt
         content: You are a helpful assistant created for API testing purposes.
+    SuccessSchema:
+      properties:
+        message:
+          default: null
+          type: string
+          description: Human-readable message describing the operation result.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+        deleted_count:
+          type: integer
+          default: null
+          description: Number of records deleted by the operation.
+      title: SuccessSchema
+      type: object
   securitySchemes:
     apiKey:
       type: apiKey

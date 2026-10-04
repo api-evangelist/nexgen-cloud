@@ -63,6 +63,32 @@ paths:
       - apiKey: []
 components:
   schemas:
+    ResourceObjectResponseForCustomer:
+      type: object
+      properties:
+        org_id:
+          type: integer
+        resource:
+          $ref: '#/components/schemas/InfrahubResourceObjectResponseForCustomer'
+    ResourceBillingResponseForCustomer:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        calculated_resource_bills:
+          $ref: '#/components/schemas/ResourceObjectResponseForCustomer'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     InfrahubResourceObjectResponseForCustomer:
       type: object
       properties:
@@ -101,32 +127,6 @@ components:
           type: number
         actual_price:
           type: number
-    ResourceBillingResponseForCustomer:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        calculated_resource_bills:
-          $ref: '#/components/schemas/ResourceObjectResponseForCustomer'
-    ResourceObjectResponseForCustomer:
-      type: object
-      properties:
-        org_id:
-          type: integer
-        resource:
-          $ref: '#/components/schemas/InfrahubResourceObjectResponseForCustomer'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

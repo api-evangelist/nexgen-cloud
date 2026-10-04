@@ -182,15 +182,15 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    AllowedCountriesResponse:
+    UsersInfoListResponse:
       type: object
       properties:
         status:
           type: boolean
-        countries:
-          type: array
-          items:
-            type: string
+        message:
+          type: string
+        users_info:
+          $ref: '#/components/schemas/UsersInfoFields'
     User_info_post_payload:
       required:
       - business
@@ -220,6 +220,25 @@ components:
           type: string
         state:
           type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    AllowedCountriesResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        countries:
+          type: array
+          items:
+            type: string
     AddUserInfoSuccessResponseModel:
       type: object
       properties:
@@ -228,15 +247,6 @@ components:
         message:
           type: string
         data:
-          $ref: '#/components/schemas/UsersInfoFields'
-    UsersInfoListResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        users_info:
           $ref: '#/components/schemas/UsersInfoFields'
     UsersInfoFields:
       type: object
@@ -271,16 +281,6 @@ components:
           type: string
           format: date-time
         stripe_user_id:
-          type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
           type: string
   securitySchemes:
     accessToken:

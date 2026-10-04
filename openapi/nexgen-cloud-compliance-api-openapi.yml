@@ -232,6 +232,33 @@ components:
           type: integer
         variation_unit:
           type: integer
+    ComplianceFields:
+      type: object
+      properties:
+        gpu_model:
+          type: string
+        cpu:
+          type: array
+          items:
+            type: integer
+        ram:
+          type: array
+          items:
+            type: integer
+        hdd:
+          type: array
+          items:
+            type: integer
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     ComplianceResponse:
       type: object
       properties:
@@ -250,23 +277,13 @@ components:
           type: string
         compliance:
           $ref: '#/components/schemas/ComplianceModelFields'
-    ComplianceFields:
+    ResponseModel:
       type: object
       properties:
-        gpu_model:
+        status:
+          type: boolean
+        message:
           type: string
-        cpu:
-          type: array
-          items:
-            type: integer
-        ram:
-          type: array
-          items:
-            type: integer
-        hdd:
-          type: array
-          items:
-            type: integer
     ComplianceModelFields:
       type: object
       properties:
@@ -284,23 +301,6 @@ components:
           type: integer
         variation_unit:
           type: integer
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

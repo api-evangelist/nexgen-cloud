@@ -140,27 +140,25 @@ paths:
       - apiKey: []
 components:
   schemas:
-    BetaAccessRequestResponseModel:
+    BetaAccessStatusItem:
       type: object
       properties:
         status:
-          type: boolean
-        message:
           type: string
-        beta_access_request:
-          $ref: '#/components/schemas/BetaAccessRequestFields'
-    BetaAccessStatusResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
+          description: Status of the request (requested, approved, denied, revoked)
+          example: requested
+          enum:
+          - requested
+          - approved
+          - denied
+          - revoked
+        program_name:
           type: string
-        beta_access_requests:
-          type: array
-          description: List of beta access requests
-          items:
-            $ref: '#/components/schemas/BetaAccessStatusItem'
+          description: Name of the beta program
+        request_date:
+          type: string
+          description: When the request was made
+          format: date-time
     BetaAccessRequestFields:
       type: object
       properties:
@@ -189,35 +187,6 @@ components:
           type: string
           description: When the request was made
           format: date-time
-    BetaAccessStatusItem:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Status of the request (requested, approved, denied, revoked)
-          example: requested
-          enum:
-          - requested
-          - approved
-          - denied
-          - revoked
-        program_name:
-          type: string
-          description: Name of the beta program
-        request_date:
-          type: string
-          description: When the request was made
-          format: date-time
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     BetaAccessRequestPayload:
       required:
       - program
@@ -230,6 +199,37 @@ components:
           type: object
           properties: {}
           description: Optional metadata for the request
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    BetaAccessRequestResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        beta_access_request:
+          $ref: '#/components/schemas/BetaAccessRequestFields'
+    BetaAccessStatusResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        beta_access_requests:
+          type: array
+          description: List of beta access requests
+          items:
+            $ref: '#/components/schemas/BetaAccessStatusItem'
   securitySchemes:
     accessToken:
       type: apiKey

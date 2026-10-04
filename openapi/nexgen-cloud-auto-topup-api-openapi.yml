@@ -209,30 +209,7 @@ paths:
       - apiKey: []
 components:
   schemas:
-    GetAutoTopupResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: ''
-        message:
-          type: string
-          description: ''
-        auto_topup:
-          $ref: '#/components/schemas/auto_topup'
     CreateAutoTopupPayload:
-      required:
-      - threshold_amount
-      - topup_amount
-      type: object
-      properties:
-        threshold_amount:
-          type: number
-          description: ''
-        topup_amount:
-          type: number
-          description: ''
-    UpdateAutoTopupPayload:
       required:
       - threshold_amount
       - topup_amount
@@ -255,6 +232,52 @@ components:
           description: ''
         auto_topup:
           $ref: '#/components/schemas/auto_topup'
+    CreateAutoTopupResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        auto_topup:
+          $ref: '#/components/schemas/auto_topup'
+    AutoTopupErrorResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        error_reason:
+          type: string
+          description: ''
+    GetAutoTopupResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        auto_topup:
+          $ref: '#/components/schemas/auto_topup'
+    AutoTopupStatusSchema:
+      type: object
+      properties:
+        status:
+          type: string
+          description: 'Auto top-up status: active, disabled, pending_setup, cancelled, or null'
+        threshold_amount:
+          type: number
+          description: Balance threshold that triggers auto top-up
+        topup_amount:
+          type: number
+          description: Amount to top up when threshold is reached
     auto_topup:
       type: object
       properties:
@@ -273,30 +296,6 @@ components:
         updated_at:
           type: string
           description: ''
-    AutoTopupErrorResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: ''
-        message:
-          type: string
-          description: ''
-        error_reason:
-          type: string
-          description: ''
-    AutoTopupStatusSchema:
-      type: object
-      properties:
-        status:
-          type: string
-          description: 'Auto top-up status: active, disabled, pending_setup, cancelled, or null'
-        threshold_amount:
-          type: number
-          description: Balance threshold that triggers auto top-up
-        topup_amount:
-          type: number
-          description: Amount to top up when threshold is reached
     UpdateAutoTopupResponse:
       type: object
       properties:
@@ -308,17 +307,18 @@ components:
           description: ''
         auto_topup:
           $ref: '#/components/schemas/auto_topup'
-    CreateAutoTopupResponse:
+    UpdateAutoTopupPayload:
+      required:
+      - threshold_amount
+      - topup_amount
       type: object
       properties:
-        status:
-          type: boolean
+        threshold_amount:
+          type: number
           description: ''
-        message:
-          type: string
+        topup_amount:
+          type: number
           description: ''
-        auto_topup:
-          $ref: '#/components/schemas/auto_topup'
   securitySchemes:
     accessToken:
       type: apiKey

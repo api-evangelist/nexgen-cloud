@@ -79,6 +79,61 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    SecondaryColor:
+      type: object
+      properties:
+        light:
+          type: string
+        dark:
+          type: string
+    Logos:
+      type: object
+      properties:
+        light:
+          type: string
+        dark:
+          type: string
+        email:
+          type: string
+        favicon:
+          type: string
+    PrimaryColor:
+      type: object
+      properties:
+        light:
+          type: string
+        dark:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    PartnerConfig:
+      required:
+      - name
+      - user_type
+      type: object
+      properties:
+        name:
+          type: string
+        uris:
+          $ref: '#/components/schemas/URIs'
+        user_type:
+          type: string
+        support_email:
+          type: string
+        logos:
+          $ref: '#/components/schemas/Logos'
+        background_image_url:
+          type: string
+        colors:
+          $ref: '#/components/schemas/Colors'
     URIs:
       type: object
       properties:
@@ -103,61 +158,6 @@ components:
           $ref: '#/components/schemas/PrimaryColor'
         secondary:
           $ref: '#/components/schemas/SecondaryColor'
-    PartnerConfig:
-      required:
-      - name
-      - user_type
-      type: object
-      properties:
-        name:
-          type: string
-        uris:
-          $ref: '#/components/schemas/URIs'
-        user_type:
-          type: string
-        support_email:
-          type: string
-        logos:
-          $ref: '#/components/schemas/Logos'
-        background_image_url:
-          type: string
-        colors:
-          $ref: '#/components/schemas/Colors'
-    SecondaryColor:
-      type: object
-      properties:
-        light:
-          type: string
-        dark:
-          type: string
-    Logos:
-      type: object
-      properties:
-        light:
-          type: string
-        dark:
-          type: string
-        email:
-          type: string
-        favicon:
-          type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    PrimaryColor:
-      type: object
-      properties:
-        light:
-          type: string
-        dark:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

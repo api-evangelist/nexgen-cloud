@@ -57,6 +57,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GPU_Fields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     GPU_Fields:
       type: object
       properties:
@@ -76,16 +86,6 @@ components:
         updated_at:
           type: string
           format: date-time
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     GPU_Region_Fields:
       type: object
       properties:

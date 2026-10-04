@@ -107,15 +107,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    Request_Console:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        url:
-          type: string
     VNC_URL:
       type: object
       properties:
@@ -125,13 +116,6 @@ components:
           type: string
         vnc_url:
           $ref: '#/components/schemas/VNC_URL_Fields'
-    VNC_URL_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        vnc_url:
-          type: string
     ErrorResponseModel:
       type: object
       properties:
@@ -141,6 +125,22 @@ components:
         message:
           type: string
         error_reason:
+          type: string
+    Request_Console:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        url:
+          type: string
+    VNC_URL_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        vnc_url:
           type: string
   securitySchemes:
     accessToken:

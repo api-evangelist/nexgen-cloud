@@ -191,13 +191,26 @@ components:
           type: string
         consent:
           $ref: '#/components/schemas/UserConsent'
-    ConsentTemplatesResponse:
+    ConsentTemplate:
       type: object
       properties:
-        templates:
-          type: object
-          properties: {}
-          description: Templates keyed by consent type
+        version:
+          type: string
+          description: Template version identifier
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentBlock'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     UpdateConsentRequest:
       required:
       - action
@@ -240,6 +253,41 @@ components:
         text:
           type: string
           description: Block text, may contain ${variable} placeholders
+    UserConsentsResponse:
+      type: object
+      properties:
+        consents:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserConsent'
+    UserConsent:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        org_id:
+          type: integer
+        consent_type:
+          type: string
+        action:
+          type: string
+        ip_address:
+          type: string
+        consent_method:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+    ConsentTemplatesResponse:
+      type: object
+      properties:
+        templates:
+          type: object
+          properties: {}
+          description: Templates keyed by consent type
     RecordConsentRequest:
       required:
       - action
@@ -272,54 +320,6 @@ components:
           type: object
           properties: {}
           description: Consent-type-specific metadata
-    UserConsent:
-      type: object
-      properties:
-        id:
-          type: integer
-        user_id:
-          type: integer
-        org_id:
-          type: integer
-        consent_type:
-          type: string
-        action:
-          type: string
-        ip_address:
-          type: string
-        consent_method:
-          type: string
-        created_at:
-          type: string
-        updated_at:
-          type: string
-    UserConsentsResponse:
-      type: object
-      properties:
-        consents:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserConsent'
-    ConsentTemplate:
-      type: object
-      properties:
-        version:
-          type: string
-          description: Template version identifier
-        blocks:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConsentBlock'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

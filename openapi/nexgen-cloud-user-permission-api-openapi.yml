@@ -101,15 +101,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserPermissionFields'
-    UserPermissionFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        resource:
-          type: string
-        permission:
-          type: string
     ErrorResponseModel:
       type: object
       properties:
@@ -119,6 +110,15 @@ components:
         message:
           type: string
         error_reason:
+          type: string
+    UserPermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
           type: string
   securitySchemes:
     accessToken:

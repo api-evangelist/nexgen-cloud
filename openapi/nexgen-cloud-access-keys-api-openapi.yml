@@ -105,98 +105,6 @@ paths:
           content: {}
 components:
   schemas:
-    object_storage__AccessKeyListResponse:
-      title: AccessKeyListResponse
-      required:
-      - access_keys
-      - meta
-      type: object
-      properties:
-        access_keys:
-          title: Access Keys
-          type: array
-          items:
-            $ref: '#/components/schemas/object_storage__AccessKeyResponse'
-        meta:
-          $ref: '#/components/schemas/object_storage__PaginationMeta'
-    object_storage__PaginationMeta:
-      title: PaginationMeta
-      required:
-      - count
-      - current_page
-      - total_pages
-      type: object
-      properties:
-        count:
-          title: Count
-          type: integer
-        current_page:
-          title: Current Page
-          type: integer
-        total_pages:
-          title: Total Pages
-          type: integer
-    object_storage__RegionsEnum:
-      title: RegionsEnum
-      type: string
-      enum:
-      - CANADA-1
-    object_storage__AccessKeyCreateRequest:
-      title: AccessKeyCreateRequest
-      required:
-      - region
-      type: object
-      properties:
-        description:
-          title: Description
-          type: object
-        region:
-          $ref: '#/components/schemas/object_storage__RegionsEnum'
-    object_storage__AccessKeyResponse:
-      title: AccessKeyResponse
-      required:
-      - access_key
-      - created_at
-      - id
-      - region
-      - user_id
-      type: object
-      properties:
-        access_key:
-          title: Access Key
-          type: string
-        created_at:
-          title: Created At
-          type: string
-          format: date-time
-        description:
-          title: Description
-          type: object
-        id:
-          title: Id
-          type: integer
-        region:
-          $ref: '#/components/schemas/object_storage__RegionsEnum'
-        user_id:
-          title: User Id
-          type: integer
-    object_storage__ErrorResponse:
-      title: ErrorResponse
-      required:
-      - error_reason
-      - message
-      type: object
-      properties:
-        error_reason:
-          title: Error Reason
-          type: string
-        message:
-          title: Message
-          type: string
-        status:
-          title: Status
-          type: boolean
-          default: false
     object_storage__AccessKeyCreateResponse:
       title: AccessKeyCreateResponse
       required:
@@ -238,6 +146,98 @@ components:
         message:
           title: Message
           type: string
+    object_storage__PaginationMeta:
+      title: PaginationMeta
+      required:
+      - count
+      - current_page
+      - total_pages
+      type: object
+      properties:
+        count:
+          title: Count
+          type: integer
+        current_page:
+          title: Current Page
+          type: integer
+        total_pages:
+          title: Total Pages
+          type: integer
+    object_storage__ErrorResponse:
+      title: ErrorResponse
+      required:
+      - error_reason
+      - message
+      type: object
+      properties:
+        error_reason:
+          title: Error Reason
+          type: string
+        message:
+          title: Message
+          type: string
+        status:
+          title: Status
+          type: boolean
+          default: false
+    object_storage__RegionsEnum:
+      title: RegionsEnum
+      type: string
+      enum:
+      - CANADA-1
+    object_storage__AccessKeyListResponse:
+      title: AccessKeyListResponse
+      required:
+      - access_keys
+      - meta
+      type: object
+      properties:
+        access_keys:
+          title: Access Keys
+          type: array
+          items:
+            $ref: '#/components/schemas/object_storage__AccessKeyResponse'
+        meta:
+          $ref: '#/components/schemas/object_storage__PaginationMeta'
+    object_storage__AccessKeyResponse:
+      title: AccessKeyResponse
+      required:
+      - access_key
+      - created_at
+      - id
+      - region
+      - user_id
+      type: object
+      properties:
+        access_key:
+          title: Access Key
+          type: string
+        created_at:
+          title: Created At
+          type: string
+          format: date-time
+        description:
+          title: Description
+          type: object
+        id:
+          title: Id
+          type: integer
+        region:
+          $ref: '#/components/schemas/object_storage__RegionsEnum'
+        user_id:
+          title: User Id
+          type: integer
+    object_storage__AccessKeyCreateRequest:
+      title: AccessKeyCreateRequest
+      required:
+      - region
+      type: object
+      properties:
+        description:
+          title: Description
+          type: object
+        region:
+          $ref: '#/components/schemas/object_storage__RegionsEnum'
   securitySchemes:
     accessToken:
       type: apiKey

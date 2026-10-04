@@ -92,6 +92,23 @@ components:
         features:
           type: object
           properties: {}
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    LableResonse:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
     Flavor_Item_Get_Response:
       type: object
       properties:
@@ -103,13 +120,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Flavor_Fields'
-    LableResonse:
-      type: object
-      properties:
-        id:
-          type: integer
-        label:
-          type: string
     Flavor_List_Response:
       type: object
       properties:
@@ -121,16 +131,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Flavor_Item_Get_Response'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

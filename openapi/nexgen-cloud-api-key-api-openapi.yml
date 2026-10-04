@@ -190,33 +190,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    CommonResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    GenerateUpdateApiKeyPayload:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          maxLength: 200
-          minLength: 1
-          type: string
-        description:
-          type: string
-    GenerateUpdateApiKeyResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        api_key:
-          $ref: '#/components/schemas/ApiKeyFields'
     GetApiKeysResponseModel:
       type: object
       properties:
@@ -242,6 +215,17 @@ components:
         created_at:
           type: string
           format: date-time
+    GenerateUpdateApiKeyPayload:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 200
+          minLength: 1
+          type: string
+        description:
+          type: string
     ErrorResponseModel:
       type: object
       properties:
@@ -251,6 +235,22 @@ components:
         message:
           type: string
         error_reason:
+          type: string
+    GenerateUpdateApiKeyResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        api_key:
+          $ref: '#/components/schemas/ApiKeyFields'
+    CommonResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
           type: string
   securitySchemes:
     accessToken:

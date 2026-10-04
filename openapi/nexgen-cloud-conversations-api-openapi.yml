@@ -825,19 +825,22 @@ paths:
                 $ref: '#/components/schemas/ErrorSchema'
 components:
   schemas:
-    ConversationImageUploadResponseSchema:
+    ErrorSchema:
       properties:
-        file_reference:
+        code:
+          default: null
+          type: integer
+          description: HTTP status code associated with the error.
+        message:
           type: string
-          description: A reference to the uploaded image. Include this in a message's `image_attachments` when calling [Send message](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/send-message).
-        signed_url:
+          default: null
+          description: Human-readable description of the error.
+        status:
           type: string
-          description: A short-lived URL. Upload the image bytes to it with an HTTP PUT before sending the message.
-      required:
-      - signed_url
-      - file_reference
+          default: null
+          description: Indicates the result of the operation. Typically `"error"` for failed requests.
+      title: ErrorSchema
       type: object
-      description: Presigned upload details for an image attachment.
     ConversationRenameSchema:
       properties:
         title:
@@ -904,22 +907,19 @@ components:
         message: What did I just say?
         conversation_id: 1001
         stream: false
-    ErrorSchema:
+    ConversationImageUploadResponseSchema:
       properties:
-        code:
-          default: null
-          type: integer
-          description: HTTP status code associated with the error.
-        message:
+        file_reference:
           type: string
-          default: null
-          description: Human-readable description of the error.
-        status:
+          description: A reference to the uploaded image. Include this in a message's `image_attachments` when calling [Send message](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/send-message).
+        signed_url:
           type: string
-          default: null
-          description: Indicates the result of the operation. Typically `"error"` for failed requests.
-      title: ErrorSchema
+          description: A short-lived URL. Upload the image bytes to it with an HTTP PUT before sending the message.
+      required:
+      - signed_url
+      - file_reference
       type: object
+      description: Presigned upload details for an image attachment.
   securitySchemes:
     apiKey:
       type: apiKey

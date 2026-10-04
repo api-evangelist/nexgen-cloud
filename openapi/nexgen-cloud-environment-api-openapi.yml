@@ -334,15 +334,23 @@ paths:
       - apiKey: []
 components:
   schemas:
-    Update_Environment:
-      required:
-      - name
+    Environments:
       type: object
       properties:
-        name:
-          maxLength: 50
+        status:
+          type: boolean
+        message:
           type: string
-          description: The new name of the environment.
+        environments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Environment_Fields'
+        page:
+          type: integer
+        page_size:
+          type: integer
+        count:
+          type: integer
     Environment_Fields:
       type: object
       properties:
@@ -374,6 +382,25 @@ components:
           type: number
         cidr:
           type: string
+    Update_Environment:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The new name of the environment.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     Create_Environment:
       required:
       - name
@@ -387,6 +414,18 @@ components:
         region:
           type: string
           description: The geographic location of the data center where the environment is being created. To learn more about regions, [**click here**]({Config.INFRAHUB_DOCS_BASE}/docs/features/regions).
+    Environment_Features:
+      type: object
+      properties:
+        network_optimised:
+          type: boolean
+        green_status:
+          type: string
+          example: GREEN
+          enum:
+          - GREEN
+          - PARTIALLY_GREEN
+          - NOT_GREEN
     NameAvailableModel:
       type: object
       properties:
@@ -405,18 +444,6 @@ components:
           type: string
         environment:
           $ref: '#/components/schemas/Environment_Fields'
-    Environment_Features:
-      type: object
-      properties:
-        network_optimised:
-          type: boolean
-        green_status:
-          type: string
-          example: GREEN
-          enum:
-          - GREEN
-          - PARTIALLY_GREEN
-          - NOT_GREEN
     ResponseModel:
       type: object
       properties:
@@ -424,33 +451,6 @@ components:
           type: boolean
         message:
           type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    Environments:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        environments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Environment_Fields'
-        page:
-          type: integer
-        page_size:
-          type: integer
-        count:
-          type: integer
   securitySchemes:
     accessToken:
       type: apiKey

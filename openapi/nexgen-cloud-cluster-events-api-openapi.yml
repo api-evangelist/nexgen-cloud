@@ -57,6 +57,16 @@ paths:
       - apiKey: []
 components:
   schemas:
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     ClusterEvents:
       type: object
       properties:
@@ -89,16 +99,6 @@ components:
         object:
           type: string
         message:
-          type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
           type: string
   securitySchemes:
     accessToken:

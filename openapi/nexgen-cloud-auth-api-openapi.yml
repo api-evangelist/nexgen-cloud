@@ -206,72 +206,46 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    AuthUserFields:
-      type: object
-      properties:
-        email:
-          type: string
-        name:
-          type: string
-        username:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    MFAStatusFields:
-      required:
-      - mfa_enabled
-      type: object
-      properties:
-        mfa_enabled:
-          type: boolean
-          description: Whether MFA is enabled for the user
     RbacRoleField:
       type: object
       properties:
         name:
           type: string
-    OrganizationUserResponseModel:
+    UserOrganizationsResponse:
       type: object
       properties:
-        id:
-          type: integer
-        sub:
-          type: string
-        email:
-          type: string
-        username:
-          type: string
-        name:
-          type: string
-        role:
-          type: string
-        rbac_roles:
+        organizations:
           type: array
           items:
-            $ref: '#/components/schemas/RbacRoleField'
-        joined_at:
+            $ref: '#/components/schemas/OrganizationFields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
           type: string
-          format: date-time
-        last_login:
+        error_reason:
           type: string
-          format: date-time
-    CommonResponseModel:
+    MFAStatusResponse:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-    AuthGetTokenResponseModel:
+        mfa:
+          $ref: '#/components/schemas/MFAStatusFields'
+    AuthUserInfoResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        token:
-          $ref: '#/components/schemas/AccessTokenField'
+        user:
+          $ref: '#/components/schemas/AuthUserFields'
     OrganizationFields:
       required:
       - id
@@ -301,46 +275,72 @@ components:
         created_at:
           type: string
           format: date-time
-    AuthUserInfoResponseModel:
+    OrganizationUserResponseModel:
       type: object
       properties:
-        status:
-          type: boolean
-        message:
+        id:
+          type: integer
+        sub:
           type: string
-        user:
-          $ref: '#/components/schemas/AuthUserFields'
+        email:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        rbac_roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RbacRoleField'
+        joined_at:
+          type: string
+          format: date-time
+        last_login:
+          type: string
+          format: date-time
+    MFAStatusFields:
+      required:
+      - mfa_enabled
+      type: object
+      properties:
+        mfa_enabled:
+          type: boolean
+          description: Whether MFA is enabled for the user
+    AuthUserFields:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+        created_at:
+          type: string
+          format: date-time
     AccessTokenField:
       type: object
       properties:
         access_token:
           type: string
-    MFAStatusResponse:
+    CommonResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        mfa:
-          $ref: '#/components/schemas/MFAStatusFields'
-    UserOrganizationsResponse:
-      type: object
-      properties:
-        organizations:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationFields'
-    ErrorResponseModel:
+    AuthGetTokenResponseModel:
       type: object
       properties:
         status:
           type: boolean
-          default: false
         message:
           type: string
-        error_reason:
-          type: string
+        token:
+          $ref: '#/components/schemas/AccessTokenField'
   securitySchemes:
     accessToken:
       type: apiKey

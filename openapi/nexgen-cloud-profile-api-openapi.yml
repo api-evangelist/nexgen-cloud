@@ -177,6 +177,15 @@ paths:
       - apiKey: []
 components:
   schemas:
+    Create_Profile_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        profile:
+          $ref: '#/components/schemas/Profile_Fields'
     Create_Profile_Payload:
       required:
       - data
@@ -196,6 +205,16 @@ components:
           additionalProperties:
             type: string
           description: The data object containing the configuration details of the virtual machine profile being created.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     Profile_List_Response:
       type: object
       properties:
@@ -207,6 +226,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Profile_Fields'
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
     Profile_Fields:
       type: object
       properties:
@@ -221,32 +247,6 @@ components:
         created_at:
           type: string
           format: date-time
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    Create_Profile_Response:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        profile:
-          $ref: '#/components/schemas/Profile_Fields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

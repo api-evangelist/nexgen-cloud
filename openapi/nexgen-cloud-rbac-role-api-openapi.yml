@@ -227,7 +227,7 @@ paths:
       - apiKey: []
 components:
   schemas:
-    RolePolicyFields:
+    RbacRoleFields:
       type: object
       properties:
         id:
@@ -236,13 +236,47 @@ components:
           type: string
         description:
           type: string
-    CommonResponseModel:
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolePolicyFields'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolePermissionFields'
+        created_at:
+          type: string
+          format: date-time
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    RbacRoleDetailResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
+        role:
+          $ref: '#/components/schemas/RbacRoleFields'
+    GetRbacRolesResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RbacRoleFields'
     CreateUpdateRbacRolePayload:
       required:
       - description
@@ -266,27 +300,7 @@ components:
           items:
             type: integer
             description: List of permission IDs.
-    GetRbacRolesResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/RbacRoleFields'
-    RbacRoleDetailResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        role:
-          $ref: '#/components/schemas/RbacRoleFields'
-    RbacRoleFields:
+    RolePolicyFields:
       type: object
       properties:
         id:
@@ -295,17 +309,13 @@ components:
           type: string
         description:
           type: string
-        policies:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePolicyFields'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/RolePermissionFields'
-        created_at:
+    CommonResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
           type: string
-          format: date-time
     RolePermissionFields:
       type: object
       properties:
@@ -314,16 +324,6 @@ components:
         resource:
           type: string
         permission:
-          type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
           type: string
   securitySchemes:
     accessToken:

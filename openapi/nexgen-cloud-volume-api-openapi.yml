@@ -344,19 +344,6 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    Update_Volume_Response:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        volume:
-          $ref: '#/components/schemas/Volume_Fields'
-        updates:
-          type: object
-          properties: {}
-          description: Summary of fields that were updated
     Volumes_Fields:
       type: object
       properties:
@@ -390,105 +377,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Attachments_Fields_for_Volume'
-    Volume:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        volume:
-          $ref: '#/components/schemas/Volume_Fields'
-    Environment_Fields_for_Volume:
-      type: object
-      properties:
-        name:
-          type: string
-        features:
-          type: object
-          properties: {}
-        region:
-          type: string
-    Volumes:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        page:
-          type: integer
-        page_size:
-          type: integer
-        count:
-          type: integer
-        volumes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Volumes_Fields'
-    Attachments_Fields_for_Volume:
-      type: object
-      properties:
-        id:
-          type: integer
-        device:
-          type: string
-        status:
-          type: string
-        instance_id:
-          type: integer
-        protected:
-          type: boolean
-    Volume_Types:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        volume_types:
-          type: array
-          items:
-            type: string
-    Update_Volume_Payload:
-      required:
-      - environment_name
-      type: object
-      properties:
-        environment_name:
-          type: string
-          description: The name of the target environment to move the volume to. The target environment must be in the same region as the current environment.
-    Create_Volume_Payload:
-      required:
-      - environment_name
-      - name
-      - size
-      - volume_type
-      type: object
-      properties:
-        name:
-          maxLength: 50
-          type: string
-          description: The name of the volume being created.
-        environment_name:
-          type: string
-          description: The name of the [environment](https://docs.hyperstack.cloud/docs/api-reference/core-resources/environments/) within which the volume is being created.
-        description:
-          type: string
-          description: A brief description or comment about the volume.
-        volume_type:
-          type: string
-          description: Specifies the type of volume being created, which determines the storage technology it will use. Call the [List volume types](https://infrahub-api-doc.nexgencloud.com/#get-/core/volumes) endpoint to retrieve a list of available volume model types.
-        size:
-          type: integer
-          description: The size of the volume in GB. 1048576GB storage capacity per volume.
-        image_id:
-          type: integer
-          description: The ID of the operating system image that will be associated with the volume. By providing an `image_id` in the create volume request, you will create a bootable volume.
-        callback_url:
-          maxLength: 250
-          type: string
-          description: A URL that can be attached to the volume you are creating. This `callback_url` will post any action events that occur to your volume to the provided URL.
     Volume_Fields:
       type: object
       properties:
@@ -524,22 +412,33 @@ components:
             $ref: '#/components/schemas/Attachments_Fields_for_Volume'
         os_image:
           type: string
-    NameAvailableModel:
+    Environment_Fields_for_Volume:
       type: object
       properties:
         name:
           type: string
-        available:
-          type: boolean
-        message:
+        features:
+          type: object
+          properties: {}
+        region:
           type: string
-    ResponseModel:
+    Volumes:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
+        page:
+          type: integer
+        page_size:
+          type: integer
+        count:
+          type: integer
+        volumes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Volumes_Fields'
     ErrorResponseModel:
       type: object
       properties:
@@ -550,6 +449,107 @@ components:
           type: string
         error_reason:
           type: string
+    Volume:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume:
+          $ref: '#/components/schemas/Volume_Fields'
+    Update_Volume_Payload:
+      required:
+      - environment_name
+      type: object
+      properties:
+        environment_name:
+          type: string
+          description: The name of the target environment to move the volume to. The target environment must be in the same region as the current environment.
+    Update_Volume_Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume:
+          $ref: '#/components/schemas/Volume_Fields'
+        updates:
+          type: object
+          properties: {}
+          description: Summary of fields that were updated
+    Create_Volume_Payload:
+      required:
+      - environment_name
+      - name
+      - size
+      - volume_type
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The name of the volume being created.
+        environment_name:
+          type: string
+          description: The name of the [environment](https://docs.hyperstack.cloud/docs/api-reference/core-resources/environments/) within which the volume is being created.
+        description:
+          type: string
+          description: A brief description or comment about the volume.
+        volume_type:
+          type: string
+          description: Specifies the type of volume being created, which determines the storage technology it will use. Call the [List volume types](https://infrahub-api-doc.nexgencloud.com/#get-/core/volumes) endpoint to retrieve a list of available volume model types.
+        size:
+          type: integer
+          description: The size of the volume in GB. 1048576GB storage capacity per volume.
+        image_id:
+          type: integer
+          description: The ID of the operating system image that will be associated with the volume. By providing an `image_id` in the create volume request, you will create a bootable volume.
+        callback_url:
+          maxLength: 250
+          type: string
+          description: A URL that can be attached to the volume you are creating. This `callback_url` will post any action events that occur to your volume to the provided URL.
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    Volume_Types:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume_types:
+          type: array
+          items:
+            type: string
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    Attachments_Fields_for_Volume:
+      type: object
+      properties:
+        id:
+          type: integer
+        device:
+          type: string
+        status:
+          type: string
+        instance_id:
+          type: integer
+        protected:
+          type: boolean
   securitySchemes:
     accessToken:
       type: apiKey

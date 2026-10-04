@@ -56,15 +56,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    Get_credit_and_threshold_info_in_response:
-      type: object
-      properties:
-        message:
-          type: string
-        status:
-          type: boolean
-        data:
-          $ref: '#/components/schemas/Get_credit_and_threshold_info'
     Get_credit_and_threshold_info:
       type: object
       properties:
@@ -74,6 +65,15 @@ components:
           type: number
         can_create_instance:
           type: boolean
+    Get_credit_and_threshold_info_in_response:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/Get_credit_and_threshold_info'
     ErrorResponseModel:
       type: object
       properties:
