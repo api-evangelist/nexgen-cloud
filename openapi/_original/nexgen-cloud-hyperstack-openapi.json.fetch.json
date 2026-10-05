@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.hyperstack.cloud/openapi/hyperstack.json",
+ "requested_url": "https://docs.hyperstack.cloud/openapi/hyperstack.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 1167902,
+ "sha256": "c05ba0c8eeb259978db1e030bec7d1cb7e88aaa6669b1f57d16ed4bea7b45bf3",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 0.952), but the bytes differ, so the archive is an earlier or reformatted copy."
+}

@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.hyperstack.cloud/openapi/ai-studio.json",
+ "requested_url": "https://docs.hyperstack.cloud/openapi/ai-studio.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 212141,
+ "sha256": "bcc30cccb4692facf76494f9090a86475f79d60064ca524e574e1941092f03d7",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
