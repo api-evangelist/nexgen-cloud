@@ -157,3 +157,33 @@ machine_readable_pricing:
   - Get_pricebook
   - Calculate_resource_billing_rate
   docs: https://docs.hyperstack.cloud/docs/api-reference/pricebook
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models: []
+  units: []
+  plans:
+  - name: On-Demand
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Reserved
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Spot VMs
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Enterprise / Secure Private Cloud
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
