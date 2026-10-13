@@ -1,0 +1,23 @@
+edges:
+- partner_name: OpenAI
+  partner: openai
+  partner_match: domain
+  type: contract
+  channel: provider-built
+  relationship: compatible
+  direction: provider-built
+  evidence: https://github.com/api-evangelist/nexgen-cloud/blob/main/openapi/nexgen-cloud-inference-api-openapi.yml#L12
+  contract_reference:
+    repo: nexgen-cloud
+    spec_file: nexgen-cloud-inference-api-openapi.yml
+    property: description
+    value: OpenAI-compatible
+    note: 'nexgen-cloud declares OpenAI compatibility: ''description: OpenAI-compatible chat completions endpoint
+      for running inference against deployed models. Use this endpoint to send prompts and receive generated '''
+    detected_by: sweep-model-routing.py
+    detected: '2026-10-13'
+  detected_by: sweep-model-routing.py
+  first_seen: '2026-10-13'
+generated: '2026-10-13'
+method: searched
+checked: []
