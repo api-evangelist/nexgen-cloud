@@ -116,16 +116,6 @@ components:
           type: string
         vnc_url:
           $ref: '#/components/schemas/VNC_URL_Fields'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     Request_Console:
       type: object
       properties:
@@ -141,6 +131,16 @@ components:
         id:
           type: integer
         vnc_url:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
           type: string
   securitySchemes:
     accessToken:

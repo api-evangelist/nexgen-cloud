@@ -334,6 +334,42 @@ paths:
       - apiKey: []
 components:
   schemas:
+    Update_Environment:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The new name of the environment.
+    Create_Environment:
+      required:
+      - name
+      - region
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The name of the environment being created.
+        region:
+          type: string
+          description: The geographic location of the data center where the environment is being created. To learn more about regions, [**click here**]({Config.INFRAHUB_DOCS_BASE}/docs/features/regions).
+    Environment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        region:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        features:
+          $ref: '#/components/schemas/Environment_Features'
     Environments:
       type: object
       properties:
@@ -351,20 +387,15 @@ components:
           type: integer
         count:
           type: integer
-    Environment_Fields:
+    Environment:
       type: object
       properties:
-        id:
-          type: integer
-        name:
+        status:
+          type: boolean
+        message:
           type: string
-        region:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        features:
-          $ref: '#/components/schemas/Environment_Features'
+        environment:
+          $ref: '#/components/schemas/Environment_Fields'
     VM_Quota:
       type: object
       properties:
@@ -382,15 +413,6 @@ components:
           type: number
         cidr:
           type: string
-    Update_Environment:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          maxLength: 50
-          type: string
-          description: The new name of the environment.
     ErrorResponseModel:
       type: object
       properties:
@@ -401,19 +423,15 @@ components:
           type: string
         error_reason:
           type: string
-    Create_Environment:
-      required:
-      - name
-      - region
+    NameAvailableModel:
       type: object
       properties:
         name:
-          maxLength: 50
           type: string
-          description: The name of the environment being created.
-        region:
+        available:
+          type: boolean
+        message:
           type: string
-          description: The geographic location of the data center where the environment is being created. To learn more about regions, [**click here**]({Config.INFRAHUB_DOCS_BASE}/docs/features/regions).
     Environment_Features:
       type: object
       properties:
@@ -426,24 +444,6 @@ components:
           - GREEN
           - PARTIALLY_GREEN
           - NOT_GREEN
-    NameAvailableModel:
-      type: object
-      properties:
-        name:
-          type: string
-        available:
-          type: boolean
-        message:
-          type: string
-    Environment:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        environment:
-          $ref: '#/components/schemas/Environment_Fields'
     ResponseModel:
       type: object
       properties:

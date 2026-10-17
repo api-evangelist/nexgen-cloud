@@ -176,6 +176,57 @@ paths:
           description: Validation Error
 components:
   schemas:
+    ImageUploadUrlSchema:
+      type: object
+      required:
+      - signed_url
+      - filename
+      properties:
+        signed_url:
+          type: string
+          description: Presigned S3 URL. Upload the image bytes with an HTTP PUT to this URL.
+        filename:
+          type: string
+          description: S3 key for the uploaded image. Pass this as `image_url` in [Generate image from image](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/generate-image-from-image).
+      title: ImageUploadUrlSchema
+    ImageJobAcceptedSchema:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          description: Identifier of the asynchronous image job. Poll [Get image result](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-image-result) to retrieve the result.
+        status:
+          type: string
+          description: Initial job status, such as `queued`.
+      title: ImageJobAcceptedSchema
+    ImageTaskStatusSchema:
+      type: object
+      properties:
+        status:
+          type: string
+          description: 'Job status: `queued` (accepted, not yet started), `in_progress` (generating, see `progress`), `completed` (result available in `result`), or `failed` (generation error).'
+        progress:
+          type: integer
+          default: null
+          description: Completion percentage from 0 to 100. Present while the job is in progress.
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ImageTaskResultSchema'
+          default: null
+          description: Generation result. Present once `status` is `completed`.
+      title: ImageTaskStatusSchema
+    ImageTaskResultSchema:
+      type: object
+      properties:
+        created:
+          type: string
+          description: Timestamp when the result was produced.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageData'
+          description: Generated images.
+      title: ImageTaskResultSchema
     ImageGenerationRequestSchema:
       type: object
       required:
@@ -240,44 +291,6 @@ components:
           default: null
           description: Named quality or style preset, when supported by the model.
       title: ImageGenerationRequestSchema
-    ImageTaskResultSchema:
-      type: object
-      properties:
-        created:
-          type: string
-          description: Timestamp when the result was produced.
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ImageData'
-          description: Generated images.
-      title: ImageTaskResultSchema
-    ImageTaskStatusSchema:
-      type: object
-      properties:
-        status:
-          type: string
-          description: 'Job status: `queued` (accepted, not yet started), `in_progress` (generating, see `progress`), `completed` (result available in `result`), or `failed` (generation error).'
-        progress:
-          type: integer
-          default: null
-          description: Completion percentage from 0 to 100. Present while the job is in progress.
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ImageTaskResultSchema'
-          default: null
-          description: Generation result. Present once `status` is `completed`.
-      title: ImageTaskStatusSchema
-    ImageJobAcceptedSchema:
-      type: object
-      properties:
-        job_id:
-          type: integer
-          description: Identifier of the asynchronous image job. Poll [Get image result](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/get-image-result) to retrieve the result.
-        status:
-          type: string
-          description: Initial job status, such as `queued`.
-      title: ImageJobAcceptedSchema
     ImageEditRequestSchema:
       type: object
       required:
@@ -344,6 +357,18 @@ components:
           default: null
           description: Named quality or style preset, when supported by the model.
       title: ImageEditRequestSchema
+    ImageData:
+      type: object
+      properties:
+        url:
+          type: string
+          default: null
+          description: URL of the generated image. Populated when the output is returned as a URL.
+        b64_json:
+          type: string
+          default: null
+          description: Base64-encoded image. Populated instead of `url` when base64 output is requested.
+      title: ImageData
     ErrorSchema:
       properties:
         code:
@@ -360,31 +385,6 @@ components:
           description: Indicates the result of the operation. Typically `"error"` for failed requests.
       title: ErrorSchema
       type: object
-    ImageUploadUrlSchema:
-      type: object
-      required:
-      - signed_url
-      - filename
-      properties:
-        signed_url:
-          type: string
-          description: Presigned S3 URL. Upload the image bytes with an HTTP PUT to this URL.
-        filename:
-          type: string
-          description: S3 key for the uploaded image. Pass this as `image_url` in [Generate image from image](https://docs.hyperstack.cloud/docs/ai-studio-api-reference/generate-image-from-image).
-      title: ImageUploadUrlSchema
-    ImageData:
-      type: object
-      properties:
-        url:
-          type: string
-          default: null
-          description: URL of the generated image. Populated when the output is returned as a URL.
-        b64_json:
-          type: string
-          default: null
-          description: Base64-encoded image. Populated instead of `url` when base64 output is requested.
-      title: ImageData
   securitySchemes:
     apiKey:
       type: apiKey

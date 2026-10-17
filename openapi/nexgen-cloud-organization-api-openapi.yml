@@ -124,6 +124,28 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
+    RbacRoleField:
+      type: object
+      properties:
+        name:
+          type: string
+    RemoveMemberFromOrganizationResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    UpdateOrganizationPayload:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          minLength: 3
+          type: string
+          description: The new name for the organition
     UpdateOrganizationResponseModel:
       type: object
       properties:
@@ -131,20 +153,15 @@ components:
           type: boolean
         message:
           type: string
-    RbacRoleField:
+    RemoveMemberPayload:
+      required:
+      - email
       type: object
       properties:
-        name:
+        email:
+          maxLength: 64
           type: string
-    GetOrganizationResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        organization:
-          $ref: '#/components/schemas/OrganizationFields'
+          description: The email of the user to be removed.
     ErrorResponseModel:
       type: object
       properties:
@@ -184,13 +201,6 @@ components:
         created_at:
           type: string
           format: date-time
-    RemoveMemberFromOrganizationResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
     OrganizationUserResponseModel:
       type: object
       properties:
@@ -216,25 +226,15 @@ components:
         last_login:
           type: string
           format: date-time
-    RemoveMemberPayload:
-      required:
-      - email
+    GetOrganizationResponseModel:
       type: object
       properties:
-        email:
-          maxLength: 64
+        status:
+          type: boolean
+        message:
           type: string
-          description: The email of the user to be removed.
-    UpdateOrganizationPayload:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          maxLength: 50
-          minLength: 3
-          type: string
-          description: The new name for the organition
+        organization:
+          $ref: '#/components/schemas/OrganizationFields'
   securitySchemes:
     accessToken:
       type: apiKey

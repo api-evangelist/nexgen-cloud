@@ -56,6 +56,27 @@ paths:
       - Overview
 components:
   schemas:
+    OrganizationSummary:
+      properties:
+        base_models_count:
+          type: integer
+          description: Number of base models available to the organization.
+        datasets_count:
+          type: integer
+          description: Number of datasets created in the organization.
+        finetuned_models_count:
+          type: integer
+          description: Number of fine-tuned models owned by the organization.
+        logs_count:
+          type: integer
+          description: Total number of logs stored in the organization.
+      required:
+      - base_models_count
+      - finetuned_models_count
+      - datasets_count
+      - logs_count
+      title: OrganizationSummary
+      type: object
     ErrorSchema:
       properties:
         code:
@@ -84,27 +105,6 @@ components:
       required:
       - summary
       title: OrganizationSummaryResponse
-      type: object
-    OrganizationSummary:
-      properties:
-        base_models_count:
-          type: integer
-          description: Number of base models available to the organization.
-        datasets_count:
-          type: integer
-          description: Number of datasets created in the organization.
-        finetuned_models_count:
-          type: integer
-          description: Number of fine-tuned models owned by the organization.
-        logs_count:
-          type: integer
-          description: Total number of logs stored in the organization.
-      required:
-      - base_models_count
-      - finetuned_models_count
-      - datasets_count
-      - logs_count
-      title: OrganizationSummary
       type: object
   securitySchemes:
     apiKey:

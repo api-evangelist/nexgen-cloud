@@ -344,39 +344,6 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    Volumes_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        environment:
-          $ref: '#/components/schemas/Environment_Fields_for_Volume'
-        description:
-          type: string
-        volume_type:
-          type: string
-        size:
-          type: integer
-        status:
-          type: string
-        bootable:
-          type: boolean
-        image_id:
-          type: integer
-        callback_url:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Attachments_Fields_for_Volume'
     Volume_Fields:
       type: object
       properties:
@@ -412,16 +379,61 @@ components:
             $ref: '#/components/schemas/Attachments_Fields_for_Volume'
         os_image:
           type: string
-    Environment_Fields_for_Volume:
+    Attachments_Fields_for_Volume:
       type: object
       properties:
+        id:
+          type: integer
+        device:
+          type: string
+        status:
+          type: string
+        instance_id:
+          type: integer
+        protected:
+          type: boolean
+    Volumes_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
         name:
           type: string
-        features:
-          type: object
-          properties: {}
-        region:
+        environment:
+          $ref: '#/components/schemas/Environment_Fields_for_Volume'
+        description:
           type: string
+        volume_type:
+          type: string
+        size:
+          type: integer
+        status:
+          type: string
+        bootable:
+          type: boolean
+        image_id:
+          type: integer
+        callback_url:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachments_Fields_for_Volume'
+    Volume:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume:
+          $ref: '#/components/schemas/Volume_Fields'
     Volumes:
       type: object
       properties:
@@ -439,6 +451,35 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Volumes_Fields'
+    Environment_Fields_for_Volume:
+      type: object
+      properties:
+        name:
+          type: string
+        features:
+          type: object
+          properties: {}
+        region:
+          type: string
+    Volume_Types:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        volume_types:
+          type: array
+          items:
+            type: string
+    Update_Volume_Payload:
+      required:
+      - environment_name
+      type: object
+      properties:
+        environment_name:
+          type: string
+          description: The name of the target environment to move the volume to. The target environment must be in the same region as the current environment.
     ErrorResponseModel:
       type: object
       properties:
@@ -449,23 +490,15 @@ components:
           type: string
         error_reason:
           type: string
-    Volume:
+    NameAvailableModel:
       type: object
       properties:
-        status:
+        name:
+          type: string
+        available:
           type: boolean
         message:
           type: string
-        volume:
-          $ref: '#/components/schemas/Volume_Fields'
-    Update_Volume_Payload:
-      required:
-      - environment_name
-      type: object
-      properties:
-        environment_name:
-          type: string
-          description: The name of the target environment to move the volume to. The target environment must be in the same region as the current environment.
     Update_Volume_Response:
       type: object
       properties:
@@ -510,26 +543,6 @@ components:
           maxLength: 250
           type: string
           description: A URL that can be attached to the volume you are creating. This `callback_url` will post any action events that occur to your volume to the provided URL.
-    NameAvailableModel:
-      type: object
-      properties:
-        name:
-          type: string
-        available:
-          type: boolean
-        message:
-          type: string
-    Volume_Types:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        volume_types:
-          type: array
-          items:
-            type: string
     ResponseModel:
       type: object
       properties:
@@ -537,19 +550,6 @@ components:
           type: boolean
         message:
           type: string
-    Attachments_Fields_for_Volume:
-      type: object
-      properties:
-        id:
-          type: integer
-        device:
-          type: string
-        status:
-          type: string
-        instance_id:
-          type: integer
-        protected:
-          type: boolean
   securitySchemes:
     accessToken:
       type: apiKey

@@ -54,16 +54,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/New_Model_Response'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     New_Stock_Retrive_Response:
       type: object
       properties:
@@ -99,6 +89,16 @@ components:
           type: integer
         10x:
           type: integer
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

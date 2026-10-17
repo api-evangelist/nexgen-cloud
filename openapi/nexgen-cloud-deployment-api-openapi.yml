@@ -179,16 +179,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     Deployment_Fields:
       type: object
       properties:
@@ -223,6 +213,15 @@ components:
         created_at:
           type: string
           format: date-time
+    Start_Deployment:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        deployment:
+          $ref: '#/components/schemas/Deployment_Fields_for_start_deployments'
     Deployments:
       type: object
       properties:
@@ -234,22 +233,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Deployment_Fields'
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    Start_Deployment:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        deployment:
-          $ref: '#/components/schemas/Deployment_Fields_for_start_deployments'
     Start_Deployment_Payload:
       required:
       - description
@@ -267,6 +250,23 @@ components:
           type: object
           additionalProperties:
             type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

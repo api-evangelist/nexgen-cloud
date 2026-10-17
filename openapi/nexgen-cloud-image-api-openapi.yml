@@ -219,26 +219,12 @@ paths:
       - apiKey: []
 components:
   schemas:
-    Images:
+    ResponseModel:
       type: object
       properties:
         status:
           type: boolean
         message:
-          type: string
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/Image_Get_Response'
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
           type: string
     LableResonse:
       type: object
@@ -277,20 +263,6 @@ components:
           description: Flavor compatibility restrictions for this image
           allOf:
           - $ref: '#/components/schemas/FlavorRestrictions'
-    Image:
-      type: object
-      properties:
-        image:
-          $ref: '#/components/schemas/Image_Fields'
-    NameAvailableModel:
-      type: object
-      properties:
-        name:
-          type: string
-        available:
-          type: boolean
-        message:
-          type: string
     Image_Get_Response:
       type: object
       properties:
@@ -334,13 +306,41 @@ components:
           description: JSON constraints object
         reason:
           type: string
-    ResponseModel:
+    Images:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image_Get_Response'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    NameAvailableModel:
+      type: object
+      properties:
+        name:
+          type: string
+        available:
+          type: boolean
+        message:
+          type: string
+    Image:
+      type: object
+      properties:
+        image:
+          $ref: '#/components/schemas/Image_Fields'
   securitySchemes:
     accessToken:
       type: apiKey

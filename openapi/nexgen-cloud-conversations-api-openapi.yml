@@ -825,6 +825,16 @@ paths:
                 $ref: '#/components/schemas/ErrorSchema'
 components:
   schemas:
+    ConversationRenameSchema:
+      properties:
+        title:
+          maxLength: 255
+          type: string
+          description: The new conversation title. Maximum 255 characters.
+      required:
+      - title
+      type: object
+      description: Request body for renaming a conversation.
     ErrorSchema:
       properties:
         code:
@@ -841,16 +851,6 @@ components:
           description: Indicates the result of the operation. Typically `"error"` for failed requests.
       title: ErrorSchema
       type: object
-    ConversationRenameSchema:
-      properties:
-        title:
-          maxLength: 255
-          type: string
-          description: The new conversation title. Maximum 255 characters.
-      required:
-      - title
-      type: object
-      description: Request body for renaming a conversation.
     ConversationSendMessageRequestSchema:
       properties:
         message:

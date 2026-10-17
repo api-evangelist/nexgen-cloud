@@ -157,6 +157,21 @@ components:
       - data
       title: OpenAIModelsListResponseSchema
       type: object
+    GetModelsChoicesResponseSchema:
+      properties:
+        models:
+          items:
+            $ref: '#/components/schemas/ModelOptionSchema'
+          type: array
+          description: List of model objects available for inference selection.
+        status:
+          default: success
+          type: string
+          description: Indicates the result of the operation. Typically `"success"`.
+      required:
+      - models
+      title: GetModelsChoicesResponseSchema
+      type: object
     OpenAIModelSchema:
       description: Schema for individual model in OpenAI format.
       properties:
@@ -232,21 +247,6 @@ components:
       - display_name
       - is_finetuned_model
       title: ModelOptionSchema
-      type: object
-    GetModelsChoicesResponseSchema:
-      properties:
-        models:
-          items:
-            $ref: '#/components/schemas/ModelOptionSchema'
-          type: array
-          description: List of model objects available for inference selection.
-        status:
-          default: success
-          type: string
-          description: Indicates the result of the operation. Typically `"success"`.
-      required:
-      - models
-      title: GetModelsChoicesResponseSchema
       type: object
     ModalityEnum:
       type: string

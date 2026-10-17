@@ -57,6 +57,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PermissionFields'
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     PermissionFields:
       type: object
       properties:
@@ -73,16 +83,6 @@ components:
         created_at:
           type: string
           format: date-time
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
   securitySchemes:
     accessToken:
       type: apiKey

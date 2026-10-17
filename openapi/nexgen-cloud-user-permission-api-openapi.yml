@@ -90,6 +90,15 @@ paths:
       - apiKey: []
 components:
   schemas:
+    UserPermissionFields:
+      type: object
+      properties:
+        id:
+          type: integer
+        resource:
+          type: string
+        permission:
+          type: string
     GetUserPermissionsResponseModel:
       type: object
       properties:
@@ -110,15 +119,6 @@ components:
         message:
           type: string
         error_reason:
-          type: string
-    UserPermissionFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        resource:
-          type: string
-        permission:
           type: string
   securitySchemes:
     accessToken:

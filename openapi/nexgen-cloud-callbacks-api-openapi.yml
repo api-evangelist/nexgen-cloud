@@ -315,6 +315,13 @@ components:
           type: string
         url:
           type: string
+    Attach_Callback_Payload:
+      required:
+      - url
+      type: object
+      properties:
+        url:
+          type: string
     ErrorResponseModel:
       type: object
       properties:
@@ -331,13 +338,6 @@ components:
         status:
           type: boolean
         message:
-          type: string
-    Attach_Callback_Payload:
-      required:
-      - url
-      type: object
-      properties:
-        url:
           type: string
   securitySchemes:
     accessToken:

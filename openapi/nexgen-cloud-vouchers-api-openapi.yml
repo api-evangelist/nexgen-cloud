@@ -63,14 +63,23 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    Redeem_voucher_payload:
+    VoucherRedeemResponseSchema:
       required:
-      - voucher_code
+      - message
+      - status
       type: object
       properties:
-        voucher_code:
+        status:
+          type: boolean
+          description: Success status of the operation
+        message:
           type: string
-          description: The code of the voucher you want to redeem.
+          description: Response message
+        voucher:
+          type: object
+          description: Redeemed voucher details
+          allOf:
+          - $ref: '#/components/schemas/voucher'
     voucher:
       required:
       - code
@@ -96,23 +105,6 @@ components:
         remaining_redemptions:
           type: integer
           description: Remaining redemptions
-    VoucherRedeemResponseSchema:
-      required:
-      - message
-      - status
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: Success status of the operation
-        message:
-          type: string
-          description: Response message
-        voucher:
-          type: object
-          description: Redeemed voucher details
-          allOf:
-          - $ref: '#/components/schemas/voucher'
     ErrorResponseModel:
       type: object
       properties:
@@ -123,6 +115,14 @@ components:
           type: string
         error_reason:
           type: string
+    Redeem_voucher_payload:
+      required:
+      - voucher_code
+      type: object
+      properties:
+        voucher_code:
+          type: string
+          description: The code of the voucher you want to redeem.
   securitySchemes:
     accessToken:
       type: apiKey

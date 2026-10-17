@@ -209,29 +209,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    CreateAutoTopupPayload:
-      required:
-      - threshold_amount
-      - topup_amount
-      type: object
-      properties:
-        threshold_amount:
-          type: number
-          description: ''
-        topup_amount:
-          type: number
-          description: ''
-    DisableAutoTopupResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-          description: ''
-        message:
-          type: string
-          description: ''
-        auto_topup:
-          $ref: '#/components/schemas/auto_topup'
     CreateAutoTopupResponse:
       type: object
       properties:
@@ -255,6 +232,29 @@ components:
         error_reason:
           type: string
           description: ''
+    CreateAutoTopupPayload:
+      required:
+      - threshold_amount
+      - topup_amount
+      type: object
+      properties:
+        threshold_amount:
+          type: number
+          description: ''
+        topup_amount:
+          type: number
+          description: ''
+    UpdateAutoTopupResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: ''
+        message:
+          type: string
+          description: ''
+        auto_topup:
+          $ref: '#/components/schemas/auto_topup'
     GetAutoTopupResponse:
       type: object
       properties:
@@ -278,25 +278,7 @@ components:
         topup_amount:
           type: number
           description: Amount to top up when threshold is reached
-    auto_topup:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: ''
-        status:
-          type: string
-          description: ''
-        threshold_amount:
-          type: number
-          description: ''
-        topup_amount:
-          type: number
-          description: ''
-        updated_at:
-          type: string
-          description: ''
-    UpdateAutoTopupResponse:
+    DisableAutoTopupResponse:
       type: object
       properties:
         status:
@@ -318,6 +300,24 @@ components:
           description: ''
         topup_amount:
           type: number
+          description: ''
+    auto_topup:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ''
+        status:
+          type: string
+          description: ''
+        threshold_amount:
+          type: number
+          description: ''
+        topup_amount:
+          type: number
+          description: ''
+        updated_at:
+          type: string
           description: ''
   securitySchemes:
     accessToken:

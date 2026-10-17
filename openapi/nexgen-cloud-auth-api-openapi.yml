@@ -218,6 +218,56 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OrganizationFields'
+    AccessTokenField:
+      type: object
+      properties:
+        access_token:
+          type: string
+    AuthUserFields:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    AuthGetTokenResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        token:
+          $ref: '#/components/schemas/AccessTokenField'
+    CommonResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+    AuthUserInfoResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        user:
+          $ref: '#/components/schemas/AuthUserFields'
+    MFAStatusFields:
+      required:
+      - mfa_enabled
+      type: object
+      properties:
+        mfa_enabled:
+          type: boolean
+          description: Whether MFA is enabled for the user
     ErrorResponseModel:
       type: object
       properties:
@@ -228,24 +278,6 @@ components:
           type: string
         error_reason:
           type: string
-    MFAStatusResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        mfa:
-          $ref: '#/components/schemas/MFAStatusFields'
-    AuthUserInfoResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        user:
-          $ref: '#/components/schemas/AuthUserFields'
     OrganizationFields:
       required:
       - id
@@ -275,6 +307,15 @@ components:
         created_at:
           type: string
           format: date-time
+    MFAStatusResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        mfa:
+          $ref: '#/components/schemas/MFAStatusFields'
     OrganizationUserResponseModel:
       type: object
       properties:
@@ -300,47 +341,6 @@ components:
         last_login:
           type: string
           format: date-time
-    MFAStatusFields:
-      required:
-      - mfa_enabled
-      type: object
-      properties:
-        mfa_enabled:
-          type: boolean
-          description: Whether MFA is enabled for the user
-    AuthUserFields:
-      type: object
-      properties:
-        email:
-          type: string
-        name:
-          type: string
-        username:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    AccessTokenField:
-      type: object
-      properties:
-        access_token:
-          type: string
-    CommonResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-    AuthGetTokenResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        token:
-          $ref: '#/components/schemas/AccessTokenField'
   securitySchemes:
     accessToken:
       type: apiKey

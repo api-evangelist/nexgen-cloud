@@ -111,29 +111,6 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
-    UpdateEmailPreferenceInput:
-      required:
-      - opted_in
-      type: object
-      properties:
-        opted_in:
-          type: boolean
-          description: Set opted_in status
-    UpdateEmailPreferenceResponse:
-      type: object
-      properties:
-        message:
-          type: string
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     EmailCategory:
       type: object
       properties:
@@ -155,13 +132,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmailCategoryChild'
-    EmailPreferencesResponse:
+    UpdateEmailPreferenceResponse:
       type: object
       properties:
-        email_categories:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailCategory'
+        message:
+          type: string
+    UpdateEmailPreferenceInput:
+      required:
+      - opted_in
+      type: object
+      properties:
+        opted_in:
+          type: boolean
+          description: Set opted_in status
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
     EmailCategoryChild:
       type: object
       properties:
@@ -181,6 +174,13 @@ components:
           type: string
         opted_in:
           type: boolean
+    EmailPreferencesResponse:
+      type: object
+      properties:
+        email_categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailCategory'
   securitySchemes:
     accessToken:
       type: apiKey

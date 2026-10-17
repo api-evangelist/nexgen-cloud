@@ -77,6 +77,15 @@ paths:
       x-codegen-request-body-name: payload
 components:
   schemas:
+    AttachFirewallWithVM:
+      required:
+      - vms
+      type: object
+      properties:
+        vms:
+          type: array
+          items:
+            type: integer
     ErrorResponseModel:
       type: object
       properties:
@@ -94,15 +103,6 @@ components:
           type: boolean
         message:
           type: string
-    AttachFirewallWithVM:
-      required:
-      - vms
-      type: object
-      properties:
-        vms:
-          type: array
-          items:
-            type: integer
   securitySchemes:
     accessToken:
       type: apiKey

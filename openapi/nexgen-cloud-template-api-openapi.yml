@@ -250,16 +250,17 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ErrorResponseModel:
+    Templates:
       type: object
       properties:
         status:
           type: boolean
-          default: false
         message:
           type: string
-        error_reason:
-          type: string
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Template_Fields'
     Update_Template:
       type: object
       properties:
@@ -278,23 +279,15 @@ components:
           type: string
         template:
           $ref: '#/components/schemas/Template_Fields'
-    Templates:
+    ErrorResponseModel:
       type: object
       properties:
         status:
           type: boolean
+          default: false
         message:
           type: string
-        templates:
-          type: array
-          items:
-            $ref: '#/components/schemas/Template_Fields'
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
+        error_reason:
           type: string
     Template_Fields:
       type: object
@@ -312,6 +305,13 @@ components:
         created_at:
           type: string
           format: date-time
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey

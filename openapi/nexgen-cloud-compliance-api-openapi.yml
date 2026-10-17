@@ -210,6 +210,15 @@ paths:
       - apiKey: []
 components:
   schemas:
+    CreateUpdateComplianceResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        compliance:
+          $ref: '#/components/schemas/ComplianceModelFields'
     CompliancePayload:
       required:
       - base_value
@@ -220,6 +229,32 @@ components:
       - variation_unit
       type: object
       properties:
+        gpu_model:
+          type: string
+        resource_type:
+          type: string
+        base_value:
+          type: integer
+        variation_min:
+          type: integer
+        variation_max:
+          type: integer
+        variation_unit:
+          type: integer
+    ComplianceResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        compliance:
+          $ref: '#/components/schemas/ComplianceFields'
+    ComplianceModelFields:
+      type: object
+      properties:
+        id:
+          type: integer
         gpu_model:
           type: string
         resource_type:
@@ -259,24 +294,6 @@ components:
           type: string
         error_reason:
           type: string
-    ComplianceResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        compliance:
-          $ref: '#/components/schemas/ComplianceFields'
-    CreateUpdateComplianceResponse:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        compliance:
-          $ref: '#/components/schemas/ComplianceModelFields'
     ResponseModel:
       type: object
       properties:
@@ -284,23 +301,6 @@ components:
           type: boolean
         message:
           type: string
-    ComplianceModelFields:
-      type: object
-      properties:
-        id:
-          type: integer
-        gpu_model:
-          type: string
-        resource_type:
-          type: string
-        base_value:
-          type: integer
-        variation_min:
-          type: integer
-        variation_max:
-          type: integer
-        variation_unit:
-          type: integer
   securitySchemes:
     accessToken:
       type: apiKey

@@ -190,27 +190,6 @@ components:
         created_at:
           type: string
           format: date-time
-    InviteUserPayload:
-      required:
-      - email
-      type: object
-      properties:
-        email:
-          maxLength: 254
-          minLength: 6
-          pattern: ^[A-Za-z0-9](?:[A-Za-z0-9._+-]{0,62}[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$
-          type: string
-          description: The email for sending invitation.
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
     GetInvitesResponseModel:
       type: object
       properties:
@@ -222,6 +201,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InviteFields'
+    InviteUserPayload:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          maxLength: 254
+          minLength: 6
+          pattern: ^[A-Za-z0-9](?:[A-Za-z0-9._+-]{0,62}[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$
+          type: string
+          description: The email for sending invitation.
     InviteUserResponseModel:
       type: object
       properties:
@@ -237,6 +227,16 @@ components:
         status:
           type: boolean
         message:
+          type: string
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
           type: string
   securitySchemes:
     accessToken:

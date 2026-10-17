@@ -220,34 +220,7 @@ paths:
           content: {}
 components:
   schemas:
-    Import_Keypair_Payload:
-      required:
-      - environment_name
-      - name
-      - public_key
-      type: object
-      properties:
-        name:
-          maxLength: 50
-          type: string
-          description: The name of the key pair that is being created.
-        environment_name:
-          type: string
-          description: The name of the environment where the key pair is being created.
-        public_key:
-          type: string
-          description: The public key that is being used to import an SSH key pair.
-    ErrorResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-          default: false
-        message:
-          type: string
-        error_reason:
-          type: string
-    Update_Keypair_name_response:
+    Import_Keypair_Response:
       type: object
       properties:
         status:
@@ -268,40 +241,6 @@ components:
           - GREEN
           - PARTIALLY_GREEN
           - NOT_GREEN
-    Update_Keypair_Name:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          maxLength: 50
-          type: string
-          description: The new key pair name.
-    Supported_Keypair_Public_Key_Types_Response:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
-        supported_key_types:
-          type: array
-          items:
-            type: string
-    Keypair_Environment_Fields:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        region:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        features:
-          $ref: '#/components/schemas/Keypair_Environment_Features'
     Keypairs:
       type: object
       properties:
@@ -319,22 +258,67 @@ components:
           type: integer
         count:
           type: integer
-    Import_Keypair_Response:
+    Import_Keypair_Payload:
+      required:
+      - environment_name
+      - name
+      - public_key
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The name of the key pair that is being created.
+        environment_name:
+          type: string
+          description: The name of the environment where the key pair is being created.
+        public_key:
+          type: string
+          description: The public key that is being used to import an SSH key pair.
+    Keypair_Environment_Fields:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        region:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        features:
+          $ref: '#/components/schemas/Keypair_Environment_Features'
+    Update_Keypair_Name:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: The new key pair name.
+    ErrorResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+          default: false
+        message:
+          type: string
+        error_reason:
+          type: string
+    Supported_Keypair_Public_Key_Types_Response:
       type: object
       properties:
         status:
           type: boolean
         message:
           type: string
-        keypair:
-          $ref: '#/components/schemas/Keypair_Fields'
-    ResponseModel:
-      type: object
-      properties:
-        status:
-          type: boolean
-        message:
-          type: string
+        supported_key_types:
+          type: array
+          items:
+            type: string
     Keypair_Fields:
       type: object
       properties:
@@ -351,6 +335,22 @@ components:
         created_at:
           type: string
           format: date-time
+    Update_Keypair_name_response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        keypair:
+          $ref: '#/components/schemas/Keypair_Fields'
+    ResponseModel:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
   securitySchemes:
     accessToken:
       type: apiKey
